@@ -22,3 +22,9 @@ Having built the Migration Anaylzer, perform the following for usage information
 	./migration-analysis.sh -i ~/dev/resources/migration-apps/my-app.ear -o my-app -t html
 
 Currently `html` is the only supported report type, i.e. `-t` must be specified with a value of `html`.
+
+# Infrastructure
+
+- Issues - [https://jira.springsource.org/browse/SMA](https://jira.springsource.org/browse/SMA)
+- CI - [https://build.springsource.org/browse/SMA](https://build.springsource.org/browse/SMA)
+- Quality - [https://sonar.springsource.org/dashboard/index/2770](https://sonar.springsource.org/dashboard/index/2770)
