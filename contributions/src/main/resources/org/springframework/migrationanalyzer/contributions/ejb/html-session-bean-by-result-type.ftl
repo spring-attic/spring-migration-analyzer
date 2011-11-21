@@ -1,0 +1,1 @@
+<#include "html-session-bean.ftl"/>

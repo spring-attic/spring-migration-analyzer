@@ -1,0 +1,263 @@
+/*RESET*/
+html,body,div,span,applet,object,iframe,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,dl,dt,dd,ol,ul,li,h1,h2,h3,h4,h5,h6,pre,form,fieldset,input,textarea,label,legend,p,blockquote,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-weight:inherit;font-style:inherit;font-size:100%;font-family:inherit;vertical-align:baseline;}body{line-height:1;color:#666666;background:#F5F5F5;}:focus{outline:0;}table{border-collapse:collapse;border-spacing:0;}caption,th,td{text-align:left;font-weight:normal;}fieldset,img{border:0;}address,caption,cite,code,dfn,em,strong,th,var{font-style:normal;font-weight:normal;}ol,ul{list-style:none;}h1,h2,h3,h4,h5,h6{font-size:100%;font-weight:normal;}blockquote:before,blockquote:after,q:before,q:after{content:"";}blockquote,q{quotes:"" "";}abbr,acronym{border:0;}
+
+
+/*MAIN LAYOUT & STYLE*/
+html, body {
+/*	height:100%; */
+}
+
+body {
+	font-family: Arial, Helvetica, sans-serif;
+	font-size: 12px;
+	line-height: 18px;
+}
+
+#top {
+	width: 500px;
+	margin-left: auto;
+	margin-right: auto;
+}
+
+#hdr {
+	background: url('../img/hdr-glow.png') no-repeat scroll center top, url('../img/hdr-background.png') repeat-x scroll 0 0 #367B09;
+	height: 90px;
+}
+
+#hdr h1 {
+	margin: 0px;
+}
+
+#header {
+	padding: 30px 0px;"
+}
+
+a#logo {
+	background: transparent url('../img/springsource-logo.png') no-repeat center left;
+	padding: 0px 0px 0px 218px;
+	font-size: 2.2em;
+}
+
+#header span {
+	font-size: 2.2em;
+	padding: 0px 0px 0px 15px;
+}
+
+#hdr #top #title {
+	height:80px;
+	margin-top:0px;
+	background: url('../img/title-background.png') repeat-x scroll #F1F1F1;
+	-moz-border-radius: 0 0 5px 5px;
+	-webkit-border-bottom-left-radius: 5px;
+	-webkit-border-bottom-right-radius: 5px;
+	border-radius: 0 0 5px 5px;
+	-moz-box-shadow: 0 0 15px #333;
+	-webkit-box-shadow: 0 0 15px#333;
+	box-shadow: 0 0 15px #333;
+}
+
+#container {/*below the brand header*/
+	/*border:#f00 solid 1px;*/
+	height:100%;
+	min-width:1024px;
+	overflow:hidden;
+}
+
+#leftBar {
+	background:#FFF;
+	float:left;
+	height:100%;
+	margin-bottom:150px;
+	overflow:hidden;
+	width:20%;
+}
+
+#results {
+	border-bottom:#E0E0E0 solid 1px;
+	margin:0 0 4px 0;
+	padding:0;
+	height:hidden;
+}
+
+#contentList {
+	border-top:#E0E0E0 solid 1px;
+	height:100%;
+	margin:4px 0 0 0;
+	padding:0;
+	overflow:hidden;
+}
+
+#mainContent {
+	background:#FFF;
+	float:right;
+	overflow:hidden;
+	width:80%;
+}
+
+#ftr {
+    background: #717074;
+	bottom: 0;
+	color:#FFF;
+	font-size: 11px;
+	height:24px;
+	left:0;
+	line-height:24px;
+	position:fixed;
+    text-align: center;
+	width:100%;
+	z-index:9999;
+}
+
+/* slightly enhanced, universal clearfix hack */
+.clearfix:after {
+     visibility: hidden;
+     display: block;
+     font-size: 0;
+     content: " ";
+     clear: both;
+     height: 0;
+     }
+.clearfix { display: inline-block; }
+/* start commented backslash hack \*/
+* html .clearfix { height: 1%; }
+.clearfix { display: block; }
+/* close commented backslash hack */
+
+
+/*GENERAL STYLING*/
+a {color: #0095D3; text-decoration:none;}
+a:hover {text-decoration:underline;}
+
+h1 {
+	font-size:2.2em;
+	line-height:1em;
+	margin:20px 0;
+}
+
+h3.moduleHdr {
+	background:#CCC url(../img/ModHdr_BG.png) repeat-x;
+	border-bottom:#FFF solid 1px;
+	font-size:11px;
+	font-weight:bold;
+	padding:4px 10px;
+	text-transform:uppercase;
+}
+#module {
+	margin:0;
+	padding:0;
+}
+
+#module ul {
+	border-bottom:#FFF solid 1px;
+	margin:0px;
+	padding:3px 5px;	
+}
+#module li {
+	padding-left:5px;
+}
+
+#module li a {
+	display:block;
+}
+
+#rail-resize, #rail-resize-vert {
+    border-left: #E0E0E0 solid 1px;
+    border-right: #E0E0E0 solid 1px;
+    bottom: 0;
+    top: 76px;
+    width: 4px;
+}
+
+#rail-resize-hori {
+    border-bottom: #E0E0E0 solid 1px;
+    border-top: #E0E0E0 solid 1px;
+	height: 4px;
+    left: 0;
+	margin-top:-10px;
+    right: 0;
+/*    top: 247px;*/
+    width: 20%;
+    z-index: 6;
+}
+
+#rail-resize, #rail-resize-hori, #rail-resize-vert {
+    background-color: #FFFFFF;
+    position: absolute;
+    z-index: 5;
+}
+
+
+/*MAINPAGE STYLE*/
+#content {
+	margin:0 20px 100px;
+	padding:0;
+}
+
+div.item-header {
+	background:#CCC url(../img/ModHdr_BG.png) repeat-x;
+	padding: 4px 5px;
+	font-size: 11px;
+	font-weight:bold;
+	border-bottom:#FFF solid 1px;
+	border-top:#CCC solid 1px;
+	text-transform:uppercase;
+}
+
+.item-header a {
+	display:block;
+	color:#666;
+	text-decoration:none;
+}
+
+div.item-subHeader {
+	background:#E0E0E0;
+	padding: 4px 5px;
+	font-size: 11px;
+	font-weight:bold;
+	border-top:#BCBCBC solid 1px;
+	border-bottom:#FFF solid 1px;
+	text-transform:uppercase;
+}
+
+.item-subHeader a {
+	display:block;
+	color:#666;
+	text-decoration:none;
+}
+
+div.item {
+	background:#FFF;
+	padding-bottom:5px;
+	margin-bottom:20px;
+}
+
+div.item-body {
+	background:#FFF;
+}
+
+.item-body p {
+	margin:10px 0;
+}
+.item-body ul {
+	padding:10px 15px 10px 25px;
+}
+
+.item-body li {
+	margin:0px 10px 10px 10px;
+	list-style-position: outside;
+	list-style-type: disc;
+}
+
+.item-body ul ul li {
+	list-style-type:circle;	
+}
+
+span.toggle {
+	float: left;
+	padding-right: 0.5em;
+	cursor: pointer;
+}
+
+div.source {
+	margin-left: 10px;
+}

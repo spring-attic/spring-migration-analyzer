@@ -1,0 +1,1 @@
+<#include "html-entity-bean.ftl"/>

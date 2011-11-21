@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="UTF-8"?>
+   <ejb-jar xmlns="http://java.sun.com/xml/ns/j2ee"
+            xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+            xsi:schemaLocation="http://java.sun.com/xml/ns/j2ee
+                                http://java.sun.com/xml/ns/j2ee/ejb-jar_2_1.xsd"
+            version="2.1">
+      <description>Test deployment descriptor</description>
+      <display-name>Test</display-name>
+      <enterprise-beans>
+      	<message-driven id="MDB_1">
+            <description>Message driven bean for unit testing</description>
+            <ejb-name>MDB</ejb-name>            
+            <ejb-class>test.MessageDrivenBean</ejb-class>
+            <transaction-type>Container</transaction-type>            
+		</message-driven>
+        <session id="Session_1">
+            <description>Stateless bean for unit testing</description>
+            <display-name>Stateless test EJB</display-name>
+            <ejb-name>StatelessTest</ejb-name>
+            <home>test.StatelessTestHome</home>
+            <remote>test.StatelessTest</remote>
+            <ejb-class>test.StatelessTestBean</ejb-class>
+            <session-type>Stateless</session-type>
+            <transaction-type>Container</transaction-type>            
+         </session>
+         <session id="Session_2">
+            <description>Stateful bean for unit testing</description>
+            <display-name>Stateful test EJB</display-name>
+            <ejb-name>StatefulTest</ejb-name>
+            <home>test.StatefulTestHome</home>
+            <remote>test.StatefulTest</remote>
+            <ejb-class>test.StatefulTestBean</ejb-class>
+            <session-type>Stateful</session-type>
+            <transaction-type>Container</transaction-type>            
+         </session>
+         <entity id="ContainerManagedEntity_1">
+            <description>Entity bean for unit testing</description>
+            <ejb-name>Entity</ejb-name>
+            <local-home>test.EntityLocalHome</local-home>
+            <local>test.EntityLocal</local>
+            <ejb-class>test.Entity</ejb-class>
+            <persistence-type>Container</persistence-type>
+            <prim-key-class>test.EntityKey</prim-key-class>
+            <reentrant>True</reentrant>
+            <cmp-version>2.x</cmp-version>
+            <abstract-schema-name>Entity</abstract-schema-name>
+            <cmp-field id="entity_alpha">
+               <field-name>alpha</field-name>
+            </cmp-field>
+            <cmp-field id="entity_bravo">
+               <field-name>bravo</field-name>
+            </cmp-field>
+		</entity> 
+     </enterprise-beans>
+     <assembly-descriptor>
+     	<container-transaction>
+     	    <method>
+     	    	<ejb-name>StatefulTest</ejb-name>
+     	    	<method-name>*</method-name>
+     	    </method>
+     	    <method>
+     	    	<ejb-name>StatelessTest</ejb-name>
+     	    	<method-name>*</method-name>
+     	    </method>
+     	    <trans-attribute>Required</trans-attribute>
+     	</container-transaction>
+     	<container-transaction>
+     	    <method>
+     	    	<ejb-name>StatefulTest</ejb-name>
+     	    	<method-name>*</method-name>
+     	    </method>
+     	    <method>
+     	    	<ejb-name>StatelessTest</ejb-name>
+     	    	<method-name>*</method-name>
+     	    </method>
+     	    <trans-attribute>RequiresNew</trans-attribute>
+     	</container-transaction>
+     	<container-transaction>
+     	    <method>
+     	    	<ejb-name>StatefulTest</ejb-name>
+     	    	<method-name>*</method-name>
+     	    </method>
+     	    <method>
+     	    	<ejb-name>StatelessTest</ejb-name>
+     	    	<method-name>*</method-name>
+     	    </method>
+     	    <trans-attribute>Supports</trans-attribute>
+     	</container-transaction>
+     	<container-transaction>
+     	    <method>
+     	    	<ejb-name>StatefulTest</ejb-name>
+     	    	<method-name>*</method-name>
+     	    </method>
+     	    <method>
+     	    	<ejb-name>StatelessTest</ejb-name>
+     	    	<method-name>*</method-name>
+     	    </method>
+     	    <trans-attribute>NotSupported</trans-attribute>
+     	</container-transaction>
+     	<container-transaction>
+     	    <method>
+     	    	<ejb-name>StatefulTest</ejb-name>
+     	    	<method-name>*</method-name>
+     	    </method>
+     	    <method>
+     	    	<ejb-name>StatelessTest</ejb-name>
+     	    	<method-name>*</method-name>
+     	    </method>
+     	    <trans-attribute>Never</trans-attribute>
+     	</container-transaction>
+     	<container-transaction>
+     	    <method>
+     	    	<ejb-name>StatefulTest</ejb-name>
+     	    	<method-name>*</method-name>
+     	    </method>
+     	    <method>
+     	    	<ejb-name>StatelessTest</ejb-name>
+     	    	<method-name>*</method-name>
+     	    </method>
+     	    <trans-attribute>Mandatory</trans-attribute>
+     	</container-transaction>
+     </assembly-descriptor>
+   </ejb-jar>

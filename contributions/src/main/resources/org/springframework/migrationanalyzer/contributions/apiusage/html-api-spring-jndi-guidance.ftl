@@ -1,0 +1,1 @@
+The application utilises Spring's JNDI integration API. JNDI is available in Tomcat and therefore no work is required to migrate the application. 

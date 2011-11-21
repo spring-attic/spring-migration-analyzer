@@ -1,0 +1,1 @@
+<#include "html-message-driven-bean.ftl"/>

@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:jee="http://www.springframework.org/schema/jee"
+	xmlns:transaction="http://www.springframework.org/schema/tx"
+	xsi:schemaLocation="http://www.springframework.org/schema/jee http://www.springframework.org/schema/jee/spring-jee-2.0.xsd
+		http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.0.xsd
+		http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd">
+
+	<bean id="factoryBeanDataSource" class="org.springframework.jndi.JndiObjectFactoryBean">
+		<property name="jndiName" value="java:comp/env/jdbc/springdb" />
+		<property name="lookupOnStartup" value="false" />
+		<property name="cache" value="true" />
+		<property name="proxyInterface" value="javax.sql.DataSource" />
+	</bean>
+
+	<jee:jndi-lookup id="namespaceDataSource" jndi-name="jdbc/springdb"
+		cache="true" resource-ref="true" lookup-on-startup="false"
+		proxy-interface="javax.sql.DataSource" />
+		
+	<transaction:jta-transaction-manager/>
+	
+	<jee:local-slsb jndi-name="beans/theBean" business-interface="org.test.Bean"/>
+	
+	<jee:remote-slsb jndi-name="beans/theBean" business-interface="org.test.Bean"/>
+
+</beans>

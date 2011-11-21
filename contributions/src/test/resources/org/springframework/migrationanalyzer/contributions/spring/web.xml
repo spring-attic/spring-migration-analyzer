@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE ejb-jar PUBLIC "-//Sun Microsystems, Inc.//DTD Enterprise JavaBeans 2.0//EN" "http://java.sun.com/dtd/ejb-jar_2_0.dtd">
+   <ejb-jar id="ejb-jar_ID">
+      <description>Test deployment descriptor</description>
+      <display-name>Test</display-name>
+      <enterprise-beans>
+         <session id="Session_1">
+            <description>Stateless bean for unit testing</description>
+            <display-name>Stateless test EJB</display-name>
+            <ejb-name>StatelessTest</ejb-name>
+            <home>test.StatelessTestHome</home>
+            <remote>test.StatelessTest</remote>
+            <ejb-class>test.StatelessTestBean</ejb-class>
+            <session-type>Stateless</session-type>
+            <transaction-type>Container</transaction-type>            
+         </session>
+         <session id="Session_2">
+            <description>Stateful bean for unit testing</description>
+            <display-name>Stateful test EJB</display-name>
+            <ejb-name>StatefulTest</ejb-name>
+            <home>test.StatefulTestHome</home>
+            <remote>test.StatefulTest</remote>
+            <ejb-class>test.StatefulTestBean</ejb-class>
+            <session-type>Stateful</session-type>
+            <transaction-type>Container</transaction-type>            
+         </session>
+     </enterprise-beans>
+   </ejb-jar>
