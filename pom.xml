@@ -19,6 +19,7 @@
 		<module>packaging</module>
 		<module>render</module>
 		<module>util</module>
+		<module>xml-render</module>
 	</modules>
 	
 	<profiles>
