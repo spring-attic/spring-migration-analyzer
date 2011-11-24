@@ -31,10 +31,10 @@ abstract class AbstractMigrationAnalysis {
         try {
             commandLine = new PosixParser().parse(OPTIONS, args);
             String inputPath = commandLine.getOptionValue(OptionsFactory.OPTION_KEY_INPUT_PATH);
-            String outputType = commandLine.getOptionValue(OptionsFactory.OPTION_KEY_OUTPUT_TYPE);
+            String[] outputTypes = commandLine.getOptionValues(OptionsFactory.OPTION_KEY_OUTPUT_TYPE);
             String outputPath = commandLine.getOptionValue(OptionsFactory.OPTION_KEY_OUTPUT_PATH);
             String[] excludes = commandLine.getOptionValues(OptionsFactory.OPTION_KEY_EXCLUDE);
-            getExecutor(inputPath, outputType, outputPath, excludes).execute();
+            getExecutor(inputPath, outputTypes, outputPath, excludes).execute();
         } catch (ParseException e) {
             new HelpFormatter().printHelp("migration-analysis.[sh | bat] [OPTION]...", OPTIONS);
             exit(-1);
@@ -42,7 +42,7 @@ abstract class AbstractMigrationAnalysis {
 
     }
 
-    protected abstract MigrationAnalysisExecutor getExecutor(String inputPath, String outputType, String outputPath, String[] excludes);
+    protected abstract MigrationAnalysisExecutor getExecutor(String inputPath, String[] outputTypes, String outputPath, String[] excludes);
 
     protected abstract void exit(int code);
 }

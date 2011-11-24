@@ -24,7 +24,7 @@ package org.springframework.migrationanalyzer.commandline;
  * 
  * Thread-safe
  */
-public final class MigrationAnalysis extends AbstractMigrationAnalysis {
+public final class MigrationBatchAnalysis extends AbstractMigrationAnalysis {
 
     /**
      * Main method for invoking the application
@@ -32,12 +32,12 @@ public final class MigrationAnalysis extends AbstractMigrationAnalysis {
      * @param args Command line arguments
      */
     public static void main(String[] args) {
-        new MigrationAnalysis().run(args);
+        new MigrationBatchAnalysis().run(args);
     }
 
     @Override
     protected MigrationAnalysisExecutor getExecutor(String inputPath, String[] outputTypes, String outputPath, String[] excludes) {
-        return new CommandLineMigrationAnalysisExecutor(inputPath, outputTypes, outputPath, excludes);
+        return new CommandLineMigrationAnalysisBatchExecutor(inputPath, outputTypes, outputPath, excludes);
     }
 
     @Override
