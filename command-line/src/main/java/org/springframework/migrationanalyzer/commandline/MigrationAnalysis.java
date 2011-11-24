@@ -36,8 +36,8 @@ public final class MigrationAnalysis extends AbstractMigrationAnalysis {
     }
 
     @Override
-    protected MigrationAnalysisExecutor getExecutor(String inputPath, String outputType, String outputPath, String[] excludes) {
-        return new CommandLineMigrationAnalysisExecutor(inputPath, outputType, outputPath, excludes);
+    protected MigrationAnalysisExecutor getExecutor(String inputPath, String[] outputTypes, String outputPath, String[] excludes) {
+        return new CommandLineMigrationAnalysisExecutor(inputPath, outputTypes, outputPath, excludes);
     }
 
     @Override

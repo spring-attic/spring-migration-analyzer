@@ -18,6 +18,8 @@ package org.springframework.migrationanalyzer.commandline;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.springframework.migrationanalyzer.analyze.AnalysisEngine;
 import org.springframework.migrationanalyzer.analyze.AnalysisResult;
@@ -42,7 +44,7 @@ final class CommandLineMigrationAnalysisExecutor implements MigrationAnalysisExe
 
     private final String outputPath;
 
-    private final String outputType;
+    private final String[] outputTypes;
 
     private final String[] excludes;
 
@@ -50,18 +52,18 @@ final class CommandLineMigrationAnalysisExecutor implements MigrationAnalysisExe
 
     private static final String DEFAULT_OUTPUT_PATH = ".";
 
-    CommandLineMigrationAnalysisExecutor(String inputPath, String outputType, String outputPath, String[] excludes) {
-        this(inputPath, outputType, outputPath, excludes, new StandardAnalysisEngineFactory(), new StandardRenderEngineFactory(),
+    CommandLineMigrationAnalysisExecutor(String inputPath, String[] outputTypes, String outputPath, String[] excludes) {
+        this(inputPath, outputTypes, outputPath, excludes, new StandardAnalysisEngineFactory(), new StandardRenderEngineFactory(),
             new DirectoryFileSystemFactory());
     }
 
-    CommandLineMigrationAnalysisExecutor(String inputPath, String outputType, String outputPath, String[] excludes,
+    CommandLineMigrationAnalysisExecutor(String inputPath, String[] outputTypes, String outputPath, String[] excludes,
         AnalysisEngineFactory analysisEngineFactory, RenderEngineFactory renderEngineFactory, FileSystemFactory fileSystemFactory) {
         this.analysisEngineFactory = analysisEngineFactory;
         this.renderEngineFactory = renderEngineFactory;
         this.fileSystemFactory = fileSystemFactory;
         this.inputPath = inputPath;
-        this.outputType = outputType;
+        this.outputTypes = outputTypes;
         this.outputPath = outputPath == null ? DEFAULT_OUTPUT_PATH : outputPath;
         this.excludes = excludes == null ? DEFAULT_EXCLUDES : excludes;
     }
@@ -70,10 +72,19 @@ final class CommandLineMigrationAnalysisExecutor implements MigrationAnalysisExe
     public void execute() {
         FileSystem fileSystem = createFileSystem();
         AnalysisEngine analysisEngine = this.analysisEngineFactory.createAnalysisEngine(fileSystem, this.excludes);
-        RenderEngine renderEngine = this.renderEngineFactory.create(this.outputType, this.outputPath);
+        List<RenderEngine> renderEngines = new ArrayList<RenderEngine>();
+        for (String outputType : this.outputTypes) {
+            RenderEngine renderEngine = this.renderEngineFactory.create(outputType, this.outputPath);
+            if (renderEngine != null) {
+                renderEngines.add(renderEngine);
+            }
+        }
 
         AnalysisResult analysis = analysisEngine.analyze();
-        renderEngine.render(analysis);
+        for (RenderEngine renderEngine : renderEngines) {
+            renderEngine.render(analysis);
+        }
+
         fileSystem.cleanup();
     }
 

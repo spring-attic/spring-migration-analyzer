@@ -40,8 +40,8 @@ public class CommandLineMigrationAnalysisExecutorTests {
         StubAnalysisEngineFactory analysisEngineFactory = new StubAnalysisEngineFactory();
         StubRenderEngineFactory renderEngineFactory = new StubRenderEngineFactory();
 
-        CommandLineMigrationAnalysisExecutor executor = new CommandLineMigrationAnalysisExecutor("input", "type", "output", new String[0],
-            analysisEngineFactory, renderEngineFactory, new StubFileSystemFactory());
+        CommandLineMigrationAnalysisExecutor executor = new CommandLineMigrationAnalysisExecutor("input", new String[] { "type" }, "output",
+            new String[0], analysisEngineFactory, renderEngineFactory, new StubFileSystemFactory());
         executor.execute();
 
         assertEquals(1, analysisEngineFactory.analysisEngines.size());
@@ -56,7 +56,7 @@ public class CommandLineMigrationAnalysisExecutorTests {
         StubAnalysisEngineFactory analysisEngineFactory = new StubAnalysisEngineFactory();
         StubRenderEngineFactory renderEngineFactory = new StubRenderEngineFactory();
 
-        CommandLineMigrationAnalysisExecutor executor = new CommandLineMigrationAnalysisExecutor("input", "type", "output", null,
+        CommandLineMigrationAnalysisExecutor executor = new CommandLineMigrationAnalysisExecutor("input", new String[] { "type" }, "output", null,
             analysisEngineFactory, renderEngineFactory, new StubFileSystemFactory());
 
         executor.execute();
@@ -71,8 +71,8 @@ public class CommandLineMigrationAnalysisExecutorTests {
         StubAnalysisEngineFactory analysisEngineFactory = new StubAnalysisEngineFactory();
         StubRenderEngineFactory renderEngineFactory = new StubRenderEngineFactory();
 
-        CommandLineMigrationAnalysisExecutor executor = new CommandLineMigrationAnalysisExecutor("input", "type", null, new String[0],
-            analysisEngineFactory, renderEngineFactory, new StubFileSystemFactory());
+        CommandLineMigrationAnalysisExecutor executor = new CommandLineMigrationAnalysisExecutor("input", new String[] { "type" }, null,
+            new String[0], analysisEngineFactory, renderEngineFactory, new StubFileSystemFactory());
 
         executor.execute();
 
