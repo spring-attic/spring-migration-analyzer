@@ -17,8 +17,13 @@
 package org.springframework.migrationanalyzer.commandline;
 
 import java.io.File;
+import java.io.FilenameFilter;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.migrationanalyzer.analyze.AnalysisEngine;
 import org.springframework.migrationanalyzer.analyze.AnalysisResult;
 import org.springframework.migrationanalyzer.analyze.fs.FileSystem;
@@ -31,6 +36,8 @@ import org.springframework.migrationanalyzer.render.support.RenderEngineFactory;
 import org.springframework.migrationanalyzer.render.support.StandardRenderEngineFactory;
 
 final class CommandLineMigrationAnalysisExecutor implements MigrationAnalysisExecutor {
+
+    private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     private final AnalysisEngineFactory analysisEngineFactory;
 
@@ -50,6 +57,12 @@ final class CommandLineMigrationAnalysisExecutor implements MigrationAnalysisExe
 
     private static final String DEFAULT_OUTPUT_PATH = ".";
 
+    private final String[] allowedScanExtenstions = { "zip", "war", "ear", "rar" };
+
+    private File inputFile;
+
+    private File outputParentDir;
+
     CommandLineMigrationAnalysisExecutor(String inputPath, String outputType, String outputPath, String[] excludes) {
         this(inputPath, outputType, outputPath, excludes, new StandardAnalysisEngineFactory(), new StandardRenderEngineFactory(),
             new DirectoryFileSystemFactory());
@@ -68,24 +81,109 @@ final class CommandLineMigrationAnalysisExecutor implements MigrationAnalysisExe
 
     @Override
     public void execute() {
-        FileSystem fileSystem = createFileSystem();
-        AnalysisEngine analysisEngine = this.analysisEngineFactory.createAnalysisEngine(fileSystem, this.excludes);
-        RenderEngine renderEngine = this.renderEngineFactory.create(this.outputType, this.outputPath);
+        this.inputFile = new File(this.inputPath);
+
+        if (!this.inputFile.exists()) {
+            this.logger.error("{} file doesn't exist", this.inputFile);
+            return;
+        }
+
+        if (this.inputFile.isDirectory()) {
+            List<FileNameStub> filesDetected = new ArrayList<FileNameStub>();
+
+            scanFilesRecursive(this.inputFile, filesDetected);
+
+            this.logger.info("========={} Archive files Detected==========", filesDetected.size());
+            for (FileNameStub fileStub : filesDetected) {
+                this.logger.info("{}", fileStub.getRelativePath());
+            }
+            this.logger.info("========================================");
+
+            this.outputParentDir = new File(this.outputPath);
+            if (!this.outputParentDir.exists()) {
+                this.outputParentDir.mkdir();
+            }
+            for (FileNameStub fileStub : filesDetected) {
+                String outputFileName = new File(this.outputParentDir, fileStub.getRelativePath()).getAbsolutePath();
+                outputFileName = outputFileName + "-results";
+                String printName = (fileStub.getRelativePath().length() == 0 ? fileStub.getAbsolutePath() : fileStub.getRelativePath());
+                this.logger.debug("Analyzing Input file: {} to Output file: {}", printName, outputFileName);
+                this.logger.info("Analyzing {}", printName);
+                executeFile(fileStub.getAbsolutePath(), outputFileName, this.excludes);
+
+            }
+        } else {
+            executeFile(this.inputPath, this.outputPath, this.excludes);
+        }
+    }
+
+    private void scanFilesRecursive(File file, List<FileNameStub> filesDetected) {
+        if (file.isDirectory()) {
+            for (File childFile : file.listFiles(this.filter)) {
+                scanFilesRecursive(childFile, filesDetected);
+            }
+        } else {
+            String relative = this.inputFile.toURI().relativize(file.toURI()).getPath();
+
+            filesDetected.add(new FileNameStub(file.getAbsolutePath(), relative));
+        }
+    }
+
+    private void executeFile(String inputFileName, String outputFileName, String[] excludes) {
+        FileSystem fileSystem = createFileSystem(inputFileName);
+        AnalysisEngine analysisEngine = this.analysisEngineFactory.createAnalysisEngine(fileSystem, excludes);
+        RenderEngine renderEngine = this.renderEngineFactory.create(this.outputType, outputFileName);
 
         AnalysisResult analysis = analysisEngine.analyze();
         renderEngine.render(analysis);
+
         fileSystem.cleanup();
     }
 
-    private FileSystem createFileSystem() {
+    private FileSystem createFileSystem(String fileName) {
         FileSystem fileSystem;
 
-        File inputFile = new File(this.inputPath);
+        File inputFile = new File(fileName);
         try {
             fileSystem = this.fileSystemFactory.createFileSystem(inputFile);
         } catch (IOException e) {
             throw new IllegalArgumentException(String.format("Failed to create FileSystem for input '" + inputFile.getAbsolutePath() + "'"), e);
         }
         return fileSystem;
+    }
+
+    private final FilenameFilter filter = new FilenameFilter() {
+
+        @Override
+        public boolean accept(File dir, String name) {
+            for (String extension : CommandLineMigrationAnalysisExecutor.this.allowedScanExtenstions) {
+                if (name.endsWith("." + extension)) {
+                    return true;
+                }
+            }
+
+            return new File(dir, name).isDirectory();
+        }
+    };
+
+    private class FileNameStub {
+
+        private final String absolutePath;
+
+        private final String relativePath;
+
+        public FileNameStub(String absolutePath, String relativePath) {
+            this.absolutePath = absolutePath;
+            this.relativePath = relativePath;
+        }
+
+        public String getAbsolutePath() {
+            return this.absolutePath;
+        }
+
+        public String getRelativePath() {
+            return this.relativePath;
+        }
+
     }
 }
