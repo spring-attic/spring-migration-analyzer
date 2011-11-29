@@ -34,14 +34,14 @@ final class OptionsFactory {
         Options options = new Options();
 
         options.addOption(OptionBuilder //
-        .withDescription("The path to the input location, if input location is directory then it will scan all sub-directories recursively.") //
+        .withDescription("The path to the input location") //
         .isRequired() //
         .hasArg() //
         .withArgName("inputPath") //
         .create(OPTION_KEY_INPUT_PATH));
 
         options.addOption(OptionBuilder //
-        .withDescription("The type of the output to be created. Multiple output types can be specified by for example, -t html -t xml") //
+        .withDescription("The type of the output to be created") //
         .isRequired() //
         .hasArg() //
         .withArgName("outputType") //
