@@ -34,7 +34,7 @@ final class OptionsFactory {
         Options options = new Options();
 
         options.addOption(OptionBuilder //
-        .withDescription("The path to the input location") //
+        .withDescription("The path to the input location, if input location is directory then it will scan all sub-directories recursively.") //
         .isRequired() //
         .hasArg() //
         .withArgName("inputPath") //
