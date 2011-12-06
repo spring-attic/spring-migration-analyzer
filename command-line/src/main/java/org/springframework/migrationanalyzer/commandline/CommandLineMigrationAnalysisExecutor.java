@@ -83,6 +83,12 @@ final class CommandLineMigrationAnalysisExecutor implements MigrationAnalysisExe
     public void execute() {
         this.inputFile = new File(this.inputPath);
 
+        if (!this.inputFile.exists()) {
+            this.logger.error("{} file doesn't exist", this.inputFile);
+            this.logger.info("Exiting, provide valid input file path");
+            return;
+        }
+
         if (this.inputFile.isDirectory()) {
             List<FileNameStub> filesDetected = new ArrayList<FileNameStub>();
 
