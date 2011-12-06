@@ -19,10 +19,14 @@ package org.springframework.migrationanalyzer.commandline;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
+import org.junit.AfterClass;
+import org.junit.BeforeClass;
 import org.junit.Test;
 import org.springframework.migrationanalyzer.analyze.AnalysisEngine;
 import org.springframework.migrationanalyzer.analyze.AnalysisResult;
@@ -35,12 +39,30 @@ import org.springframework.migrationanalyzer.render.support.RenderEngineFactory;
 
 public class CommandLineMigrationAnalysisExecutorTests {
 
+    private static String inputFile;
+
+    private static String outputFile;
+
+    @BeforeClass
+    public static void setup() throws IOException {
+        File file = File.createTempFile("input", null);
+        inputFile = file.getAbsolutePath();
+        file = File.createTempFile("output", null);
+        outputFile = file.getAbsolutePath();
+    }
+
+    @AfterClass
+    public static void teardown() throws IOException {
+        delete(new File(inputFile));
+        delete(new File(outputFile));
+    }
+
     @Test
     public void execute() {
         StubAnalysisEngineFactory analysisEngineFactory = new StubAnalysisEngineFactory();
         StubRenderEngineFactory renderEngineFactory = new StubRenderEngineFactory();
 
-        CommandLineMigrationAnalysisExecutor executor = new CommandLineMigrationAnalysisExecutor("input", "type", "output", new String[0],
+        CommandLineMigrationAnalysisExecutor executor = new CommandLineMigrationAnalysisExecutor(inputFile, "type", outputFile, new String[0],
             analysisEngineFactory, renderEngineFactory, new StubFileSystemFactory());
         executor.execute();
 
@@ -52,11 +74,25 @@ public class CommandLineMigrationAnalysisExecutorTests {
     }
 
     @Test
+    public void handlingOfNonExistentInputFile() {
+        StubAnalysisEngineFactory analysisEngineFactory = new StubAnalysisEngineFactory();
+        StubRenderEngineFactory renderEngineFactory = new StubRenderEngineFactory();
+
+        CommandLineMigrationAnalysisExecutor executor = new CommandLineMigrationAnalysisExecutor("invalidInputFile", "type", "output", new String[0],
+            analysisEngineFactory, renderEngineFactory, new StubFileSystemFactory());
+        executor.execute();
+
+        assertEquals(0, analysisEngineFactory.analysisEngines.size());
+        assertEquals(0, renderEngineFactory.renderEngines.size());
+
+    }
+
+    @Test
     public void handlingOfNullExcludes() {
         StubAnalysisEngineFactory analysisEngineFactory = new StubAnalysisEngineFactory();
         StubRenderEngineFactory renderEngineFactory = new StubRenderEngineFactory();
 
-        CommandLineMigrationAnalysisExecutor executor = new CommandLineMigrationAnalysisExecutor("input", "type", "output", null,
+        CommandLineMigrationAnalysisExecutor executor = new CommandLineMigrationAnalysisExecutor(inputFile, "type", outputFile, null,
             analysisEngineFactory, renderEngineFactory, new StubFileSystemFactory());
 
         executor.execute();
@@ -71,7 +107,7 @@ public class CommandLineMigrationAnalysisExecutorTests {
         StubAnalysisEngineFactory analysisEngineFactory = new StubAnalysisEngineFactory();
         StubRenderEngineFactory renderEngineFactory = new StubRenderEngineFactory();
 
-        CommandLineMigrationAnalysisExecutor executor = new CommandLineMigrationAnalysisExecutor("input", "type", null, new String[0],
+        CommandLineMigrationAnalysisExecutor executor = new CommandLineMigrationAnalysisExecutor(inputFile, "type", null, new String[0],
             analysisEngineFactory, renderEngineFactory, new StubFileSystemFactory());
 
         executor.execute();
@@ -161,6 +197,17 @@ public class CommandLineMigrationAnalysisExecutorTests {
         @Override
         public void render(AnalysisResult analysis) {
             this.rendersPerformed++;
+        }
+    }
+
+    private static void delete(File f) throws IOException {
+        if (f.exists()) {
+            if (f.isDirectory()) {
+                for (File c : f.listFiles()) {
+                    delete(c);
+                }
+            }
+            f.delete();
         }
     }
 }
