@@ -33,6 +33,12 @@ import org.springframework.migrationanalyzer.render.support.StandardRenderEngine
 
 final class CommandLineMigrationAnalysisExecutor implements MigrationAnalysisExecutor {
 
+    private static final String[] DEFAULT_EXCLUDES = new String[0];
+
+    private static final String DEFAULT_OUTPUT_PATH = ".";
+
+    private static final String DEFAULT_OUTPUT_TYPE = "html";
+
     private final AnalysisEngineFactory analysisEngineFactory;
 
     private final RenderEngineFactory renderEngineFactory;
@@ -49,10 +55,6 @@ final class CommandLineMigrationAnalysisExecutor implements MigrationAnalysisExe
 
     private final String[] excludes;
 
-    private static final String[] DEFAULT_EXCLUDES = new String[0];
-
-    private static final String DEFAULT_OUTPUT_PATH = ".";
-
     CommandLineMigrationAnalysisExecutor(String inputPath, String outputType, String outputDirectory, String[] excludes) {
         this(inputPath, outputType, outputDirectory, excludes, new StandardAnalysisEngineFactory(), new StandardRenderEngineFactory(),
             new DirectoryFileSystemFactory(), new ZipArchiveDiscoverer());
@@ -66,7 +68,7 @@ final class CommandLineMigrationAnalysisExecutor implements MigrationAnalysisExe
         this.fileSystemFactory = fileSystemFactory;
         this.archiveDiscoverer = archiveDiscoverer;
         this.inputPath = inputPath;
-        this.outputType = outputType;
+        this.outputType = outputType == null ? DEFAULT_OUTPUT_TYPE : outputType;
         this.outputPath = outputDirectory == null ? DEFAULT_OUTPUT_PATH : outputDirectory;
         this.excludes = excludes == null ? DEFAULT_EXCLUDES : excludes;
     }

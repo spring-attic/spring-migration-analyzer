@@ -24,7 +24,7 @@ import org.apache.commons.cli.Option;
 import org.apache.commons.cli.Options;
 import org.junit.Test;
 
-public class OptionsFactoryTests {
+public final class OptionsFactoryTests {
 
     private final OptionsFactory factory = new OptionsFactory();
 
@@ -40,6 +40,6 @@ public class OptionsFactoryTests {
         Options options = this.factory.create();
 
         List<Option> requiredOptions = options.getRequiredOptions();
-        assertEquals(2, requiredOptions.size());
+        assertEquals(1, requiredOptions.size());
     }
 }

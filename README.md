@@ -24,9 +24,9 @@ Having built or downloaded the Migration Anaylzer, perform the following for usa
 
 # Example usage
 
-	./migration-analysis.sh -i ~/dev/resources/migration-apps/my-app.ear -o my-app -t html
+	./migration-analysis.sh -i ~/dev/resources/migration-apps/my-app.ear
 
-Currently `html` is the only supported report type, i.e. `-t` must be specified with a value of `html`.
+This will analyze `my-app.ear`, producing a report in the current working directory. The report's directory will be named `my-app.ear`.
 
 # Infrastructure
 
