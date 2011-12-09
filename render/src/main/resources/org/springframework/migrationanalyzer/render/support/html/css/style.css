@@ -160,6 +160,10 @@ h3.moduleHdr {
 	display:block;
 }
 
+.treeIndex li {
+	margin:1px 0px 0px 3px;	
+}
+
 #rail-resize, #rail-resize-vert {
     border-left: #E0E0E0 solid 1px;
     border-right: #E0E0E0 solid 1px;
