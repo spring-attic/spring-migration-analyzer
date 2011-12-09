@@ -19,6 +19,7 @@ package org.springframework.migrationanalyzer.commandline;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
 
 import java.io.File;
@@ -35,6 +36,8 @@ import org.springframework.migrationanalyzer.render.RenderEngine;
 import org.springframework.migrationanalyzer.render.support.RenderEngineFactory;
 
 public final class CommandLineMigrationAnalysisExecutorTests {
+
+    private static final String INPUT_PATH_ARCHIVE_JAR = "src/test/resources/archives/archive.jar";
 
     private static final String OUTPUT_PATH = "output";
 
@@ -60,11 +63,11 @@ public final class CommandLineMigrationAnalysisExecutorTests {
     public void execute() throws IOException {
         File outputLocation = new File(OUTPUT_PATH);
 
-        File archive = new File("alpha.ear");
+        File archive = new File(INPUT_PATH_ARCHIVE_JAR);
 
         configureBehaviour(outputLocation, archive, archive);
 
-        CommandLineMigrationAnalysisExecutor executor = new CommandLineMigrationAnalysisExecutor("alpha.ear", REPORT_TYPE, OUTPUT_PATH,
+        CommandLineMigrationAnalysisExecutor executor = new CommandLineMigrationAnalysisExecutor(INPUT_PATH_ARCHIVE_JAR, REPORT_TYPE, OUTPUT_PATH,
             new String[0], this.analysisEngineFactory, this.renderEngineFactory, this.fileSystemFactory, this.archiveDiscoverer);
         executor.execute();
 
@@ -75,12 +78,12 @@ public final class CommandLineMigrationAnalysisExecutorTests {
     public void executeWithDefaultExcludes() throws IOException {
         File outputLocation = new File(OUTPUT_PATH);
 
-        File archive = new File("alpha.ear");
+        File archive = new File(INPUT_PATH_ARCHIVE_JAR);
 
         configureBehaviour(outputLocation, archive, archive);
 
-        CommandLineMigrationAnalysisExecutor executor = new CommandLineMigrationAnalysisExecutor("alpha.ear", REPORT_TYPE, OUTPUT_PATH, null,
-            this.analysisEngineFactory, this.renderEngineFactory, this.fileSystemFactory, this.archiveDiscoverer);
+        CommandLineMigrationAnalysisExecutor executor = new CommandLineMigrationAnalysisExecutor(INPUT_PATH_ARCHIVE_JAR, REPORT_TYPE, OUTPUT_PATH,
+            null, this.analysisEngineFactory, this.renderEngineFactory, this.fileSystemFactory, this.archiveDiscoverer);
         executor.execute();
 
         verifyBehaviour(outputLocation, archive, archive);
@@ -90,12 +93,12 @@ public final class CommandLineMigrationAnalysisExecutorTests {
     public void executeWithDefaultOutputPath() throws IOException {
         File outputLocation = new File(".");
 
-        File archive = new File("alpha.ear");
+        File archive = new File(INPUT_PATH_ARCHIVE_JAR);
 
         configureBehaviour(outputLocation, archive, archive);
 
-        CommandLineMigrationAnalysisExecutor executor = new CommandLineMigrationAnalysisExecutor("alpha.ear", REPORT_TYPE, null, new String[0],
-            this.analysisEngineFactory, this.renderEngineFactory, this.fileSystemFactory, this.archiveDiscoverer);
+        CommandLineMigrationAnalysisExecutor executor = new CommandLineMigrationAnalysisExecutor(INPUT_PATH_ARCHIVE_JAR, REPORT_TYPE, null,
+            new String[0], this.analysisEngineFactory, this.renderEngineFactory, this.fileSystemFactory, this.archiveDiscoverer);
         executor.execute();
 
         verifyBehaviour(outputLocation, archive, archive);
@@ -105,32 +108,41 @@ public final class CommandLineMigrationAnalysisExecutorTests {
     public void executeWithDefaultReportType() throws IOException {
         File outputLocation = new File(OUTPUT_PATH);
 
-        File archive = new File("alpha.ear");
+        File archive = new File(INPUT_PATH_ARCHIVE_JAR);
 
         configureBehaviour(outputLocation, archive, archive);
 
-        CommandLineMigrationAnalysisExecutor executor = new CommandLineMigrationAnalysisExecutor("alpha.ear", null, OUTPUT_PATH, new String[0],
-            this.analysisEngineFactory, this.renderEngineFactory, this.fileSystemFactory, this.archiveDiscoverer);
+        CommandLineMigrationAnalysisExecutor executor = new CommandLineMigrationAnalysisExecutor(INPUT_PATH_ARCHIVE_JAR, null, OUTPUT_PATH,
+            new String[0], this.analysisEngineFactory, this.renderEngineFactory, this.fileSystemFactory, this.archiveDiscoverer);
         executor.execute();
 
         verifyBehaviour(outputLocation, archive, archive);
     }
 
     @Test
-    public void handlingOfMultipleArchives() throws IOException {
+    public void executeWithMultipleArchives() throws IOException {
         File outputLocation = new File(OUTPUT_PATH);
-        File inputLocation = new File("my-apps");
+        File inputLocation = new File("src/test/resources/archives");
 
         File archive1 = new File(inputLocation, "alpha.ear");
         File archive2 = new File(new File(inputLocation, "bravo"), "charlie.war");
 
-        configureBehaviour(new File(OUTPUT_PATH), new File("my-apps"), archive1, archive2);
+        configureBehaviour(new File(OUTPUT_PATH), inputLocation, archive1, archive2);
 
-        CommandLineMigrationAnalysisExecutor executor = new CommandLineMigrationAnalysisExecutor("my-apps", REPORT_TYPE, OUTPUT_PATH, new String[0],
-            this.analysisEngineFactory, this.renderEngineFactory, this.fileSystemFactory, this.archiveDiscoverer);
+        CommandLineMigrationAnalysisExecutor executor = new CommandLineMigrationAnalysisExecutor(inputLocation.getPath(), REPORT_TYPE, OUTPUT_PATH,
+            new String[0], this.analysisEngineFactory, this.renderEngineFactory, this.fileSystemFactory, this.archiveDiscoverer);
         executor.execute();
 
         verifyBehaviour(outputLocation, inputLocation, archive1, archive2);
+    }
+
+    @Test
+    public void executeWithNonExistentInputPath() {
+        CommandLineMigrationAnalysisExecutor executor = new CommandLineMigrationAnalysisExecutor("does/not/exist", REPORT_TYPE, OUTPUT_PATH,
+            new String[0], this.analysisEngineFactory, this.renderEngineFactory, this.fileSystemFactory, this.archiveDiscoverer);
+        executor.execute();
+
+        verifyNoMoreInteractions(this.analysisEngineFactory, this.renderEngineFactory, this.fileSystemFactory, this.archiveDiscoverer);
     }
 
     private void configureBehaviour(File outputLocation, File inputLocation, File... archives) throws IOException {
@@ -139,7 +151,9 @@ public final class CommandLineMigrationAnalysisExecutorTests {
 
         for (File archive : archives) {
             when(this.fileSystemFactory.createFileSystem(archive)).thenReturn(this.fileSystem);
-            when(this.renderEngineFactory.create(REPORT_TYPE, getOutputPath(inputLocation, outputLocation, archive))).thenReturn(this.renderEngine);
+            String outputPath = getOutputPath(inputLocation, outputLocation, archive);
+            System.out.println(archive + " " + outputPath);
+            when(this.renderEngineFactory.create(REPORT_TYPE, outputPath)).thenReturn(this.renderEngine);
         }
 
         when(this.analysisEngineFactory.createAnalysisEngine(this.fileSystem, new String[0])).thenReturn(this.analysisEngine);
@@ -159,9 +173,9 @@ public final class CommandLineMigrationAnalysisExecutorTests {
 
     private String getOutputPath(File inputLocation, File outputLocation, File archive) {
         if (inputLocation.equals(archive)) {
-            return new File(outputLocation, inputLocation.getPath()).getAbsolutePath();
+            return new File(outputLocation, inputLocation.getName()).getAbsolutePath();
         } else {
-            return new File(outputLocation, archive.getPath().substring(inputLocation.getName().length())).getAbsolutePath();
+            return new File(outputLocation, archive.getPath().substring(inputLocation.getPath().length())).getAbsolutePath();
         }
     }
 }

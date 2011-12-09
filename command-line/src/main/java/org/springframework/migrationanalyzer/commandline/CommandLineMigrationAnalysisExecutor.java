@@ -20,6 +20,8 @@ import java.io.File;
 import java.io.IOException;
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.migrationanalyzer.analyze.AnalysisEngine;
 import org.springframework.migrationanalyzer.analyze.AnalysisResult;
 import org.springframework.migrationanalyzer.analyze.fs.FileSystem;
@@ -38,6 +40,8 @@ final class CommandLineMigrationAnalysisExecutor implements MigrationAnalysisExe
     private static final String DEFAULT_OUTPUT_PATH = ".";
 
     private static final String DEFAULT_OUTPUT_TYPE = "html";
+
+    private final Logger logger = LoggerFactory.getLogger(CommandLineMigrationAnalysisExecutor.class);
 
     private final AnalysisEngineFactory analysisEngineFactory;
 
@@ -77,10 +81,14 @@ final class CommandLineMigrationAnalysisExecutor implements MigrationAnalysisExe
     public void execute() {
         File inputFile = new File(this.inputPath);
 
-        List<File> discoveredArchives = this.archiveDiscoverer.discover(inputFile);
+        if (!inputFile.exists()) {
+            this.logger.error("The input path '{}' does not exist.", inputFile);
+        } else {
+            List<File> discoveredArchives = this.archiveDiscoverer.discover(inputFile);
 
-        for (File discoveredArchive : discoveredArchives) {
-            analyzeArchive(discoveredArchive, inputFile);
+            for (File discoveredArchive : discoveredArchives) {
+                analyzeArchive(discoveredArchive, inputFile);
+            }
         }
     }
 
