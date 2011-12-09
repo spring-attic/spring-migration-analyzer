@@ -42,8 +42,7 @@ final class OptionsFactory {
         .create(OPTION_KEY_INPUT_PATH));
 
         options.addOption(OptionBuilder //
-        .withDescription("The type of the output to be created") //
-        .isRequired() //
+        .withDescription("The type of the output to be created. Defaults to html.") //
         .hasArg() //
         .withArgName("outputType") //
         .create(OPTION_KEY_OUTPUT_TYPE));

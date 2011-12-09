@@ -36,6 +36,10 @@ import org.springframework.migrationanalyzer.render.support.RenderEngineFactory;
 
 public final class CommandLineMigrationAnalysisExecutorTests {
 
+    private static final String OUTPUT_PATH = "output";
+
+    private static final String REPORT_TYPE = "html";
+
     private final AnalysisEngineFactory analysisEngineFactory = mock(AnalysisEngineFactory.class);
 
     private final AnalysisEngine analysisEngine = mock(AnalysisEngine.class);
@@ -54,13 +58,28 @@ public final class CommandLineMigrationAnalysisExecutorTests {
 
     @Test
     public void execute() throws IOException {
-        File outputLocation = new File("output");
+        File outputLocation = new File(OUTPUT_PATH);
 
         File archive = new File("alpha.ear");
 
         configureBehaviour(outputLocation, archive, archive);
 
-        CommandLineMigrationAnalysisExecutor executor = new CommandLineMigrationAnalysisExecutor("alpha.ear", "type", "output", new String[0],
+        CommandLineMigrationAnalysisExecutor executor = new CommandLineMigrationAnalysisExecutor("alpha.ear", REPORT_TYPE, OUTPUT_PATH,
+            new String[0], this.analysisEngineFactory, this.renderEngineFactory, this.fileSystemFactory, this.archiveDiscoverer);
+        executor.execute();
+
+        verifyBehaviour(outputLocation, archive, archive);
+    }
+
+    @Test
+    public void executeWithDefaultExcludes() throws IOException {
+        File outputLocation = new File(OUTPUT_PATH);
+
+        File archive = new File("alpha.ear");
+
+        configureBehaviour(outputLocation, archive, archive);
+
+        CommandLineMigrationAnalysisExecutor executor = new CommandLineMigrationAnalysisExecutor("alpha.ear", REPORT_TYPE, OUTPUT_PATH, null,
             this.analysisEngineFactory, this.renderEngineFactory, this.fileSystemFactory, this.archiveDiscoverer);
         executor.execute();
 
@@ -68,29 +87,29 @@ public final class CommandLineMigrationAnalysisExecutorTests {
     }
 
     @Test
-    public void handlingOfNullExcludes() throws IOException {
-        File outputLocation = new File("output");
-
-        File archive = new File("alpha.ear");
-
-        configureBehaviour(outputLocation, archive, archive);
-
-        CommandLineMigrationAnalysisExecutor executor = new CommandLineMigrationAnalysisExecutor("alpha.ear", "type", "output", null,
-            this.analysisEngineFactory, this.renderEngineFactory, this.fileSystemFactory, this.archiveDiscoverer);
-        executor.execute();
-
-        verifyBehaviour(outputLocation, archive, archive);
-    }
-
-    @Test
-    public void handlingOfNullOutputPath() throws IOException {
+    public void executeWithDefaultOutputPath() throws IOException {
         File outputLocation = new File(".");
 
         File archive = new File("alpha.ear");
 
         configureBehaviour(outputLocation, archive, archive);
 
-        CommandLineMigrationAnalysisExecutor executor = new CommandLineMigrationAnalysisExecutor("alpha.ear", "type", null, new String[0],
+        CommandLineMigrationAnalysisExecutor executor = new CommandLineMigrationAnalysisExecutor("alpha.ear", REPORT_TYPE, null, new String[0],
+            this.analysisEngineFactory, this.renderEngineFactory, this.fileSystemFactory, this.archiveDiscoverer);
+        executor.execute();
+
+        verifyBehaviour(outputLocation, archive, archive);
+    }
+
+    @Test
+    public void executeWithDefaultReportType() throws IOException {
+        File outputLocation = new File(OUTPUT_PATH);
+
+        File archive = new File("alpha.ear");
+
+        configureBehaviour(outputLocation, archive, archive);
+
+        CommandLineMigrationAnalysisExecutor executor = new CommandLineMigrationAnalysisExecutor("alpha.ear", null, OUTPUT_PATH, new String[0],
             this.analysisEngineFactory, this.renderEngineFactory, this.fileSystemFactory, this.archiveDiscoverer);
         executor.execute();
 
@@ -99,15 +118,15 @@ public final class CommandLineMigrationAnalysisExecutorTests {
 
     @Test
     public void handlingOfMultipleArchives() throws IOException {
-        File outputLocation = new File("output");
+        File outputLocation = new File(OUTPUT_PATH);
         File inputLocation = new File("my-apps");
 
         File archive1 = new File(inputLocation, "alpha.ear");
         File archive2 = new File(new File(inputLocation, "bravo"), "charlie.war");
 
-        configureBehaviour(new File("output"), new File("my-apps"), archive1, archive2);
+        configureBehaviour(new File(OUTPUT_PATH), new File("my-apps"), archive1, archive2);
 
-        CommandLineMigrationAnalysisExecutor executor = new CommandLineMigrationAnalysisExecutor("my-apps", "type", "output", new String[0],
+        CommandLineMigrationAnalysisExecutor executor = new CommandLineMigrationAnalysisExecutor("my-apps", REPORT_TYPE, OUTPUT_PATH, new String[0],
             this.analysisEngineFactory, this.renderEngineFactory, this.fileSystemFactory, this.archiveDiscoverer);
         executor.execute();
 
@@ -120,7 +139,7 @@ public final class CommandLineMigrationAnalysisExecutorTests {
 
         for (File archive : archives) {
             when(this.fileSystemFactory.createFileSystem(archive)).thenReturn(this.fileSystem);
-            when(this.renderEngineFactory.create("type", getOutputPath(inputLocation, outputLocation, archive))).thenReturn(this.renderEngine);
+            when(this.renderEngineFactory.create(REPORT_TYPE, getOutputPath(inputLocation, outputLocation, archive))).thenReturn(this.renderEngine);
         }
 
         when(this.analysisEngineFactory.createAnalysisEngine(this.fileSystem, new String[0])).thenReturn(this.analysisEngine);
@@ -132,7 +151,7 @@ public final class CommandLineMigrationAnalysisExecutorTests {
         verify(this.analysisEngine, times(archives.length)).analyze();
 
         for (File archive : archives) {
-            verify(this.renderEngineFactory).create("type", getOutputPath(inputLocation, outputLocation, archive));
+            verify(this.renderEngineFactory).create(REPORT_TYPE, getOutputPath(inputLocation, outputLocation, archive));
         }
 
         verify(this.renderEngine, times(archives.length)).render(this.analysisResult);
