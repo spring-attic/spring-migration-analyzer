@@ -16,151 +16,133 @@
 
 package org.springframework.migrationanalyzer.commandline;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
+import java.io.File;
+import java.io.IOException;
+import java.util.Arrays;
 
 import org.junit.Test;
 import org.springframework.migrationanalyzer.analyze.AnalysisEngine;
 import org.springframework.migrationanalyzer.analyze.AnalysisResult;
-import org.springframework.migrationanalyzer.analyze.AnalysisResultEntry;
 import org.springframework.migrationanalyzer.analyze.fs.FileSystem;
-import org.springframework.migrationanalyzer.analyze.fs.FileSystemEntry;
+import org.springframework.migrationanalyzer.analyze.fs.FileSystemFactory;
 import org.springframework.migrationanalyzer.analyze.support.AnalysisEngineFactory;
 import org.springframework.migrationanalyzer.render.RenderEngine;
 import org.springframework.migrationanalyzer.render.support.RenderEngineFactory;
 
-public class CommandLineMigrationAnalysisExecutorTests {
+public final class CommandLineMigrationAnalysisExecutorTests {
+
+    private final AnalysisEngineFactory analysisEngineFactory = mock(AnalysisEngineFactory.class);
+
+    private final AnalysisEngine analysisEngine = mock(AnalysisEngine.class);
+
+    private final RenderEngineFactory renderEngineFactory = mock(RenderEngineFactory.class);
+
+    private final RenderEngine renderEngine = mock(RenderEngine.class);
+
+    private final FileSystemFactory fileSystemFactory = mock(FileSystemFactory.class);
+
+    private final FileSystem fileSystem = mock(FileSystem.class);
+
+    private final ArchiveDiscoverer archiveDiscoverer = mock(ArchiveDiscoverer.class);
+
+    private final AnalysisResult analysisResult = mock(AnalysisResult.class);
 
     @Test
-    public void execute() {
-        StubAnalysisEngineFactory analysisEngineFactory = new StubAnalysisEngineFactory();
-        StubRenderEngineFactory renderEngineFactory = new StubRenderEngineFactory();
+    public void execute() throws IOException {
+        File outputLocation = new File("output");
 
-        CommandLineMigrationAnalysisExecutor executor = new CommandLineMigrationAnalysisExecutor("input", "type", "output", new String[0],
-            analysisEngineFactory, renderEngineFactory, new StubFileSystemFactory());
+        File archive = new File("alpha.ear");
+
+        configureBehaviour(outputLocation, archive, archive);
+
+        CommandLineMigrationAnalysisExecutor executor = new CommandLineMigrationAnalysisExecutor("alpha.ear", "type", "output", new String[0],
+            this.analysisEngineFactory, this.renderEngineFactory, this.fileSystemFactory, this.archiveDiscoverer);
         executor.execute();
 
-        assertEquals(1, analysisEngineFactory.analysisEngines.size());
-        assertEquals(1, analysisEngineFactory.analysisEngines.get(0).analysisPerformed);
-
-        assertEquals(1, renderEngineFactory.renderEngines.size());
-        assertEquals(1, renderEngineFactory.renderEngines.get(0).rendersPerformed);
+        verifyBehaviour(outputLocation, archive, archive);
     }
 
     @Test
-    public void handlingOfNullExcludes() {
-        StubAnalysisEngineFactory analysisEngineFactory = new StubAnalysisEngineFactory();
-        StubRenderEngineFactory renderEngineFactory = new StubRenderEngineFactory();
+    public void handlingOfNullExcludes() throws IOException {
+        File outputLocation = new File("output");
 
-        CommandLineMigrationAnalysisExecutor executor = new CommandLineMigrationAnalysisExecutor("input", "type", "output", null,
-            analysisEngineFactory, renderEngineFactory, new StubFileSystemFactory());
+        File archive = new File("alpha.ear");
 
+        configureBehaviour(outputLocation, archive, archive);
+
+        CommandLineMigrationAnalysisExecutor executor = new CommandLineMigrationAnalysisExecutor("alpha.ear", "type", "output", null,
+            this.analysisEngineFactory, this.renderEngineFactory, this.fileSystemFactory, this.archiveDiscoverer);
         executor.execute();
 
-        String[] excludes = analysisEngineFactory.getExcludes();
-        assertNotNull(excludes);
-        assertEquals(0, excludes.length);
+        verifyBehaviour(outputLocation, archive, archive);
     }
 
     @Test
-    public void handlingOfNullOutputPath() {
-        StubAnalysisEngineFactory analysisEngineFactory = new StubAnalysisEngineFactory();
-        StubRenderEngineFactory renderEngineFactory = new StubRenderEngineFactory();
+    public void handlingOfNullOutputPath() throws IOException {
+        File outputLocation = new File(".");
 
-        CommandLineMigrationAnalysisExecutor executor = new CommandLineMigrationAnalysisExecutor("input", "type", null, new String[0],
-            analysisEngineFactory, renderEngineFactory, new StubFileSystemFactory());
+        File archive = new File("alpha.ear");
 
+        configureBehaviour(outputLocation, archive, archive);
+
+        CommandLineMigrationAnalysisExecutor executor = new CommandLineMigrationAnalysisExecutor("alpha.ear", "type", null, new String[0],
+            this.analysisEngineFactory, this.renderEngineFactory, this.fileSystemFactory, this.archiveDiscoverer);
         executor.execute();
 
-        assertEquals(".", renderEngineFactory.getOutputPath());
+        verifyBehaviour(outputLocation, archive, archive);
     }
 
-    private static final class StubAnalysisEngineFactory implements AnalysisEngineFactory {
+    @Test
+    public void handlingOfMultipleArchives() throws IOException {
+        File outputLocation = new File("output");
+        File inputLocation = new File("my-apps");
 
-        private final List<StubAnalysisEngine> analysisEngines = new ArrayList<StubAnalysisEngine>();
+        File archive1 = new File(inputLocation, "alpha.ear");
+        File archive2 = new File(new File(inputLocation, "bravo"), "charlie.war");
 
-        private volatile String[] excludes;
+        configureBehaviour(new File("output"), new File("my-apps"), archive1, archive2);
 
-        @Override
-        public AnalysisEngine createAnalysisEngine(FileSystem fileSystem, String[] excludes) {
-            this.excludes = excludes;
+        CommandLineMigrationAnalysisExecutor executor = new CommandLineMigrationAnalysisExecutor("my-apps", "type", "output", new String[0],
+            this.analysisEngineFactory, this.renderEngineFactory, this.fileSystemFactory, this.archiveDiscoverer);
+        executor.execute();
 
-            StubAnalysisEngine analysisEngine = new StubAnalysisEngine();
-            this.analysisEngines.add(analysisEngine);
-            return analysisEngine;
-        }
-
-        String[] getExcludes() {
-            return this.excludes;
-        }
+        verifyBehaviour(outputLocation, inputLocation, archive1, archive2);
     }
 
-    private static final class StubAnalysisEngine implements AnalysisEngine {
+    private void configureBehaviour(File outputLocation, File inputLocation, File... archives) throws IOException {
 
-        private int analysisPerformed = 0;
+        when(this.archiveDiscoverer.discover(inputLocation)).thenReturn(Arrays.asList(archives));
 
-        @Override
-        public AnalysisResult analyze() {
-            this.analysisPerformed++;
-            return new StubAnalysisResult();
+        for (File archive : archives) {
+            when(this.fileSystemFactory.createFileSystem(archive)).thenReturn(this.fileSystem);
+            when(this.renderEngineFactory.create("type", getOutputPath(inputLocation, outputLocation, archive))).thenReturn(this.renderEngine);
         }
+
+        when(this.analysisEngineFactory.createAnalysisEngine(this.fileSystem, new String[0])).thenReturn(this.analysisEngine);
+        when(this.analysisEngine.analyze()).thenReturn(this.analysisResult);
     }
 
-    private static final class StubAnalysisResult implements AnalysisResult {
+    private void verifyBehaviour(File outputLocation, File inputLocation, File... archives) {
+        verify(this.analysisEngineFactory, times(archives.length)).createAnalysisEngine(this.fileSystem, new String[0]);
+        verify(this.analysisEngine, times(archives.length)).analyze();
 
-        @Override
-        public <T> Set<AnalysisResultEntry<T>> getResultEntries(Class<T> type) {
-            return null;
+        for (File archive : archives) {
+            verify(this.renderEngineFactory).create("type", getOutputPath(inputLocation, outputLocation, archive));
         }
 
-        @Override
-        public Set<FileSystemEntry> getFileSystemEntries() {
-            return null;
-        }
-
-        @Override
-        public AnalysisResult getResultForEntry(FileSystemEntry fileSystemEntry) {
-            return null;
-        }
-
-        @Override
-        public Set<Class<?>> getResultTypes() {
-            return null;
-        }
+        verify(this.renderEngine, times(archives.length)).render(this.analysisResult);
     }
 
-    private static final class StubRenderEngineFactory implements RenderEngineFactory {
-
-        private final List<StubRenderEngine> renderEngines = new ArrayList<StubRenderEngine>();
-
-        private volatile String outputPath;
-
-        @Override
-        public RenderEngine create(String outputType, String outputPath) {
-            this.outputPath = outputPath;
-
-            StubRenderEngine renderEngine = new StubRenderEngine();
-            this.renderEngines.add(renderEngine);
-            return renderEngine;
-        }
-
-        String getOutputPath() {
-            return this.outputPath;
-        }
-
-    }
-
-    private static final class StubRenderEngine implements RenderEngine {
-
-        private int rendersPerformed = 0;
-
-        @Override
-        public void render(AnalysisResult analysis) {
-            this.rendersPerformed++;
+    private String getOutputPath(File inputLocation, File outputLocation, File archive) {
+        if (inputLocation.equals(archive)) {
+            return new File(outputLocation, inputLocation.getPath()).getAbsolutePath();
+        } else {
+            return new File(outputLocation, archive.getPath().substring(inputLocation.getName().length())).getAbsolutePath();
         }
     }
 }

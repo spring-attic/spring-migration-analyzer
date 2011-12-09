@@ -18,6 +18,7 @@ package org.springframework.migrationanalyzer.commandline;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.List;
 
 import org.springframework.migrationanalyzer.analyze.AnalysisEngine;
 import org.springframework.migrationanalyzer.analyze.AnalysisResult;
@@ -38,6 +39,8 @@ final class CommandLineMigrationAnalysisExecutor implements MigrationAnalysisExe
 
     private final FileSystemFactory fileSystemFactory;
 
+    private final ArchiveDiscoverer archiveDiscoverer;
+
     private final String inputPath;
 
     private final String outputPath;
@@ -50,41 +53,60 @@ final class CommandLineMigrationAnalysisExecutor implements MigrationAnalysisExe
 
     private static final String DEFAULT_OUTPUT_PATH = ".";
 
-    CommandLineMigrationAnalysisExecutor(String inputPath, String outputType, String outputPath, String[] excludes) {
-        this(inputPath, outputType, outputPath, excludes, new StandardAnalysisEngineFactory(), new StandardRenderEngineFactory(),
-            new DirectoryFileSystemFactory());
+    CommandLineMigrationAnalysisExecutor(String inputPath, String outputType, String outputDirectory, String[] excludes) {
+        this(inputPath, outputType, outputDirectory, excludes, new StandardAnalysisEngineFactory(), new StandardRenderEngineFactory(),
+            new DirectoryFileSystemFactory(), new ZipArchiveDiscoverer());
     }
 
-    CommandLineMigrationAnalysisExecutor(String inputPath, String outputType, String outputPath, String[] excludes,
-        AnalysisEngineFactory analysisEngineFactory, RenderEngineFactory renderEngineFactory, FileSystemFactory fileSystemFactory) {
+    CommandLineMigrationAnalysisExecutor(String inputPath, String outputType, String outputDirectory, String[] excludes,
+        AnalysisEngineFactory analysisEngineFactory, RenderEngineFactory renderEngineFactory, FileSystemFactory fileSystemFactory,
+        ArchiveDiscoverer archiveDiscoverer) {
         this.analysisEngineFactory = analysisEngineFactory;
         this.renderEngineFactory = renderEngineFactory;
         this.fileSystemFactory = fileSystemFactory;
+        this.archiveDiscoverer = archiveDiscoverer;
         this.inputPath = inputPath;
         this.outputType = outputType;
-        this.outputPath = outputPath == null ? DEFAULT_OUTPUT_PATH : outputPath;
+        this.outputPath = outputDirectory == null ? DEFAULT_OUTPUT_PATH : outputDirectory;
         this.excludes = excludes == null ? DEFAULT_EXCLUDES : excludes;
     }
 
     @Override
     public void execute() {
-        FileSystem fileSystem = createFileSystem();
+        File inputFile = new File(this.inputPath);
+
+        List<File> discoveredArchives = this.archiveDiscoverer.discover(inputFile);
+
+        for (File discoveredArchive : discoveredArchives) {
+            analyzeArchive(discoveredArchive, inputFile);
+        }
+    }
+
+    private void analyzeArchive(File archive, File inputFile) {
+        FileSystem fileSystem = createFileSystem(archive);
         AnalysisEngine analysisEngine = this.analysisEngineFactory.createAnalysisEngine(fileSystem, this.excludes);
-        RenderEngine renderEngine = this.renderEngineFactory.create(this.outputType, this.outputPath);
+        RenderEngine renderEngine = this.renderEngineFactory.create(this.outputType, getOutputPath(inputFile, archive));
 
         AnalysisResult analysis = analysisEngine.analyze();
         renderEngine.render(analysis);
         fileSystem.cleanup();
     }
 
-    private FileSystem createFileSystem() {
+    private String getOutputPath(File inputFile, File archive) {
+        if (inputFile.equals(archive)) {
+            return new File(this.outputPath, archive.getName()).getAbsolutePath();
+        } else {
+            return new File(this.outputPath, inputFile.toURI().relativize(archive.toURI()).getPath()).getAbsolutePath();
+        }
+    }
+
+    private FileSystem createFileSystem(File archive) {
         FileSystem fileSystem;
 
-        File inputFile = new File(this.inputPath);
         try {
-            fileSystem = this.fileSystemFactory.createFileSystem(inputFile);
+            fileSystem = this.fileSystemFactory.createFileSystem(archive);
         } catch (IOException e) {
-            throw new IllegalArgumentException(String.format("Failed to create FileSystem for input '" + inputFile.getAbsolutePath() + "'"), e);
+            throw new IllegalArgumentException(String.format("Failed to create FileSystem for archive '%s'", archive), e);
         }
         return fileSystem;
     }

@@ -34,7 +34,8 @@ final class OptionsFactory {
         Options options = new Options();
 
         options.addOption(OptionBuilder //
-        .withDescription("The path to the input location") //
+        .withDescription(
+            "The path of the input location; either a single archive or a directory. In the case of a directory, the entire directory structure is examined and all archives that are found are analyzed") //
         .isRequired() //
         .hasArg() //
         .withArgName("inputPath") //
@@ -48,7 +49,7 @@ final class OptionsFactory {
         .create(OPTION_KEY_OUTPUT_TYPE));
 
         options.addOption(OptionBuilder //
-        .withDescription("The path to the output location. Defaults to the current working directory") //
+        .withDescription("The path of the output directory. Defaults to the current working directory") //
         .hasArg() //
         .withArgName("outputPath") //
         .create(OPTION_KEY_OUTPUT_PATH));
