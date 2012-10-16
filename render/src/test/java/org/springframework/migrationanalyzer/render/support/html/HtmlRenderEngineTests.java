@@ -60,7 +60,7 @@ public class HtmlRenderEngineTests {
         assertEquals(1, this.summaryRenderer.renderCount);
 
         List<String> writersCreated = this.writerFactory.writersCreated;
-        assertEquals(11, writersCreated.size());
+        assertEquals(8, writersCreated.size());
     }
 
     private static final class StubHtmlIndexRenderer implements HtmlIndexRenderer {
