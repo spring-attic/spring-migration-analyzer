@@ -21,11 +21,15 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.Writer;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.migrationanalyzer.util.IoUtils;
 
 final class FileWriterFactory implements WriterFactory {
 
     private final String rootPath;
+
+    private final Logger logger = LoggerFactory.getLogger(FileWriterFactory.class);
 
     FileWriterFactory(String rootPath) {
         this.rootPath = rootPath;
@@ -36,9 +40,13 @@ final class FileWriterFactory implements WriterFactory {
         File file = new File(this.rootPath, path);
         try {
             IoUtils.createDirectoryIfNecessary(file.getParentFile());
+        } catch (IOException ioe) {
+            this.logger.error(String.format("Failed to create directory '%s'. Please check the output path and try again.", file.getParentFile()));
+        }
+        try {
             return new FileWriter(file);
-        } catch (IOException e) {
-            throw new WriterCreationFailedException("Failed to create writer for '" + path + "'", e);
+        } catch (IOException ioe) {
+            throw new WriterCreationFailedException("Failed to create writer", ioe);
         }
     }
 }
