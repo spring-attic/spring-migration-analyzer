@@ -70,9 +70,6 @@ final class HtmlRenderEngine implements RenderEngine {
 
     private void copyStaticResources() {
         copyResource("css/style.css");
-        copyResource("img/Carrot_Close.png");
-        copyResource("img/Carrot_Open.png");
-        copyResource("img/Carrots.png");
         copyResource("img/ModHdr_BG.png");
         copyResource("img/hdr-background.png");
         copyResource("img/hdr-glow.png");
