@@ -24,7 +24,7 @@ Having built or downloaded the Migration Anaylzer, perform the following for usa
 
 # Example usage
 
-	./migration-analysis.sh -i ~/dev/resources/migration-apps/my-app.ear
+	./migration-analysis.sh ~/dev/resources/migration-apps/my-app.ear
 
 This will analyze `my-app.ear`, producing a report in the current working directory. The report's directory will be named `my-app.ear`.
 
