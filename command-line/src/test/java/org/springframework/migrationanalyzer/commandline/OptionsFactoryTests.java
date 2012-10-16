@@ -18,28 +18,20 @@ package org.springframework.migrationanalyzer.commandline;
 
 import static org.junit.Assert.assertEquals;
 
-import java.util.List;
-
-import org.apache.commons.cli.Option;
 import org.apache.commons.cli.Options;
 import org.junit.Test;
 
 public final class OptionsFactoryTests {
 
-    private final OptionsFactory factory = new OptionsFactory();
+    private final Options options = new OptionsFactory().create();
 
     @Test
     public void numberOfOptions() {
-        Options options = this.factory.create();
-        assertEquals(4, options.getOptions().size());
+        assertEquals(3, this.options.getOptions().size());
     }
 
-    @SuppressWarnings("unchecked")
     @Test
     public void numberOfRequiredOptions() {
-        Options options = this.factory.create();
-
-        List<Option> requiredOptions = options.getRequiredOptions();
-        assertEquals(1, requiredOptions.size());
+        assertEquals(0, this.options.getRequiredOptions().size());
     }
 }

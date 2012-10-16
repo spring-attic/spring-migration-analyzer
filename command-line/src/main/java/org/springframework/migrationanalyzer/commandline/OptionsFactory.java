@@ -34,14 +34,6 @@ final class OptionsFactory {
         Options options = new Options();
 
         options.addOption(OptionBuilder //
-        .withDescription(
-            "The path of the input location; either a single archive or a directory. In the case of a directory, the entire directory structure is examined and all archives that are found are analyzed") //
-        .isRequired() //
-        .hasArg() //
-        .withArgName("inputPath") //
-        .create(OPTION_KEY_INPUT_PATH));
-
-        options.addOption(OptionBuilder //
         .withDescription("The type of the output to be created. Defaults to html.") //
         .hasArg() //
         .withArgName("outputType") //

@@ -27,7 +27,7 @@ public class AbstraktMigrationAnalysisTests {
 
     @Test
     public void execute() {
-        this.migrationAnalysis.run(new String[] { "-i", "test input path", "-t", "test output type" });
+        this.migrationAnalysis.run(new String[] { "test input path", "-t", "test output type" });
         assertTrue(this.migrationAnalysis.getStubExecutor().getCalled());
     }
 
