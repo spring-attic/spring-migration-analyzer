@@ -51,7 +51,7 @@ final class StandardAnalysisEngine implements AnalysisEngine {
 
     @Override
     public AnalysisResult analyze() {
-        this.logger.info("Starting analysis of {}", this.fileSystem.toString());
+        this.logger.info("Starting analysis");
 
         MutableAnalysisResult analysisResult = this.analysisResultFactory.create();
 

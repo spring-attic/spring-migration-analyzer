@@ -86,8 +86,9 @@ final class CommandLineMigrationAnalysisExecutor implements MigrationAnalysisExe
         } else {
             List<File> discoveredArchives = this.archiveDiscoverer.discover(inputFile);
 
-            for (File discoveredArchive : discoveredArchives) {
-                analyzeArchive(discoveredArchive, inputFile);
+            for (int i = 0; i < discoveredArchives.size(); i++) {
+                this.logger.info("Processing archive {} of {}", i + 1, discoveredArchives.size());
+                analyzeArchive(discoveredArchives.get(i), inputFile);
             }
         }
     }
