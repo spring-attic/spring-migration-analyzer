@@ -65,7 +65,7 @@ abstract class AbstractMigrationAnalysis {
         }
     }
 
-    private final void displayUsage() {
+    private void displayUsage() {
         PrintWriter writer = new PrintWriter(System.out);
 
         HelpFormatter helpFormatter = new HelpFormatter();
