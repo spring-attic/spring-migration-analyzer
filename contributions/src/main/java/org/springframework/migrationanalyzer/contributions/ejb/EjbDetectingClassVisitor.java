@@ -37,11 +37,11 @@ final class EjbDetectingClassVisitor extends EmptyVisitor implements ResultGathe
 
     private static final String CLASS_NAME_TRANSACTION_ATTRIBUTE = "javax.ejb.TransactionAttribute";
 
-    private Ejb currentEjb = null;
+    private final Set<TransactionPropagationType> currentPropagationTypes = new HashSet<TransactionPropagationType>();
+
+    private Ejb currentEjb;
 
     private String currentTransactionManagementType;
-
-    private final Set<TransactionPropagationType> currentPropagationTypes = new HashSet<TransactionPropagationType>();
 
     private String className;
 

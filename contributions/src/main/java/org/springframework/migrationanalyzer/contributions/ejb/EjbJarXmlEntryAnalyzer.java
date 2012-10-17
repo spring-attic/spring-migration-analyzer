@@ -225,7 +225,7 @@ final class EjbJarXmlEntryAnalyzer implements EntryAnalyzer<Ejb> {
             Class<?> parameterType = parameterTypes[0];
 
             try {
-                if (parameterType.equals(boolean.class)) {
+                if (boolean.class.equals(parameterType)) {
                     this.method.invoke(this.target, Boolean.valueOf(value.toLowerCase(Locale.ENGLISH)));
                 } else {
                     this.method.invoke(this.target, value);

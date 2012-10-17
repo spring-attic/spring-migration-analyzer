@@ -18,9 +18,9 @@ package org.springframework.migrationanalyzer.contributions.ejb;
 
 abstract class Ejb implements Comparable<Ejb> {
 
-    private volatile String ejbName = null;
+    private volatile String ejbName;
 
-    private volatile String ejbClass = null;
+    private volatile String ejbClass;
 
     /**
      * Gets the EJB name

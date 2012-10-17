@@ -136,7 +136,7 @@ abstract class AbstractModelCreatingEntityBeanController extends AbstractEntityB
 
     private void addCmpFields(EntityBean entityBean, Map<String, String> metadata) {
         Set<String> cmpFields = entityBean.getCmpFields();
-        if (cmpFields.size() > 0) {
+        if (!cmpFields.isEmpty()) {
             StringBuilder sb = new StringBuilder();
             for (String cmpField : cmpFields) {
                 sb.append(" ").append(cmpField);
