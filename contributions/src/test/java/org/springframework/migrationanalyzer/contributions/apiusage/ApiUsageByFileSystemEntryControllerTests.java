@@ -28,7 +28,6 @@ import java.util.Set;
 
 import org.junit.Test;
 import org.springframework.migrationanalyzer.analyze.AnalysisResultEntry;
-import org.springframework.migrationanalyzer.contributions.StubOutputPathGenerator;
 import org.springframework.migrationanalyzer.render.MigrationCost;
 import org.springframework.migrationanalyzer.render.ModelAndView;
 
@@ -69,7 +68,7 @@ public class ApiUsageByFileSystemEntryControllerTests {
             MigrationCost.MEDIUM)));
 
         ApiUsageByFileSystemEntryController controller = new ApiUsageByFileSystemEntryController();
-        ModelAndView modelAndView = controller.handle(resultEntries, new StubOutputPathGenerator());
+        ModelAndView modelAndView = controller.handle(resultEntries);
 
         Map<String, Object> model = modelAndView.getModel();
         Map<String, Map<String, List<String>>> apiUsage = (Map<String, Map<String, List<String>>>) model.get("apiUsage");

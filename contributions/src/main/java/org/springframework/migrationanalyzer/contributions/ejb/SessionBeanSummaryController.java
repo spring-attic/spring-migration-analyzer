@@ -28,7 +28,6 @@ import org.springframework.migrationanalyzer.analyze.AnalysisResultEntry;
 import org.springframework.migrationanalyzer.contributions.transactions.TransactionPropagationType;
 import org.springframework.migrationanalyzer.render.MigrationCost;
 import org.springframework.migrationanalyzer.render.ModelAndView;
-import org.springframework.migrationanalyzer.render.OutputPathGenerator;
 import org.springframework.migrationanalyzer.render.SummaryController;
 
 final class SessionBeanSummaryController extends AbstractSessionBeanController implements SummaryController<SessionBean> {
@@ -42,7 +41,7 @@ final class SessionBeanSummaryController extends AbstractSessionBeanController i
     private static final String VIEW_NAME_GUIDANCE_DECLARATIVE_TRANSACTIONS = "declarative-transactions-session-bean-guidance";
 
     @Override
-    public ModelAndView handle(Set<AnalysisResultEntry<SessionBean>> results, OutputPathGenerator outputPathGenerator) {
+    public ModelAndView handle(Set<AnalysisResultEntry<SessionBean>> results) {
         Map<String, Object> model = new HashMap<String, Object>();
 
         int stateful = 0;
@@ -58,7 +57,6 @@ final class SessionBeanSummaryController extends AbstractSessionBeanController i
 
         model.put("statelessValue", getStatelessValue(stateless));
         model.put("statefulValue", getStatefulValue(stateful));
-        model.put("link", outputPathGenerator.generatePathFor(SessionBean.class));
 
         return new ModelAndView(model, VIEW_NAME_SUMMARY);
     }

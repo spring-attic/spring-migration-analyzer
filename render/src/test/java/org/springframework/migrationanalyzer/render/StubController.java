@@ -18,6 +18,7 @@ package org.springframework.migrationanalyzer.render;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Set;
 
@@ -49,13 +50,13 @@ public final class StubController implements ByResultTypeController<Object>, ByF
     }
 
     @Override
-    public ModelAndView handle(Set<AnalysisResultEntry<Object>> results, OutputPathGenerator outputPathGenerator) {
+    public ModelAndView handle(Set<AnalysisResultEntry<Object>> results) {
         this.resultsHandled.add(results);
-        return new ModelAndView(null, this.viewName);
+        return new ModelAndView(new HashMap<String, Object>(), this.viewName);
     }
 
     @Override
     public List<ModelAndView> handle(Set<AnalysisResultEntry<Object>> results, MigrationCost migrationCost) {
-        return Arrays.asList(new ModelAndView(null, this.viewName));
+        return Arrays.asList(new ModelAndView(new HashMap<String, Object>(), this.viewName));
     }
 }

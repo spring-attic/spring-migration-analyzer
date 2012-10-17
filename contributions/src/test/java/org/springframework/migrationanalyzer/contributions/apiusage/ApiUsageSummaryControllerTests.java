@@ -27,7 +27,6 @@ import java.util.Set;
 
 import org.junit.Test;
 import org.springframework.migrationanalyzer.analyze.AnalysisResultEntry;
-import org.springframework.migrationanalyzer.contributions.StubOutputPathGenerator;
 import org.springframework.migrationanalyzer.render.MigrationCost;
 import org.springframework.migrationanalyzer.render.ModelAndView;
 
@@ -41,7 +40,7 @@ public class ApiUsageSummaryControllerTests {
         Set<AnalysisResultEntry<ApiUsage>> results = new HashSet<AnalysisResultEntry<ApiUsage>>();
         results.add(new AnalysisResultEntry<ApiUsage>(null, new ApiUsage(null, "test", "test", "desc", "view", MigrationCost.MEDIUM)));
 
-        ModelAndView modelAndView = this.controller.handle(results, new StubOutputPathGenerator());
+        ModelAndView modelAndView = this.controller.handle(results);
         assertEquals("api-summary", modelAndView.getViewName());
         Set<String> entries = (Set<String>) modelAndView.getModel().get("entries");
         assertNotNull(entries);
@@ -56,7 +55,7 @@ public class ApiUsageSummaryControllerTests {
         results.add(new AnalysisResultEntry<ApiUsage>(null, new ApiUsage(null, "test", "test", "desc", "view", MigrationCost.MEDIUM)));
         results.add(new AnalysisResultEntry<ApiUsage>(null, new ApiUsage(null, "test", "test2", "desc", "view", MigrationCost.MEDIUM)));
 
-        ModelAndView modelAndView = this.controller.handle(results, new StubOutputPathGenerator());
+        ModelAndView modelAndView = this.controller.handle(results);
         assertEquals("api-summary", modelAndView.getViewName());
         Set<String> entries = (Set<String>) modelAndView.getModel().get("entries");
         assertNotNull(entries);

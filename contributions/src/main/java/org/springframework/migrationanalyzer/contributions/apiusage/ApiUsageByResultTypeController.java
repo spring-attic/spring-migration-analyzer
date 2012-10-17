@@ -24,7 +24,6 @@ import java.util.TreeMap;
 
 import org.springframework.migrationanalyzer.analyze.AnalysisResultEntry;
 import org.springframework.migrationanalyzer.render.ByResultTypeController;
-import org.springframework.migrationanalyzer.render.OutputPathGenerator;
 
 final class ApiUsageByResultTypeController extends AbstractApiUsageController implements ByResultTypeController<ApiUsage> {
 
@@ -35,7 +34,7 @@ final class ApiUsageByResultTypeController extends AbstractApiUsageController im
     }
 
     @Override
-    protected Map<String, Object> createModel(Set<AnalysisResultEntry<ApiUsage>> results, OutputPathGenerator outputPathGenerator) {
+    protected Map<String, Object> createModel(Set<AnalysisResultEntry<ApiUsage>> results) {
         Map<String, Set<String>> apiUsage = recordUsages(results);
 
         Map<String, Set<String>> titledApiUsage = new TreeMap<String, Set<String>>();

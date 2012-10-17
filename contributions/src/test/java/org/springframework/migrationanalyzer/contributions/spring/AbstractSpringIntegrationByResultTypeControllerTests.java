@@ -27,10 +27,8 @@ import java.util.Set;
 
 import org.junit.Test;
 import org.springframework.migrationanalyzer.analyze.AnalysisResultEntry;
-import org.springframework.migrationanalyzer.analyze.fs.FileSystemEntry;
 import org.springframework.migrationanalyzer.render.ByResultTypeController;
 import org.springframework.migrationanalyzer.render.ModelAndView;
-import org.springframework.migrationanalyzer.render.OutputPathGenerator;
 
 @SuppressWarnings("rawtypes")
 public abstract class AbstractSpringIntegrationByResultTypeControllerTests {
@@ -64,7 +62,7 @@ public abstract class AbstractSpringIntegrationByResultTypeControllerTests {
         results.add(getAnalysisResultEntry("alpha/bravo/test-context.xml"));
         results.add(getAnalysisResultEntry("charlie/delta/test-context.xml"));
 
-        ModelAndView modelAndView = this.controller.handle(results, new StubOutputPathGenerator());
+        ModelAndView modelAndView = this.controller.handle(results);
 
         assertEquals("spring-integration-by-result-type", modelAndView.getViewName());
 
@@ -76,44 +74,5 @@ public abstract class AbstractSpringIntegrationByResultTypeControllerTests {
         Map<String, String> users = (Map<String, String>) model.get("users");
         assertNotNull(users);
         assertEquals(2, users.size());
-    }
-
-    private static final class StubOutputPathGenerator implements OutputPathGenerator {
-
-        @Override
-        public String generatePathFor(Class<?> resultType) {
-            return null;
-        }
-
-        @Override
-        public String generatePathFor(FileSystemEntry fileSystemEntry) {
-            return fileSystemEntry.getName();
-        }
-
-        @Override
-        public String generatePathFor(String fileName) {
-            return null;
-        }
-
-        @Override
-        public String generatePathForFileSystemEntryContents() {
-            return null;
-        }
-
-        @Override
-        public String generatePathForIndex() {
-            return null;
-        }
-
-        @Override
-        public String generatePathForResultTypeContents() {
-            return null;
-        }
-
-        @Override
-        public String generatePathForSummary() {
-            return null;
-        }
-
     }
 }

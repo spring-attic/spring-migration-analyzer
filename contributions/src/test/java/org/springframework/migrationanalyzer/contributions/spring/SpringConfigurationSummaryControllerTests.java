@@ -28,7 +28,6 @@ import java.util.Set;
 import org.junit.Test;
 import org.springframework.migrationanalyzer.analyze.AnalysisResultEntry;
 import org.springframework.migrationanalyzer.contributions.StubFileSystemEntry;
-import org.springframework.migrationanalyzer.contributions.StubOutputPathGenerator;
 import org.springframework.migrationanalyzer.render.ModelAndView;
 
 public class SpringConfigurationSummaryControllerTests {
@@ -43,8 +42,7 @@ public class SpringConfigurationSummaryControllerTests {
 
     @Test
     public void viewNameIsSet() {
-        ModelAndView modelAndView = this.controller.handle(Collections.<AnalysisResultEntry<SpringConfiguration>> emptySet(),
-            new StubOutputPathGenerator());
+        ModelAndView modelAndView = this.controller.handle(Collections.<AnalysisResultEntry<SpringConfiguration>> emptySet());
         assertEquals("spring-configuration-summary", modelAndView.getViewName());
     }
 
@@ -56,11 +54,10 @@ public class SpringConfigurationSummaryControllerTests {
         resultEntries.add(new AnalysisResultEntry<SpringConfiguration>(new StubFileSystemEntry("bar"), new SpringConfiguration(null, null)));
         resultEntries.add(new AnalysisResultEntry<SpringConfiguration>(new StubFileSystemEntry("baz"), new SpringConfiguration(null, null)));
 
-        ModelAndView modelAndView = this.controller.handle(resultEntries, new StubOutputPathGenerator());
+        ModelAndView modelAndView = this.controller.handle(resultEntries);
         Map<String, Object> model = modelAndView.getModel();
-        assertEquals(2, model.size());
+        assertEquals(1, model.size());
         assertEquals(3, model.get("springConfigurationCount"));
-        assertEquals("testPath", model.get("link"));
     }
 
 }

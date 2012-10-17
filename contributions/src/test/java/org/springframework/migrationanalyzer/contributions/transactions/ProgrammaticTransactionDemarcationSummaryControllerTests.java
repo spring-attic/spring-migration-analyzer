@@ -27,7 +27,6 @@ import java.util.Map;
 
 import org.junit.Test;
 import org.springframework.migrationanalyzer.analyze.AnalysisResultEntry;
-import org.springframework.migrationanalyzer.contributions.StubOutputPathGenerator;
 import org.springframework.migrationanalyzer.render.MigrationCost;
 import org.springframework.migrationanalyzer.render.ModelAndView;
 import org.springframework.migrationanalyzer.render.SummaryController;
@@ -49,15 +48,14 @@ public class ProgrammaticTransactionDemarcationSummaryControllerTests {
         results.add(new AnalysisResultEntry<ProgrammaticTransactionDemarcation>(null, new ProgrammaticTransactionDemarcation("user", "JTA", null,
             "description")));
 
-        ModelAndView modelAndView = this.controller.handle(results, new StubOutputPathGenerator());
+        ModelAndView modelAndView = this.controller.handle(results);
         assertNotNull(modelAndView);
         assertEquals("programmatic-transaction-demarcation-summary", modelAndView.getViewName());
 
         Map<String, Object> model = modelAndView.getModel();
 
         assertNotNull(model);
-        assertEquals(2, model.size());
-        assertNotNull(model.get("link"));
+        assertEquals(1, model.size());
         Map<String, String> summaries = (Map<String, String>) model.get("summaries");
         assertEquals("JTA: 1 type uses programmatic demarcation", summaries.get("JTA"));
     }
@@ -73,15 +71,14 @@ public class ProgrammaticTransactionDemarcationSummaryControllerTests {
         results.add(new AnalysisResultEntry<ProgrammaticTransactionDemarcation>(null, new ProgrammaticTransactionDemarcation("user", "JTA", null,
             "description")));
 
-        ModelAndView modelAndView = this.controller.handle(results, new StubOutputPathGenerator());
+        ModelAndView modelAndView = this.controller.handle(results);
         assertNotNull(modelAndView);
         assertEquals("programmatic-transaction-demarcation-summary", modelAndView.getViewName());
 
         Map<String, Object> model = modelAndView.getModel();
 
         assertNotNull(model);
-        assertEquals(2, model.size());
-        assertNotNull(model.get("link"));
+        assertEquals(1, model.size());
         Map<String, String> summaries = (Map<String, String>) model.get("summaries");
         assertEquals("DataSource: 2 types use programmatic demarcation", summaries.get("DataSource"));
         assertEquals("JTA: 1 type uses programmatic demarcation", summaries.get("JTA"));

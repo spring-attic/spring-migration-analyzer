@@ -5,7 +5,7 @@
 	<div class="item-body content" id="spring_${name}_integration_body">
 		<ul>
 			<#list userLocations as userLocation>
-				<li><a href="${userLocation}">${users[userLocation]}</a></li>
+				<li><a href="${outputPathGenerator.generatePathFor(userLocation)}">${users[userLocation]}</a></li>
 			</#list>
 		</ul>
 	</div>

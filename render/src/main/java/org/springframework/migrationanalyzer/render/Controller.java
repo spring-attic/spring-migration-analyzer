@@ -43,8 +43,7 @@ public interface Controller<T> {
      * Handle a collection of results
      * 
      * @param results The results to use
-     * @param outputPathGenerator A generator that determines the proper output path location for other rendered results
      * @return The model to render
      */
-    ModelAndView handle(Set<AnalysisResultEntry<T>> results, OutputPathGenerator outputPathGenerator);
+    ModelAndView handle(Set<AnalysisResultEntry<T>> results);
 }

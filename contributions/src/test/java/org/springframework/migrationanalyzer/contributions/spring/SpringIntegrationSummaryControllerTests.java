@@ -30,7 +30,6 @@ import org.junit.Test;
 import org.springframework.migrationanalyzer.analyze.AnalysisResultEntry;
 import org.springframework.migrationanalyzer.analyze.fs.FileSystemEntry;
 import org.springframework.migrationanalyzer.contributions.StubFileSystemEntry;
-import org.springframework.migrationanalyzer.contributions.StubOutputPathGenerator;
 import org.springframework.migrationanalyzer.render.MigrationCost;
 import org.springframework.migrationanalyzer.render.ModelAndView;
 import org.springframework.migrationanalyzer.render.SummaryController;
@@ -78,7 +77,7 @@ public class SpringIntegrationSummaryControllerTests {
         fileSystemEntry = new StubFileSystemEntry("location3");
         results.add(new AnalysisResultEntry<AbstractSpringIntegration>(fileSystemEntry, new SpringBravoIntegration("user3", fileSystemEntry)));
 
-        ModelAndView modelAndView = this.controller.handle(results, new StubOutputPathGenerator());
+        ModelAndView modelAndView = this.controller.handle(results);
         assertNotNull(modelAndView);
 
         assertEquals("spring-integration-summary", modelAndView.getViewName());
@@ -93,9 +92,9 @@ public class SpringIntegrationSummaryControllerTests {
         assertEquals("Alpha integration: 2 uses", usages.get("Alpha"));
         assertEquals("Bravo integration: 1 use", usages.get("Bravo"));
 
-        Map<String, String> links = (Map<String, String>) model.get("links");
-        assertNotNull(links);
-        assertEquals(2, links.size());
+        Map<String, Class<?>> resultClassesByName = (Map<String, Class<?>>) model.get("resultClassesByName");
+        assertNotNull(resultClassesByName);
+        assertEquals(2, resultClassesByName.size());
 
     }
 

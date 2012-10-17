@@ -26,7 +26,6 @@ import java.util.concurrent.atomic.AtomicInteger;
 import org.springframework.migrationanalyzer.analyze.AnalysisResultEntry;
 import org.springframework.migrationanalyzer.render.MigrationCost;
 import org.springframework.migrationanalyzer.render.ModelAndView;
-import org.springframework.migrationanalyzer.render.OutputPathGenerator;
 import org.springframework.migrationanalyzer.render.SummaryController;
 
 final class DeploymentDescriptorSummaryController implements SummaryController<DeploymentDescriptor> {
@@ -37,7 +36,7 @@ final class DeploymentDescriptorSummaryController implements SummaryController<D
     }
 
     @Override
-    public ModelAndView handle(Set<AnalysisResultEntry<DeploymentDescriptor>> results, OutputPathGenerator outputPathGenerator) {
+    public ModelAndView handle(Set<AnalysisResultEntry<DeploymentDescriptor>> results) {
 
         Map<String, AtomicInteger> deploymentDescriptorCounts = new TreeMap<String, AtomicInteger>();
 
@@ -55,7 +54,6 @@ final class DeploymentDescriptorSummaryController implements SummaryController<D
 
         Map<String, Object> model = new HashMap<String, Object>();
         model.put("deploymentDescriptorCounts", deploymentDescriptorCounts);
-        model.put("link", outputPathGenerator.generatePathFor(DeploymentDescriptor.class));
 
         return new ModelAndView(model, "deployment-descriptor-summary");
     }

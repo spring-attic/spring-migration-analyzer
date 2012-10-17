@@ -25,7 +25,6 @@ import org.springframework.migrationanalyzer.analyze.AnalysisResultEntry;
 import org.springframework.migrationanalyzer.contributions.transactions.TransactionPropagationType;
 import org.springframework.migrationanalyzer.contributions.util.StringUtils;
 import org.springframework.migrationanalyzer.render.ModelAndView;
-import org.springframework.migrationanalyzer.render.OutputPathGenerator;
 
 abstract class AbstractModelCreatingMessageDrivenBeanController extends AbstractMessageDrivenBeanController {
 
@@ -36,11 +35,11 @@ abstract class AbstractModelCreatingMessageDrivenBeanController extends Abstract
     }
 
     @Override
-    public ModelAndView handle(Set<AnalysisResultEntry<MessageDrivenBean>> results, OutputPathGenerator outputPathGenerator) {
+    public ModelAndView handle(Set<AnalysisResultEntry<MessageDrivenBean>> results) {
         return new ModelAndView(createModel(results), this.viewName);
     }
 
-    protected Map<String, Object> createModel(Set<AnalysisResultEntry<MessageDrivenBean>> results) {
+    protected final Map<String, Object> createModel(Set<AnalysisResultEntry<MessageDrivenBean>> results) {
         Map<String, Map<String, String>> messageDrivenBeans = new TreeMap<String, Map<String, String>>();
 
         for (AnalysisResultEntry<MessageDrivenBean> analysisResultEntry : results) {

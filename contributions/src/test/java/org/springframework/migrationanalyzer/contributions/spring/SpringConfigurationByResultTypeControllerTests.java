@@ -29,7 +29,6 @@ import java.util.Set;
 import org.junit.Test;
 import org.springframework.migrationanalyzer.analyze.AnalysisResultEntry;
 import org.springframework.migrationanalyzer.contributions.StubFileSystemEntry;
-import org.springframework.migrationanalyzer.contributions.StubOutputPathGenerator;
 import org.springframework.migrationanalyzer.render.ModelAndView;
 
 public class SpringConfigurationByResultTypeControllerTests {
@@ -44,8 +43,7 @@ public class SpringConfigurationByResultTypeControllerTests {
 
     @Test
     public void viewNameIsSet() {
-        ModelAndView modelAndView = this.controller.handle(Collections.<AnalysisResultEntry<SpringConfiguration>> emptySet(),
-            new StubOutputPathGenerator());
+        ModelAndView modelAndView = this.controller.handle(Collections.<AnalysisResultEntry<SpringConfiguration>> emptySet());
         assertEquals("spring-configuration-by-result-type", modelAndView.getViewName());
     }
 
@@ -61,7 +59,7 @@ public class SpringConfigurationByResultTypeControllerTests {
         location = new StubFileSystemEntry("baz");
         resultEntries.add(new AnalysisResultEntry<SpringConfiguration>(location, new SpringConfiguration(location, "baz")));
 
-        ModelAndView modelAndView = this.controller.handle(resultEntries, new StubOutputPathGenerator());
+        ModelAndView modelAndView = this.controller.handle(resultEntries);
         Map<String, Object> model = modelAndView.getModel();
         assertEquals(1, model.size());
 

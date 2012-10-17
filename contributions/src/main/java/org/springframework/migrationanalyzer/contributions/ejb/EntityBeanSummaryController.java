@@ -26,7 +26,6 @@ import java.util.Set;
 import org.springframework.migrationanalyzer.analyze.AnalysisResultEntry;
 import org.springframework.migrationanalyzer.render.MigrationCost;
 import org.springframework.migrationanalyzer.render.ModelAndView;
-import org.springframework.migrationanalyzer.render.OutputPathGenerator;
 import org.springframework.migrationanalyzer.render.SummaryController;
 
 final class EntityBeanSummaryController extends AbstractEntityBeanController implements SummaryController<EntityBean> {
@@ -36,14 +35,13 @@ final class EntityBeanSummaryController extends AbstractEntityBeanController imp
     private static final String VIEW_NAME_GUIDANCE = "entity-bean-guidance";
 
     @Override
-    public ModelAndView handle(Set<AnalysisResultEntry<EntityBean>> results, OutputPathGenerator outputPathGenerator) {
-        return new ModelAndView(createModel(results, outputPathGenerator), VIEW_NAME_SUMMARY);
+    public ModelAndView handle(Set<AnalysisResultEntry<EntityBean>> results) {
+        return new ModelAndView(createModel(results), VIEW_NAME_SUMMARY);
     }
 
-    private Map<String, Object> createModel(Set<AnalysisResultEntry<EntityBean>> results, OutputPathGenerator outputPathGenerator) {
+    private Map<String, Object> createModel(Set<AnalysisResultEntry<EntityBean>> results) {
         Map<String, Object> model = new HashMap<String, Object>();
         model.put("value", getValue(results.size()));
-        model.put("link", outputPathGenerator.generatePathFor(EntityBean.class));
         return model;
     }
 

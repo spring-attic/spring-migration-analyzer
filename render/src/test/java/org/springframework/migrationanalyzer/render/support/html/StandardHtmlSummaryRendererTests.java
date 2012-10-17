@@ -29,7 +29,6 @@ import org.springframework.migrationanalyzer.analyze.AnalysisResult;
 import org.springframework.migrationanalyzer.analyze.AnalysisResultEntry;
 import org.springframework.migrationanalyzer.render.MigrationCost;
 import org.springframework.migrationanalyzer.render.ModelAndView;
-import org.springframework.migrationanalyzer.render.OutputPathGenerator;
 import org.springframework.migrationanalyzer.render.StubAnalysisResult;
 import org.springframework.migrationanalyzer.render.SummaryController;
 
@@ -89,7 +88,7 @@ public class StandardHtmlSummaryRendererTests {
         }
 
         @Override
-        public ModelAndView handle(Set<AnalysisResultEntry<Object>> results, OutputPathGenerator outputPathGenerator) {
+        public ModelAndView handle(Set<AnalysisResultEntry<Object>> results) {
             return null;
         }
 

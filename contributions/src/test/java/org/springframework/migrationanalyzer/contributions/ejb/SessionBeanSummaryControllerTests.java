@@ -27,7 +27,6 @@ import java.util.Set;
 
 import org.junit.Test;
 import org.springframework.migrationanalyzer.analyze.AnalysisResultEntry;
-import org.springframework.migrationanalyzer.contributions.StubOutputPathGenerator;
 import org.springframework.migrationanalyzer.render.MigrationCost;
 import org.springframework.migrationanalyzer.render.ModelAndView;
 
@@ -49,7 +48,7 @@ public class SessionBeanSummaryControllerTests {
         stateful.setSessionType(SessionType.STATEFUL);
         results.add(new AnalysisResultEntry<SessionBean>(null, stateful));
 
-        ModelAndView modelAndView = this.controller.handle(results, new StubOutputPathGenerator());
+        ModelAndView modelAndView = this.controller.handle(results);
         assertEquals("session-bean-summary", modelAndView.getViewName());
         String statelessValue = (String) modelAndView.getModel().get("statelessValue");
         assertNotNull(statelessValue);
@@ -83,7 +82,7 @@ public class SessionBeanSummaryControllerTests {
         stateful2.setSessionType(SessionType.STATEFUL);
         results.add(new AnalysisResultEntry<SessionBean>(null, stateful2));
 
-        ModelAndView modelAndView = this.controller.handle(results, new StubOutputPathGenerator());
+        ModelAndView modelAndView = this.controller.handle(results);
         assertEquals("session-bean-summary", modelAndView.getViewName());
         String statelessValue = (String) modelAndView.getModel().get("statelessValue");
         assertNotNull(statelessValue);

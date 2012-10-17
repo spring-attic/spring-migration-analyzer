@@ -29,7 +29,6 @@ import java.util.TreeSet;
 import org.springframework.migrationanalyzer.analyze.AnalysisResultEntry;
 import org.springframework.migrationanalyzer.render.MigrationCost;
 import org.springframework.migrationanalyzer.render.ModelAndView;
-import org.springframework.migrationanalyzer.render.OutputPathGenerator;
 import org.springframework.migrationanalyzer.render.SummaryController;
 
 final class ApiUsageSummaryController extends AbstractApiUsageController implements SummaryController<ApiUsage> {
@@ -41,7 +40,7 @@ final class ApiUsageSummaryController extends AbstractApiUsageController impleme
     }
 
     @Override
-    protected Map<String, Object> createModel(Set<AnalysisResultEntry<ApiUsage>> results, OutputPathGenerator outputPathGenerator) {
+    protected Map<String, Object> createModel(Set<AnalysisResultEntry<ApiUsage>> results) {
         Map<String, Set<String>> apiUsage = recordUsages(results);
 
         Set<String> entries = new TreeSet<String>();
@@ -51,7 +50,6 @@ final class ApiUsageSummaryController extends AbstractApiUsageController impleme
 
         Map<String, Object> model = new HashMap<String, Object>();
         model.put("entries", entries);
-        model.put("link", outputPathGenerator.generatePathFor(ApiUsage.class));
         return model;
     }
 

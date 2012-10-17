@@ -29,7 +29,6 @@ import java.util.concurrent.atomic.AtomicInteger;
 import org.springframework.migrationanalyzer.analyze.AnalysisResultEntry;
 import org.springframework.migrationanalyzer.render.MigrationCost;
 import org.springframework.migrationanalyzer.render.ModelAndView;
-import org.springframework.migrationanalyzer.render.OutputPathGenerator;
 import org.springframework.migrationanalyzer.render.SummaryController;
 
 final class SpringIntegrationSummaryController implements SummaryController<AbstractSpringIntegration> {
@@ -63,10 +62,10 @@ final class SpringIntegrationSummaryController implements SummaryController<Abst
     }
 
     @Override
-    public ModelAndView handle(Set<AnalysisResultEntry<AbstractSpringIntegration>> results, OutputPathGenerator outputPathGenerator) {
+    public ModelAndView handle(Set<AnalysisResultEntry<AbstractSpringIntegration>> results) {
 
         Map<String, AtomicInteger> counts = new HashMap<String, AtomicInteger>();
-        Map<String, String> links = new HashMap<String, String>();
+        Map<String, Class<?>> resultClassesByName = new HashMap<String, Class<?>>();
 
         for (AnalysisResultEntry<AbstractSpringIntegration> result : results) {
             String name = result.getResult().getName();
@@ -77,8 +76,8 @@ final class SpringIntegrationSummaryController implements SummaryController<Abst
             }
             count.incrementAndGet();
 
-            if (!links.containsKey(name)) {
-                links.put(name, outputPathGenerator.generatePathFor(result.getResult().getClass()));
+            if (!resultClassesByName.containsKey(name)) {
+                resultClassesByName.put(name, result.getResult().getClass());
             }
         }
 
@@ -91,7 +90,7 @@ final class SpringIntegrationSummaryController implements SummaryController<Abst
 
         Map<String, Object> model = new HashMap<String, Object>();
         model.put("usage", usageDescriptions);
-        model.put("links", links);
+        model.put("resultClassesByName", resultClassesByName);
 
         return new ModelAndView(model, VIEW_NAME_SUMMARY);
     }

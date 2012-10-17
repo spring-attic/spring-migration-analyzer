@@ -32,7 +32,6 @@ import java.util.concurrent.atomic.AtomicInteger;
 import org.junit.Test;
 import org.springframework.migrationanalyzer.analyze.AnalysisResultEntry;
 import org.springframework.migrationanalyzer.contributions.StubFileSystemEntry;
-import org.springframework.migrationanalyzer.contributions.StubOutputPathGenerator;
 import org.springframework.migrationanalyzer.render.ModelAndView;
 import org.springframework.migrationanalyzer.render.SummaryController;
 
@@ -48,19 +47,17 @@ public class DeploymentDescriptorSummaryControllerTests {
 
     @Test
     public void viewNameIsSet() {
-        ModelAndView modelAndView = this.controller.handle(Collections.<AnalysisResultEntry<DeploymentDescriptor>> emptySet(),
-            new StubOutputPathGenerator());
+        ModelAndView modelAndView = this.controller.handle(Collections.<AnalysisResultEntry<DeploymentDescriptor>> emptySet());
         assertEquals("deployment-descriptor-summary", modelAndView.getViewName());
     }
 
     @Test
     public void noDeploymentDescriptorsProducesEmptyMapInModel() {
-        ModelAndView modelAndView = this.controller.handle(Collections.<AnalysisResultEntry<DeploymentDescriptor>> emptySet(),
-            new StubOutputPathGenerator());
+        ModelAndView modelAndView = this.controller.handle(Collections.<AnalysisResultEntry<DeploymentDescriptor>> emptySet());
 
         Map<String, Object> model = modelAndView.getModel();
         assertNotNull(model);
-        assertEquals(2, model.size());
+        assertEquals(1, model.size());
 
         Object object = model.get("deploymentDescriptorCounts");
         assertNotNull(object);
@@ -78,11 +75,11 @@ public class DeploymentDescriptorSummaryControllerTests {
         resultEntries.add(new AnalysisResultEntry<DeploymentDescriptor>(null, new DeploymentDescriptor("category2", new StubFileSystemEntry(
             "d/e/f/hh.xml"), "hh.xml")));
 
-        ModelAndView modelAndView = this.controller.handle(resultEntries, new StubOutputPathGenerator());
+        ModelAndView modelAndView = this.controller.handle(resultEntries);
 
         Map<String, Object> model = modelAndView.getModel();
         assertNotNull(model);
-        assertEquals(2, model.size());
+        assertEquals(1, model.size());
 
         Map<String, AtomicInteger> deploymentDescriptors = (Map<String, AtomicInteger>) model.get("deploymentDescriptorCounts");
         assertEquals(2, deploymentDescriptors.size());

@@ -63,8 +63,10 @@ final class StandardViewRenderer implements ViewRenderer {
             if (controller.canHandle(resultType)) {
                 this.logger.debug("Generating model with {}", controller);
 
-                Controller<T> specificController = (Controller<T>) controller;
-                ModelAndView modelAndView = specificController.handle(entries, outputPathGenerator);
+                ModelAndView modelAndView = ((Controller<T>) controller).handle(entries);
+                modelAndView.getModel().put("link", outputPathGenerator.generatePathFor(resultType));
+                modelAndView.getModel().put("outputPathGenerator", outputPathGenerator);
+
                 renderViewWithModel(modelAndView.getViewName(), modelAndView.getModel(), writer);
             }
         }
