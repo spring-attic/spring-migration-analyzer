@@ -27,7 +27,6 @@ import java.util.Set;
 
 import org.junit.Test;
 import org.springframework.migrationanalyzer.analyze.AnalysisResultEntry;
-import org.springframework.migrationanalyzer.contributions.StubOutputPathGenerator;
 import org.springframework.migrationanalyzer.render.MigrationCost;
 import org.springframework.migrationanalyzer.render.ModelAndView;
 
@@ -40,7 +39,7 @@ public class EntityBeanSummaryControllerTests {
         Set<AnalysisResultEntry<EntityBean>> results = new HashSet<AnalysisResultEntry<EntityBean>>();
         results.add(new AnalysisResultEntry<EntityBean>(null, new EntityBean()));
 
-        ModelAndView modelAndView = this.controller.handle(results, new StubOutputPathGenerator());
+        ModelAndView modelAndView = this.controller.handle(results);
         assertEquals("entity-bean-summary", modelAndView.getViewName());
         String value = (String) modelAndView.getModel().get("value");
         assertNotNull(value);
@@ -53,7 +52,7 @@ public class EntityBeanSummaryControllerTests {
         results.add(new AnalysisResultEntry<EntityBean>(null, new EntityBean()));
         results.add(new AnalysisResultEntry<EntityBean>(null, new EntityBean()));
 
-        ModelAndView modelAndView = this.controller.handle(results, new StubOutputPathGenerator());
+        ModelAndView modelAndView = this.controller.handle(results);
         assertEquals("entity-bean-summary", modelAndView.getViewName());
         String value = (String) modelAndView.getModel().get("value");
         assertNotNull(value);

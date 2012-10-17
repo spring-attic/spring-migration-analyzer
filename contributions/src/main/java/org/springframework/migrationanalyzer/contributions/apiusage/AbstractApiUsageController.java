@@ -24,7 +24,6 @@ import java.util.TreeSet;
 import org.springframework.migrationanalyzer.analyze.AnalysisResultEntry;
 import org.springframework.migrationanalyzer.render.Controller;
 import org.springframework.migrationanalyzer.render.ModelAndView;
-import org.springframework.migrationanalyzer.render.OutputPathGenerator;
 
 abstract class AbstractApiUsageController implements Controller<ApiUsage> {
 
@@ -40,11 +39,11 @@ abstract class AbstractApiUsageController implements Controller<ApiUsage> {
     }
 
     @Override
-    public ModelAndView handle(Set<AnalysisResultEntry<ApiUsage>> results, OutputPathGenerator outputPathGenerator) {
-        return new ModelAndView(createModel(results, outputPathGenerator), this.viewName);
+    public ModelAndView handle(Set<AnalysisResultEntry<ApiUsage>> results) {
+        return new ModelAndView(createModel(results), this.viewName);
     }
 
-    protected abstract Map<String, Object> createModel(Set<AnalysisResultEntry<ApiUsage>> results, OutputPathGenerator outputPathGenerator);
+    protected abstract Map<String, Object> createModel(Set<AnalysisResultEntry<ApiUsage>> results);
 
     protected final Map<String, Set<String>> recordUsages(Set<AnalysisResultEntry<ApiUsage>> resultEntries) {
         Map<String, Set<String>> apiUsages = new TreeMap<String, Set<String>>();

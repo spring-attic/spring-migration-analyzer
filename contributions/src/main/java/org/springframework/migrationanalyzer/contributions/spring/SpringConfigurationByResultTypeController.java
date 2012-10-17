@@ -21,9 +21,9 @@ import java.util.Map;
 import java.util.Set;
 
 import org.springframework.migrationanalyzer.analyze.AnalysisResultEntry;
+import org.springframework.migrationanalyzer.analyze.fs.FileSystemEntry;
 import org.springframework.migrationanalyzer.render.ByResultTypeController;
 import org.springframework.migrationanalyzer.render.ModelAndView;
-import org.springframework.migrationanalyzer.render.OutputPathGenerator;
 
 final class SpringConfigurationByResultTypeController implements ByResultTypeController<SpringConfiguration> {
 
@@ -33,13 +33,13 @@ final class SpringConfigurationByResultTypeController implements ByResultTypeCon
     }
 
     @Override
-    public ModelAndView handle(Set<AnalysisResultEntry<SpringConfiguration>> results, OutputPathGenerator outputPathGenerator) {
-        Map<String, String> springConfigurations = new HashMap<String, String>();
+    public ModelAndView handle(Set<AnalysisResultEntry<SpringConfiguration>> results) {
+        Map<String, FileSystemEntry> springConfigurations = new HashMap<String, FileSystemEntry>();
 
         for (AnalysisResultEntry<SpringConfiguration> resultEntry : results) {
             SpringConfiguration springConfiguration = resultEntry.getResult();
 
-            springConfigurations.put(springConfiguration.getName(), outputPathGenerator.generatePathFor(springConfiguration.getLocation()));
+            springConfigurations.put(springConfiguration.getName(), springConfiguration.getLocation());
         }
 
         Map<String, Object> model = new HashMap<String, Object>();

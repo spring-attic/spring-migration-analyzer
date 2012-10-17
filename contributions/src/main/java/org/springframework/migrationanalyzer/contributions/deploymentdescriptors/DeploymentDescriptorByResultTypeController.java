@@ -16,7 +16,9 @@
 
 package org.springframework.migrationanalyzer.contributions.deploymentdescriptors;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
@@ -25,7 +27,6 @@ import org.springframework.migrationanalyzer.analyze.AnalysisResultEntry;
 import org.springframework.migrationanalyzer.analyze.fs.FileSystemEntry;
 import org.springframework.migrationanalyzer.render.ByResultTypeController;
 import org.springframework.migrationanalyzer.render.ModelAndView;
-import org.springframework.migrationanalyzer.render.OutputPathGenerator;
 
 final class DeploymentDescriptorByResultTypeController implements ByResultTypeController<DeploymentDescriptor> {
 
@@ -35,29 +36,27 @@ final class DeploymentDescriptorByResultTypeController implements ByResultTypeCo
     }
 
     @Override
-    public ModelAndView handle(Set<AnalysisResultEntry<DeploymentDescriptor>> results, OutputPathGenerator outputPathGenerator) {
-        Map<String, Map<String, Map<String, String>>> deploymentDescriptors = new TreeMap<String, Map<String, Map<String, String>>>();
+    public ModelAndView handle(Set<AnalysisResultEntry<DeploymentDescriptor>> results) {
+        Map<String, Map<String, List<FileSystemEntry>>> deploymentDescriptors = new TreeMap<String, Map<String, List<FileSystemEntry>>>();
 
         for (AnalysisResultEntry<DeploymentDescriptor> resultEntry : results) {
             DeploymentDescriptor deploymentDescriptor = resultEntry.getResult();
 
-            Map<String, Map<String, String>> descriptorsForCategory = deploymentDescriptors.get(deploymentDescriptor.getCategory());
+            Map<String, List<FileSystemEntry>> descriptorsForCategory = deploymentDescriptors.get(deploymentDescriptor.getCategory());
 
             if (descriptorsForCategory == null) {
-                descriptorsForCategory = new TreeMap<String, Map<String, String>>();
+                descriptorsForCategory = new TreeMap<String, List<FileSystemEntry>>();
+                deploymentDescriptors.put(deploymentDescriptor.getCategory(), descriptorsForCategory);
             }
 
-            deploymentDescriptors.put(deploymentDescriptor.getCategory(), descriptorsForCategory);
-
-            Map<String, String> descriptorsWithName = descriptorsForCategory.get(deploymentDescriptor.getName());
+            List<FileSystemEntry> descriptorsWithName = descriptorsForCategory.get(deploymentDescriptor.getName());
 
             if (descriptorsWithName == null) {
-                descriptorsWithName = new TreeMap<String, String>();
+                descriptorsWithName = new ArrayList<FileSystemEntry>();
                 descriptorsForCategory.put(deploymentDescriptor.getName(), descriptorsWithName);
             }
 
-            FileSystemEntry location = deploymentDescriptor.getLocation();
-            descriptorsWithName.put(location.getName(), outputPathGenerator.generatePathFor(location));
+            descriptorsWithName.add(deploymentDescriptor.getLocation());
         }
 
         Map<String, Object> model = new HashMap<String, Object>();
@@ -65,5 +64,4 @@ final class DeploymentDescriptorByResultTypeController implements ByResultTypeCo
 
         return new ModelAndView(model, "deployment-descriptor-by-result-type");
     }
-
 }

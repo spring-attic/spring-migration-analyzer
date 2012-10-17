@@ -46,7 +46,7 @@ public class AbztractSessionBeanControllerTests {
         statelessSessionBean.setSessionType(SessionType.STATELESS);
         results.add(new AnalysisResultEntry<SessionBean>(null, statelessSessionBean));
 
-        ModelAndView modelAndView = this.controller.handle(results, null);
+        ModelAndView modelAndView = this.controller.handle(results);
         assertEquals("test", modelAndView.getViewName());
         String sessionBeansTitle = (String) modelAndView.getModel().get("sessionBeansTitle");
         assertNotNull(sessionBeansTitle);
@@ -87,7 +87,7 @@ public class AbztractSessionBeanControllerTests {
         statelessSessionBean2.setSessionType(SessionType.STATELESS);
         results.add(new AnalysisResultEntry<SessionBean>(null, statelessSessionBean2));
 
-        ModelAndView modelAndView = this.controller.handle(results, null);
+        ModelAndView modelAndView = this.controller.handle(results);
         assertEquals("test", modelAndView.getViewName());
         String sessionBeansTitle = (String) modelAndView.getModel().get("sessionBeansTitle");
         assertNotNull(sessionBeansTitle);
@@ -122,7 +122,7 @@ public class AbztractSessionBeanControllerTests {
         sessionBean.setSessionType(SessionType.STATEFUL);
         results.add(new AnalysisResultEntry<SessionBean>(null, sessionBean));
 
-        ModelAndView modelAndView = this.controller.handle(results, null);
+        ModelAndView modelAndView = this.controller.handle(results);
         Map<String, Map<String, String>> sessionBeans = (Map<String, Map<String, String>>) modelAndView.getModel().get("statefulSessionBeans");
         Map<String, String> metadata = sessionBeans.get("testName");
         assertFalse(metadata.containsKey("EJB Class"));
@@ -153,7 +153,7 @@ public class AbztractSessionBeanControllerTests {
         sessionBean.setServiceEndpoint("testServiceEndpoint");
         results.add(new AnalysisResultEntry<SessionBean>(null, sessionBean));
 
-        ModelAndView modelAndView = this.controller.handle(results, null);
+        ModelAndView modelAndView = this.controller.handle(results);
         Map<String, Map<String, String>> sessionBeans = (Map<String, Map<String, String>>) modelAndView.getModel().get("statefulSessionBeans");
         Map<String, String> metadata = sessionBeans.get("testName");
 

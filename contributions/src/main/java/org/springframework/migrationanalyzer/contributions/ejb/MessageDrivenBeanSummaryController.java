@@ -27,7 +27,6 @@ import org.springframework.migrationanalyzer.analyze.AnalysisResultEntry;
 import org.springframework.migrationanalyzer.contributions.transactions.TransactionPropagationType;
 import org.springframework.migrationanalyzer.render.MigrationCost;
 import org.springframework.migrationanalyzer.render.ModelAndView;
-import org.springframework.migrationanalyzer.render.OutputPathGenerator;
 import org.springframework.migrationanalyzer.render.SummaryController;
 
 final class MessageDrivenBeanSummaryController extends AbstractMessageDrivenBeanController implements SummaryController<MessageDrivenBean> {
@@ -39,15 +38,14 @@ final class MessageDrivenBeanSummaryController extends AbstractMessageDrivenBean
     private static final String VIEW_NAME_GUIDANCE_DECLARATIVE_TRANSACTIONS = "declarative-transactions-message-driven-bean-guidance";
 
     @Override
-    public ModelAndView handle(Set<AnalysisResultEntry<MessageDrivenBean>> results, OutputPathGenerator outputPathGenerator) {
-        return new ModelAndView(createModel(results, outputPathGenerator), VIEW_NAME_SUMMARY);
+    public ModelAndView handle(Set<AnalysisResultEntry<MessageDrivenBean>> results) {
+        return new ModelAndView(createModel(results), VIEW_NAME_SUMMARY);
     }
 
-    private Map<String, Object> createModel(Set<AnalysisResultEntry<MessageDrivenBean>> results, OutputPathGenerator outputPathGenerator) {
+    private Map<String, Object> createModel(Set<AnalysisResultEntry<MessageDrivenBean>> results) {
         Map<String, Object> model = new HashMap<String, Object>();
 
         model.put("messageDrivenBeanValue", getMessageDrivenBeanValue(results.size()));
-        model.put("link", outputPathGenerator.generatePathFor(MessageDrivenBean.class));
         return model;
     }
 

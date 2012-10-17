@@ -45,7 +45,7 @@ public class AbztractMessageDrivenBeanControllerTests {
         Set<AnalysisResultEntry<MessageDrivenBean>> results = new HashSet<AnalysisResultEntry<MessageDrivenBean>>();
         results.add(new AnalysisResultEntry<MessageDrivenBean>(null, createMessageDrivenBean("ut.foo", "Foo", "Container")));
 
-        ModelAndView modelAndView = this.controller.handle(results, null);
+        ModelAndView modelAndView = this.controller.handle(results);
         Map<String, Object> model = modelAndView.getModel();
 
         assertEquals("1 Message Driven Bean", model.get("messageDrivenBeansTitle"));
@@ -62,7 +62,7 @@ public class AbztractMessageDrivenBeanControllerTests {
         results.add(new AnalysisResultEntry<MessageDrivenBean>(null, createMessageDrivenBean("ut.Foo", "Foo", "Container")));
         results.add(new AnalysisResultEntry<MessageDrivenBean>(null, createMessageDrivenBean("ut.Bar", "Bar", "Container")));
 
-        ModelAndView modelAndView = this.controller.handle(results, null);
+        ModelAndView modelAndView = this.controller.handle(results);
         Map<String, Object> model = modelAndView.getModel();
         assertEquals("2 Message Driven Beans", model.get("messageDrivenBeansTitle"));
 

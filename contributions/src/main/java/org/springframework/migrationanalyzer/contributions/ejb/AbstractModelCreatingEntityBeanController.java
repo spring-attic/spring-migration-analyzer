@@ -23,7 +23,6 @@ import java.util.TreeMap;
 
 import org.springframework.migrationanalyzer.analyze.AnalysisResultEntry;
 import org.springframework.migrationanalyzer.render.ModelAndView;
-import org.springframework.migrationanalyzer.render.OutputPathGenerator;
 
 abstract class AbstractModelCreatingEntityBeanController extends AbstractEntityBeanController {
 
@@ -34,7 +33,7 @@ abstract class AbstractModelCreatingEntityBeanController extends AbstractEntityB
     }
 
     @Override
-    public ModelAndView handle(Set<AnalysisResultEntry<EntityBean>> results, OutputPathGenerator outputPathGenerator) {
+    public ModelAndView handle(Set<AnalysisResultEntry<EntityBean>> results) {
         return new ModelAndView(createModel(results), this.viewName);
     }
 

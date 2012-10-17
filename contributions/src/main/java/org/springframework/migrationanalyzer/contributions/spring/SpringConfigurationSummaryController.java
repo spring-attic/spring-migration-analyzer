@@ -25,7 +25,6 @@ import java.util.Set;
 import org.springframework.migrationanalyzer.analyze.AnalysisResultEntry;
 import org.springframework.migrationanalyzer.render.MigrationCost;
 import org.springframework.migrationanalyzer.render.ModelAndView;
-import org.springframework.migrationanalyzer.render.OutputPathGenerator;
 import org.springframework.migrationanalyzer.render.SummaryController;
 
 final class SpringConfigurationSummaryController implements SummaryController<SpringConfiguration> {
@@ -36,14 +35,9 @@ final class SpringConfigurationSummaryController implements SummaryController<Sp
     }
 
     @Override
-    public ModelAndView handle(Set<AnalysisResultEntry<SpringConfiguration>> results, OutputPathGenerator outputPathGenerator) {
-
-        int count = results.size();
-
+    public ModelAndView handle(Set<AnalysisResultEntry<SpringConfiguration>> results) {
         Map<String, Object> model = new HashMap<String, Object>();
-
-        model.put("springConfigurationCount", count);
-        model.put("link", outputPathGenerator.generatePathFor(SpringConfiguration.class));
+        model.put("springConfigurationCount", results.size());
 
         return new ModelAndView(model, "spring-configuration-summary");
     }

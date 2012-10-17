@@ -41,7 +41,7 @@ public class AbztractEntityBeanControllerTests {
         entityBean.setEjbName("testName");
         results.add(new AnalysisResultEntry<EntityBean>(null, entityBean));
 
-        ModelAndView modelAndView = this.controller.handle(results, null);
+        ModelAndView modelAndView = this.controller.handle(results);
         assertEquals("test", modelAndView.getViewName());
         String title = (String) modelAndView.getModel().get("title");
         assertNotNull(title);
@@ -62,7 +62,7 @@ public class AbztractEntityBeanControllerTests {
         entityBean2.setEjbName("testName2");
         results.add(new AnalysisResultEntry<EntityBean>(null, entityBean2));
 
-        ModelAndView modelAndView = this.controller.handle(results, null);
+        ModelAndView modelAndView = this.controller.handle(results);
         assertEquals("test", modelAndView.getViewName());
         String title = (String) modelAndView.getModel().get("title");
         assertNotNull(title);
@@ -86,7 +86,7 @@ public class AbztractEntityBeanControllerTests {
         entityBean.setEjbName("testName");
         results.add(new AnalysisResultEntry<EntityBean>(null, entityBean));
 
-        ModelAndView modelAndView = this.controller.handle(results, null);
+        ModelAndView modelAndView = this.controller.handle(results);
         Map<String, Map<String, String>> entityBeans = (Map<String, Map<String, String>>) modelAndView.getModel().get("entityBeans");
         Map<String, String> metadata = entityBeans.get("testName");
         assertFalse(metadata.containsKey("EJB Class"));
@@ -120,7 +120,7 @@ public class AbztractEntityBeanControllerTests {
         entityBean.setAbstractSchemaName("testAbstractSchemaName");
         results.add(new AnalysisResultEntry<EntityBean>(null, entityBean));
 
-        ModelAndView modelAndView = this.controller.handle(results, null);
+        ModelAndView modelAndView = this.controller.handle(results);
         Map<String, Map<String, String>> entityBeans = (Map<String, Map<String, String>>) modelAndView.getModel().get("entityBeans");
         Map<String, String> metadata = entityBeans.get("testName");
         assertTrue(metadata.containsKey("EJB Class"));

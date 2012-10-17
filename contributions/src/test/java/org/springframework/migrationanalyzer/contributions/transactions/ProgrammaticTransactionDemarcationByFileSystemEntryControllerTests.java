@@ -30,16 +30,12 @@ import java.util.Map;
 
 import org.junit.Test;
 import org.springframework.migrationanalyzer.analyze.AnalysisResultEntry;
-import org.springframework.migrationanalyzer.contributions.StubOutputPathGenerator;
 import org.springframework.migrationanalyzer.render.ByFileSystemEntryController;
 import org.springframework.migrationanalyzer.render.ModelAndView;
-import org.springframework.migrationanalyzer.render.OutputPathGenerator;
 
 public class ProgrammaticTransactionDemarcationByFileSystemEntryControllerTests {
 
     private final ByFileSystemEntryController<ProgrammaticTransactionDemarcation> controller = new ProgrammaticTransactionDemarcationByFileSystemEntryController();
-
-    private final OutputPathGenerator outputPathGenerator = new StubOutputPathGenerator();
 
     @Test
     public void canHandle() {
@@ -62,14 +58,13 @@ public class ProgrammaticTransactionDemarcationByFileSystemEntryControllerTests 
         results.add(new AnalysisResultEntry<ProgrammaticTransactionDemarcation>(null, new ProgrammaticTransactionDemarcation("user1", "DataSource",
             COMMIT, "description1")));
 
-        ModelAndView modelAndView = this.controller.handle(results, this.outputPathGenerator);
+        ModelAndView modelAndView = this.controller.handle(results);
 
         assertNotNull(modelAndView);
         assertEquals("programmatic-transaction-demarcation-by-file", modelAndView.getViewName());
         Map<String, Object> model = modelAndView.getModel();
         assertNotNull(model);
-        assertEquals(2, model.size());
-        assertNotNull(model.get("link"));
+        assertEquals(1, model.size());
 
         Map<String, Map<String, List<String>>> programmaticDemarcation = (Map<String, Map<String, List<String>>>) model.get("programmaticDemarcation");
         assertNotNull(programmaticDemarcation);

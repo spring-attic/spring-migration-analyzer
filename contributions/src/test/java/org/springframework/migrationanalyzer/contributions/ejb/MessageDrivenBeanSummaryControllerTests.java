@@ -25,23 +25,19 @@ import java.util.Set;
 
 import org.junit.Test;
 import org.springframework.migrationanalyzer.analyze.AnalysisResultEntry;
-import org.springframework.migrationanalyzer.contributions.StubOutputPathGenerator;
 import org.springframework.migrationanalyzer.render.MigrationCost;
 import org.springframework.migrationanalyzer.render.ModelAndView;
-import org.springframework.migrationanalyzer.render.OutputPathGenerator;
 import org.springframework.migrationanalyzer.render.SummaryController;
 
 public class MessageDrivenBeanSummaryControllerTests {
 
     private final SummaryController<MessageDrivenBean> controller = new MessageDrivenBeanSummaryController();
 
-    private final OutputPathGenerator outputPathGenerator = new StubOutputPathGenerator();
-
     @Test
     public void singleMDB() {
         Set<AnalysisResultEntry<MessageDrivenBean>> results = new HashSet<AnalysisResultEntry<MessageDrivenBean>>();
         results.add(new AnalysisResultEntry<MessageDrivenBean>(null, createMessageDrivenBean("ut.Foo", "Foo", "Bean")));
-        ModelAndView modelAndView = this.controller.handle(results, this.outputPathGenerator);
+        ModelAndView modelAndView = this.controller.handle(results);
         assertEquals("message-driven-bean-summary", modelAndView.getViewName());
         assertEquals("1 Message Driven Bean", modelAndView.getModel().get("messageDrivenBeanValue"));
     }
@@ -52,7 +48,7 @@ public class MessageDrivenBeanSummaryControllerTests {
         results.add(new AnalysisResultEntry<MessageDrivenBean>(null, createMessageDrivenBean("ut.Foo", "Foo", "Bean")));
         results.add(new AnalysisResultEntry<MessageDrivenBean>(null, createMessageDrivenBean("ut.Bar", "Bar", "Bean")));
         results.add(new AnalysisResultEntry<MessageDrivenBean>(null, createMessageDrivenBean("ut.Baz", "Baz", "Bean")));
-        ModelAndView modelAndView = this.controller.handle(results, this.outputPathGenerator);
+        ModelAndView modelAndView = this.controller.handle(results);
         assertEquals("message-driven-bean-summary", modelAndView.getViewName());
         assertEquals("3 Message Driven Beans", modelAndView.getModel().get("messageDrivenBeanValue"));
     }

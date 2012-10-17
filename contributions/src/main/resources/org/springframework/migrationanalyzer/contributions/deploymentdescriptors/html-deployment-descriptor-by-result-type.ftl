@@ -11,9 +11,8 @@
 				<div class="item-body content" id="category_${category_index}_name_${descriptorTypeName_index}_body">
 					<ul>
 						<#assign descriptors = descriptorTypes[descriptorTypeName]>
-						<#assign descriptorNames = descriptors?keys>
-						<#list descriptorNames as descriptorName>
-							<li><a href="${descriptors[descriptorName]}">${descriptorName}</a></li>
+						<#list descriptors as descriptor>						
+							<li><a href="${outputPathGenerator.generatePathFor(descriptor)}">${descriptor.name}</a></li>
 						</#list>
 					</ul>
 				</div>

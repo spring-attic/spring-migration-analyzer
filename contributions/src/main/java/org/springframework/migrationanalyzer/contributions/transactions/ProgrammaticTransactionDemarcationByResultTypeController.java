@@ -26,7 +26,6 @@ import java.util.TreeMap;
 import org.springframework.migrationanalyzer.analyze.AnalysisResultEntry;
 import org.springframework.migrationanalyzer.render.ByResultTypeController;
 import org.springframework.migrationanalyzer.render.ModelAndView;
-import org.springframework.migrationanalyzer.render.OutputPathGenerator;
 
 final class ProgrammaticTransactionDemarcationByResultTypeController implements ByResultTypeController<ProgrammaticTransactionDemarcation> {
 
@@ -38,7 +37,7 @@ final class ProgrammaticTransactionDemarcationByResultTypeController implements 
     }
 
     @Override
-    public ModelAndView handle(Set<AnalysisResultEntry<ProgrammaticTransactionDemarcation>> results, OutputPathGenerator outputPathGenerator) {
+    public ModelAndView handle(Set<AnalysisResultEntry<ProgrammaticTransactionDemarcation>> results) {
 
         Map<String, Map<String, Map<String, List<String>>>> programmaticDemarcationByType = new TreeMap<String, Map<String, Map<String, List<String>>>>();
 
@@ -74,7 +73,6 @@ final class ProgrammaticTransactionDemarcationByResultTypeController implements 
 
         Map<String, Object> model = new HashMap<String, Object>();
         model.put("programmaticDemarcation", programmaticDemarcationByType);
-        model.put("link", outputPathGenerator.generatePathFor(ProgrammaticTransactionDemarcation.class));
 
         return new ModelAndView(model, VIEW_NAME);
     }

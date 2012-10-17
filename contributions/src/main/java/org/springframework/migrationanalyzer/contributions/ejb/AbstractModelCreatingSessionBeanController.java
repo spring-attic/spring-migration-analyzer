@@ -25,7 +25,6 @@ import org.springframework.migrationanalyzer.analyze.AnalysisResultEntry;
 import org.springframework.migrationanalyzer.contributions.transactions.TransactionPropagationType;
 import org.springframework.migrationanalyzer.contributions.util.StringUtils;
 import org.springframework.migrationanalyzer.render.ModelAndView;
-import org.springframework.migrationanalyzer.render.OutputPathGenerator;
 
 abstract class AbstractModelCreatingSessionBeanController extends AbstractSessionBeanController {
 
@@ -36,11 +35,11 @@ abstract class AbstractModelCreatingSessionBeanController extends AbstractSessio
     }
 
     @Override
-    public ModelAndView handle(Set<AnalysisResultEntry<SessionBean>> results, OutputPathGenerator outputPathGenerator) {
+    public ModelAndView handle(Set<AnalysisResultEntry<SessionBean>> results) {
         return new ModelAndView(createModel(results), this.viewName);
     }
 
-    protected Map<String, Object> createModel(Set<AnalysisResultEntry<SessionBean>> results) {
+    private Map<String, Object> createModel(Set<AnalysisResultEntry<SessionBean>> results) {
         Map<String, Map<String, String>> statefulSessionBeans = new TreeMap<String, Map<String, String>>();
         Map<String, Map<String, String>> statelessSessionBeans = new TreeMap<String, Map<String, String>>();
 

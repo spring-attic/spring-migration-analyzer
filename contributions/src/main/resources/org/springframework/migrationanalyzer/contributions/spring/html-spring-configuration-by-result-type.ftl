@@ -5,7 +5,7 @@
 	<div class="item-body content" id="spring_configurations_body">
 		<ul>
 			<#list names as name>
-				<li><a href="${springConfigurations[name]}">${name}</a></li>
+				<li><a href="${outputPathGenerator.generatePathFor(springConfigurations[name])}">${name}</a></li>
 			</#list>
 		</ul>
 	</div>

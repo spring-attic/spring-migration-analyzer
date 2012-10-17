@@ -21,9 +21,9 @@ import java.util.Map;
 import java.util.Set;
 
 import org.springframework.migrationanalyzer.analyze.AnalysisResultEntry;
+import org.springframework.migrationanalyzer.analyze.fs.FileSystemEntry;
 import org.springframework.migrationanalyzer.render.ByResultTypeController;
 import org.springframework.migrationanalyzer.render.ModelAndView;
-import org.springframework.migrationanalyzer.render.OutputPathGenerator;
 
 abstract class AbstractSpringIntegrationByResultTypeController<T extends AbstractSpringIntegration> implements ByResultTypeController<T> {
 
@@ -48,14 +48,14 @@ abstract class AbstractSpringIntegrationByResultTypeController<T extends Abstrac
     }
 
     @Override
-    public ModelAndView handle(Set<AnalysisResultEntry<T>> results, OutputPathGenerator outputPathGenerator) {
+    public ModelAndView handle(Set<AnalysisResultEntry<T>> results) {
 
         String title = getTitle(this.name, results.size());
-        Map<String, String> users = new HashMap<String, String>();
+        Map<FileSystemEntry, String> users = new HashMap<FileSystemEntry, String>();
 
         for (AnalysisResultEntry<T> analysisResultEntry : results) {
             T result = analysisResultEntry.getResult();
-            users.put(outputPathGenerator.generatePathFor(result.getUserLocation()), result.getUserName());
+            users.put(result.getUserLocation(), result.getUserName());
         }
 
         Map<String, Object> model = new HashMap<String, Object>();

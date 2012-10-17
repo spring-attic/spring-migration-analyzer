@@ -46,7 +46,7 @@ public class ApiUsageByResultTypeControllerTests {
             new ApiUsage(ApiUsageType.FIELD, "test", null, "desc", "view", MigrationCost.MEDIUM)));
 
         ApiUsageByResultTypeController controller = new ApiUsageByResultTypeController();
-        ModelAndView modelAndView = controller.handle(resultEntries, null);
+        ModelAndView modelAndView = controller.handle(resultEntries);
 
         Map<String, Object> model = modelAndView.getModel();
         Map<String, Set<String>> apiUsage = (Map<String, Set<String>>) model.get("apiUsage");
