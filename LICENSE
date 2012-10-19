@@ -197,16 +197,16 @@ SECTION 1: BSD-STYLE, MIT-STYLE, OR SIMILAR STYLE LICENSES
 >>>   ASM 3.1 - http://asm.ow2.org/license.html
 >>>   Freemarker 2.3.18 - http://freemarker.sourceforge.net/docs/app_license.html
 (BSD style)
->>>   SLF4J 1.6.1 - http://www.slf4j.org/license.html (MIT)
+>>>   SLF4J 1.6.4 - http://www.slf4j.org/license.html (MIT)
 
 SECTION 2: APACHE LICENSE 2.0
 
 >>>   Apache Commons CLI 1.2 - http://commons.apache.org/cli/license.html (ASL v2)
->>>   Spring 3.0.5 - ASL v2
+>>>   Spring 3.1.2 - ASL v2
 
 SECTION 3:  ECLIPSE PUBLIC LICENSE 1.0
 
->>>   Logback 0.9.26 - http://logback.qos.ch/license.html (EPL 1.0 or LGPL 2.1)
+>>>   Logback 1.0.0 - http://logback.qos.ch/license.html (EPL 1.0 or LGPL 2.1)
 
 
 APPENDIX. Standard License Files
@@ -293,7 +293,7 @@ OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
 NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE,
 EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
->>>   SLF4J 1.6.1
+>>>   SLF4J 1.6.4
 
  Copyright (c) 2004-2011 QOS.ch
  All rights reserved.
@@ -330,7 +330,7 @@ Copyright 2001-2009 The Apache Software Foundation
 This product includes software developed by
 The Apache Software Foundation (http://www.apache.org/).
 
->>>   Spring 3.0.5
+>>>   Spring 3.1.2
 
   Copyright 2002-2010 the original author or authors.
  
@@ -350,7 +350,7 @@ The Apache Software Foundation (http://www.apache.org/).
 
 The ECLIPSE PUBLIC LICENSE 1.0 is applicable to the following component(s).
 
->>>   Logback 0.9.26
+>>>   Logback 1.0.0
 
 Logback: the reliable, generic, fast and flexible logging framework.
 Copyright (C) 1999-2009, QOS.ch. All rights reserved. 
