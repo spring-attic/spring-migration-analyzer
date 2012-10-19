@@ -33,29 +33,6 @@ public class StandardClassPathScannerTests {
     private final StandardClassPathScanner scanner = new StandardClassPathScanner();
 
     @Test
-    public void classesInJar() throws ClassNotFoundException, MalformedURLException {
-        URLClassLoader classLoader = new URLClassLoader(
-            new URL[] { new File("src/test/resources/classpath-scanner/classpath-scanner.jar").toURI().toURL() });
-
-        Set<Class<?>> matchedTypes = this.scanner.findImplementations(classLoader.loadClass("org.springframework.migrationanalyzer.TargetInterface"),
-            classLoader);
-
-        assertContains(matchedTypes, classLoader, "org.springframework.migrationanalyzer.internal.Example",
-            "org.springframework.migrationanalyzer.internal.SubExample", "org.springframework.migrationanalyzer.internal.SubInterfaceExample");
-    }
-
-    @Test
-    public void classesInDirectory() throws ClassNotFoundException, MalformedURLException {
-        URLClassLoader classLoader = new URLClassLoader(new URL[] { new File("src/test/resources/classpath-scanner/classes/").toURI().toURL() });
-
-        Set<Class<?>> matchedTypes = this.scanner.findImplementations(classLoader.loadClass("org.springframework.migrationanalyzer.TargetInterface"),
-            classLoader);
-
-        assertContains(matchedTypes, classLoader, "org.springframework.migrationanalyzer.internal.Example",
-            "org.springframework.migrationanalyzer.internal.SubExample", "org.springframework.migrationanalyzer.internal.SubInterfaceExample");
-    }
-
-    @Test
     public void resourcesInJar() throws MalformedURLException {
         URLClassLoader classLoader = new URLClassLoader(
             new URL[] { new File("src/test/resources/classpath-scanner/classpath-scanner.jar").toURI().toURL() });
@@ -70,13 +47,6 @@ public class StandardClassPathScannerTests {
 
         Set<String> matchedResources = this.scanner.findResources(Pattern.compile(".*example\\.properties"), classLoader);
         assertContains(matchedResources, new File("org/springframework/migrationanalyzer/internal/example.properties").getPath());
-    }
-
-    private void assertContains(Set<Class<?>> matchedTypes, ClassLoader classLoader, String... candidates) throws ClassNotFoundException {
-        assertEquals(candidates.length, matchedTypes.size());
-        for (String candidate : candidates) {
-            assertTrue("Matches did not contain " + candidate, matchedTypes.contains(classLoader.loadClass(candidate)));
-        }
     }
 
     private void assertContains(Set<String> matchedResources, String... candidates) {

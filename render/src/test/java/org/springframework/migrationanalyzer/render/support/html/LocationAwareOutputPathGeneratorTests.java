@@ -17,10 +17,12 @@
 package org.springframework.migrationanalyzer.render.support.html;
 
 import static org.junit.Assert.assertEquals;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 import org.junit.Test;
+import org.springframework.migrationanalyzer.analyze.fs.FileSystemEntry;
 import org.springframework.migrationanalyzer.render.OutputPathGenerator;
-import org.springframework.migrationanalyzer.render.StubFileSystemEntry;
 
 public class LocationAwareOutputPathGeneratorTests {
 
@@ -34,7 +36,9 @@ public class LocationAwareOutputPathGeneratorTests {
 
     @Test
     public void generatePathForFileSystemEntry() {
-        String path = this.generator.generatePathFor(new StubFileSystemEntry());
+        FileSystemEntry fileSystemEntry = mock(FileSystemEntry.class);
+        when(fileSystemEntry.getName()).thenReturn("org/springframework/Foo.class");
+        String path = this.generator.generatePathFor(fileSystemEntry);
         assertEquals("../../file-entry/org/springframework/Foo.class.html", path);
     }
 

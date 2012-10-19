@@ -17,7 +17,9 @@
 package org.springframework.migrationanalyzer.contributions.ejb;
 
 import org.springframework.migrationanalyzer.render.ByResultTypeController;
+import org.springframework.stereotype.Component;
 
+@Component
 final class SessionBeanByResultTypeController extends AbstractModelCreatingSessionBeanController implements ByResultTypeController<SessionBean> {
 
     private static final String VIEW_NAME = "session-bean-by-result-type";

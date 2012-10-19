@@ -26,5 +26,5 @@ interface WriterFactory {
      * @param path The path to the file to be written
      * @return The writer
      */
-    Writer createWriter(String path);
+    Writer createWriter(String path, String pathPrefix);
 }

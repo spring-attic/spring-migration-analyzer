@@ -20,6 +20,8 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 import java.util.Collections;
 import java.util.HashSet;
@@ -28,7 +30,7 @@ import java.util.Set;
 
 import org.junit.Test;
 import org.springframework.migrationanalyzer.analyze.AnalysisResultEntry;
-import org.springframework.migrationanalyzer.contributions.StubFileSystemEntry;
+import org.springframework.migrationanalyzer.analyze.fs.FileSystemEntry;
 import org.springframework.migrationanalyzer.render.ModelAndView;
 
 public class SpringConfigurationByResultTypeControllerTests {
@@ -52,11 +54,11 @@ public class SpringConfigurationByResultTypeControllerTests {
     public void modelCreation() {
         Set<AnalysisResultEntry<SpringConfiguration>> resultEntries = new HashSet<AnalysisResultEntry<SpringConfiguration>>();
 
-        StubFileSystemEntry location = new StubFileSystemEntry("foo");
+        FileSystemEntry location = createFileSystemEntry("foo");
         resultEntries.add(new AnalysisResultEntry<SpringConfiguration>(location, new SpringConfiguration(location, "foo")));
-        location = new StubFileSystemEntry("bar");
+        location = createFileSystemEntry("bar");
         resultEntries.add(new AnalysisResultEntry<SpringConfiguration>(location, new SpringConfiguration(location, "bar")));
-        location = new StubFileSystemEntry("baz");
+        location = createFileSystemEntry("baz");
         resultEntries.add(new AnalysisResultEntry<SpringConfiguration>(location, new SpringConfiguration(location, "baz")));
 
         ModelAndView modelAndView = this.controller.handle(resultEntries);
@@ -70,6 +72,12 @@ public class SpringConfigurationByResultTypeControllerTests {
         assertNotNull(springConfigurations.get("foo"));
         assertNotNull(springConfigurations.get("bar"));
         assertNotNull(springConfigurations.get("baz"));
+    }
+
+    private FileSystemEntry createFileSystemEntry(String name) {
+        FileSystemEntry entry = mock(FileSystemEntry.class);
+        when(entry.getName()).thenReturn(name);
+        return entry;
     }
 
 }

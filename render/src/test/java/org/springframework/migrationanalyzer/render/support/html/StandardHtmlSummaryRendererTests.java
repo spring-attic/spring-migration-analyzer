@@ -16,81 +16,76 @@
 
 package org.springframework.migrationanalyzer.render.support.html;
 
-import static org.junit.Assert.assertEquals;
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anySet;
+import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
+import java.io.Writer;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
-import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import org.junit.Test;
+import org.mockito.InOrder;
+import org.mockito.Mockito;
 import org.springframework.migrationanalyzer.analyze.AnalysisResult;
-import org.springframework.migrationanalyzer.analyze.AnalysisResultEntry;
+import org.springframework.migrationanalyzer.analyze.fs.FileSystemEntry;
 import org.springframework.migrationanalyzer.render.MigrationCost;
 import org.springframework.migrationanalyzer.render.ModelAndView;
-import org.springframework.migrationanalyzer.render.StubAnalysisResult;
 import org.springframework.migrationanalyzer.render.SummaryController;
 
 @SuppressWarnings("rawtypes")
 public class StandardHtmlSummaryRendererTests {
 
-    private final Set<SummaryController> summaryControllers = new HashSet<SummaryController>();
+    private final SummaryController summaryController = mock(SummaryController.class);
 
-    private final StubViewRenderer viewRenderer = new StubViewRenderer();
+    private final Set<SummaryController> summaryControllers = new HashSet<SummaryController>(Arrays.asList(this.summaryController));
 
-    private final RootAwareOutputPathGenerator outputPathGenerator = new StubOutputPathGenerator("target");
+    private final ViewRenderer viewRenderer = mock(ViewRenderer.class);
 
-    private final StubWriterFactory writerFactory = new StubWriterFactory();
+    private final WriterFactory writerFactory = mock(WriterFactory.class);
 
     private final StandardHtmlSummaryRenderer renderer = new StandardHtmlSummaryRenderer(this.summaryControllers, this.viewRenderer,
-        this.outputPathGenerator, this.writerFactory);
+        mock(RootAwareOutputPathGenerator.class), this.writerFactory);
 
+    @SuppressWarnings("unchecked")
     @Test
     public void renderSummary() {
-        AnalysisResult analysisResult = new StubAnalysisResult(
-            new AnalysisResultEntry<Object>(new StubFileSystemEntry("a/b/c/Foo.txt"), new Object()));
+        AnalysisResult analysisResult = mock(AnalysisResult.class);
+        FileSystemEntry entry = mock(FileSystemEntry.class);
+        when(analysisResult.getFileSystemEntries()).thenReturn(new HashSet<FileSystemEntry>(Arrays.asList(entry)));
+        when(analysisResult.getResultTypes()).thenReturn(new HashSet<Class<?>>(Arrays.asList(Object.class)));
 
-        this.summaryControllers.add(new StubSummaryController(
-            Arrays.asList(new ModelAndView(Collections.<String, Object> emptyMap(), "stub-guidance"))));
+        when(this.summaryController.handle(anySet(), any(MigrationCost.class))).thenReturn(
+            Arrays.asList(new ModelAndView(Collections.<String, Object> emptyMap(), "stub-guidance")));
+        when(this.summaryController.canHandle(Object.class)).thenReturn(true);
 
         this.renderer.renderSummary(analysisResult);
 
-        List<String> expectedViews = Arrays.asList("summary-header", "guidance-header", "guidance-category-header", "guidance-entry-header",
-            "stub-guidance", "guidance-entry-footer", "guidance-category-footer", "guidance-category-header", "guidance-entry-header",
-            "stub-guidance", "guidance-entry-footer", "guidance-category-footer", "guidance-category-header", "guidance-entry-header",
-            "stub-guidance", "guidance-entry-footer", "guidance-category-footer", "guidance-footer, summary-footer");
+        InOrder inOrder = Mockito.inOrder(this.viewRenderer);
 
-        List<String> viewsRendered = this.viewRenderer.getViewsRendered();
-        assertEquals(19, viewsRendered.size());
-
-        for (int i = 0; i > viewsRendered.size(); i++) {
-            assertEquals(expectedViews.get(i), viewsRendered.get(i));
-        }
-    }
-
-    private static final class StubSummaryController implements SummaryController<Object> {
-
-        private final List<ModelAndView> modelsAndViews;
-
-        private StubSummaryController(List<ModelAndView> modelsAndViews) {
-            this.modelsAndViews = modelsAndViews;
-        }
-
-        @Override
-        public List<ModelAndView> handle(Set<AnalysisResultEntry<Object>> results, MigrationCost migrationCost) {
-            return this.modelsAndViews;
-        }
-
-        @Override
-        public boolean canHandle(Class<?> resultType) {
-            return Object.class.equals(resultType);
-        }
-
-        @Override
-        public ModelAndView handle(Set<AnalysisResultEntry<Object>> results) {
-            return null;
-        }
-
+        inOrder.verify(this.viewRenderer).renderViewWithEmptyModel(eq("html-summary-header"), any(Writer.class));
+        inOrder.verify(this.viewRenderer).renderViewWithEmptyModel(eq("html-guidance-header"), any(Writer.class));
+        inOrder.verify(this.viewRenderer).renderViewWithModel(eq("html-guidance-category-header"), any(Map.class), any(Writer.class));
+        inOrder.verify(this.viewRenderer).renderViewWithEmptyModel(eq("html-guidance-entry-header"), any(Writer.class));
+        inOrder.verify(this.viewRenderer).renderViewWithModel(eq("html-stub-guidance"), any(Map.class), any(Writer.class));
+        inOrder.verify(this.viewRenderer).renderViewWithEmptyModel(eq("html-guidance-entry-footer"), any(Writer.class));
+        inOrder.verify(this.viewRenderer).renderViewWithEmptyModel(eq("html-guidance-category-footer"), any(Writer.class));
+        inOrder.verify(this.viewRenderer).renderViewWithModel(eq("html-guidance-category-header"), any(Map.class), any(Writer.class));
+        inOrder.verify(this.viewRenderer).renderViewWithEmptyModel(eq("html-guidance-entry-header"), any(Writer.class));
+        inOrder.verify(this.viewRenderer).renderViewWithModel(eq("html-stub-guidance"), any(Map.class), any(Writer.class));
+        inOrder.verify(this.viewRenderer).renderViewWithEmptyModel(eq("html-guidance-entry-footer"), any(Writer.class));
+        inOrder.verify(this.viewRenderer).renderViewWithEmptyModel(eq("html-guidance-category-footer"), any(Writer.class));
+        inOrder.verify(this.viewRenderer).renderViewWithModel(eq("html-guidance-category-header"), any(Map.class), any(Writer.class));
+        inOrder.verify(this.viewRenderer).renderViewWithEmptyModel(eq("html-guidance-entry-header"), any(Writer.class));
+        inOrder.verify(this.viewRenderer).renderViewWithModel(eq("html-stub-guidance"), any(Map.class), any(Writer.class));
+        inOrder.verify(this.viewRenderer).renderViewWithEmptyModel(eq("html-guidance-entry-footer"), any(Writer.class));
+        inOrder.verify(this.viewRenderer).renderViewWithEmptyModel(eq("html-guidance-category-footer"), any(Writer.class));
+        inOrder.verify(this.viewRenderer).renderViewWithEmptyModel(eq("html-guidance-footer"), any(Writer.class));
+        inOrder.verify(this.viewRenderer).renderViewWithEmptyModel(eq("html-summary-footer"), any(Writer.class));
     }
 }

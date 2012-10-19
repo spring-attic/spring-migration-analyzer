@@ -16,11 +16,14 @@
 
 package org.springframework.migrationanalyzer.analyze.support;
 
+import org.springframework.stereotype.Component;
+
+@Component
 final class InMemoryAnalysisResultFactory implements MutableAnalysisResultFactory {
 
     @Override
-    public MutableAnalysisResult create() {
-        return new InMemoryAnalysisResult();
+    public MutableAnalysisResult create(String archiveName) {
+        return new InMemoryAnalysisResult(archiveName);
     }
 
 }

@@ -24,7 +24,9 @@ import org.springframework.migrationanalyzer.analyze.AnalysisResultEntry;
 import org.springframework.migrationanalyzer.analyze.fs.FileSystemEntry;
 import org.springframework.migrationanalyzer.render.ByResultTypeController;
 import org.springframework.migrationanalyzer.render.ModelAndView;
+import org.springframework.stereotype.Component;
 
+@Component
 final class SpringConfigurationByResultTypeController implements ByResultTypeController<SpringConfiguration> {
 
     @Override

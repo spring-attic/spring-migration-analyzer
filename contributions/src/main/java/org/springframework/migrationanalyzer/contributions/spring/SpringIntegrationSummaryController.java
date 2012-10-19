@@ -30,7 +30,9 @@ import org.springframework.migrationanalyzer.analyze.AnalysisResultEntry;
 import org.springframework.migrationanalyzer.render.MigrationCost;
 import org.springframework.migrationanalyzer.render.ModelAndView;
 import org.springframework.migrationanalyzer.render.SummaryController;
+import org.springframework.stereotype.Component;
 
+@Component
 final class SpringIntegrationSummaryController implements SummaryController<AbstractSpringIntegration> {
 
     private static final String SUMMARY_DESCRIPTION_MULTIPLE_FORMAT = "%s integration: %s uses";

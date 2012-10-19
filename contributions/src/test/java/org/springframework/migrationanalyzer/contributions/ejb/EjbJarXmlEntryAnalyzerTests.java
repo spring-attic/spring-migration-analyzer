@@ -19,11 +19,11 @@ package org.springframework.migrationanalyzer.contributions.ejb;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.io.InputStream;
-import java.io.Reader;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
@@ -33,7 +33,6 @@ import java.util.Set;
 
 import org.junit.Test;
 import org.springframework.migrationanalyzer.analyze.fs.FileSystemEntry;
-import org.springframework.migrationanalyzer.analyze.fs.FileSystemException;
 import org.springframework.migrationanalyzer.analyze.support.AnalysisFailedException;
 
 public class EjbJarXmlEntryAnalyzerTests {
@@ -41,27 +40,27 @@ public class EjbJarXmlEntryAnalyzerTests {
     private final EjbJarXmlEntryAnalyzer analyzer = new EjbJarXmlEntryAnalyzer();
 
     @Test
-    public void ejb20Analysis() throws AnalysisFailedException {
+    public void ejb20Analysis() throws AnalysisFailedException, FileNotFoundException {
         analysis("2_0-ejb-jar.xml");
     }
 
     @Test
-    public void ejb21Analysis() throws AnalysisFailedException {
+    public void ejb21Analysis() throws AnalysisFailedException, FileNotFoundException {
         analysis("2_1-ejb-jar.xml");
     }
 
     @Test
-    public void ejb30Analysis() throws AnalysisFailedException {
+    public void ejb30Analysis() throws AnalysisFailedException, FileNotFoundException {
         analysis("3_0-ejb-jar.xml");
     }
 
     @Test
-    public void ejb31Analysis() throws AnalysisFailedException {
+    public void ejb31Analysis() throws AnalysisFailedException, FileNotFoundException {
         analysis("3_1-ejb-jar.xml");
     }
 
-    private void analysis(String name) throws AnalysisFailedException {
-        Set<Ejb> analysis = this.analyzer.analyze(new StubFileSystemEntry(name));
+    private void analysis(String name) throws AnalysisFailedException, FileNotFoundException {
+        Set<Ejb> analysis = this.analyzer.analyze(createFileSystemEntry(name));
         assertNotNull(analysis);
         assertEquals(4, analysis.size());
 
@@ -89,8 +88,8 @@ public class EjbJarXmlEntryAnalyzerTests {
     }
 
     @Test
-    public void nonEjbJarXmlFilesAreIgnored() throws AnalysisFailedException {
-        Set<Ejb> analysis = this.analyzer.analyze(new StubFileSystemEntry("web.xml"));
+    public void nonEjbJarXmlFilesAreIgnored() throws AnalysisFailedException, FileNotFoundException {
+        Set<Ejb> analysis = this.analyzer.analyze(createFileSystemEntry("web.xml"));
         assertNotNull(analysis);
         assertEquals(0, analysis.size());
     }
@@ -120,36 +119,11 @@ public class EjbJarXmlEntryAnalyzerTests {
         assertEquals("MDB", mdb.getEjbName());
     }
 
-    private static final class StubFileSystemEntry implements FileSystemEntry {
-
-        private final String name;
-
-        public StubFileSystemEntry(String name) {
-            this.name = name;
-        }
-
-        @Override
-        public InputStream getInputStream() {
-            try {
-                return new FileInputStream("src/test/resources/org/springframework/migrationanalyzer/contributions/ejb/" + this.name);
-            } catch (FileNotFoundException e) {
-                throw new FileSystemException(e);
-            }
-        }
-
-        @Override
-        public String getName() {
-            return this.name;
-        }
-
-        @Override
-        public Reader getReader() {
-            return null;
-        }
-
-        @Override
-        public boolean isDirectory() {
-            return false;
-        }
+    private FileSystemEntry createFileSystemEntry(String name) throws FileNotFoundException {
+        FileSystemEntry fileSystemEntry = mock(FileSystemEntry.class);
+        when(fileSystemEntry.getName()).thenReturn(name);
+        when(fileSystemEntry.getInputStream()).thenReturn(
+            new FileInputStream("src/test/resources/org/springframework/migrationanalyzer/contributions/ejb/" + name));
+        return fileSystemEntry;
     }
 }

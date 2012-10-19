@@ -16,6 +16,9 @@
 
 package org.springframework.migrationanalyzer.contributions.spring;
 
+import org.springframework.stereotype.Component;
+
+@Component
 class SpringEjbIntegrationByResultTypeController extends AbstractSpringIntegrationByResultTypeController<SpringEjbIntegration> {
 
     SpringEjbIntegrationByResultTypeController() {

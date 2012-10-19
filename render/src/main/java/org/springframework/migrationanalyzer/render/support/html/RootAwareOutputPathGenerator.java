@@ -35,7 +35,7 @@ public interface RootAwareOutputPathGenerator extends OutputPathGenerator {
      * @param path The path to generate the path for
      * @return The relative path
      */
-    String generateRelativePathToRootFor(String path);
+    String generatePathRelativeToRootFor(String path);
 
     /**
      * Generate the relative path for a {@link FileSystemEntry}
@@ -43,7 +43,7 @@ public interface RootAwareOutputPathGenerator extends OutputPathGenerator {
      * @param fileSystemEntry The entry to generate the path for
      * @return The relative path
      */
-    String generateRelativePathToRootFor(FileSystemEntry fileSystemEntry);
+    String generatePathRelativeToRootFor(FileSystemEntry fileSystemEntry);
 
     /**
      * Generate the relative path for a given type
@@ -51,5 +51,5 @@ public interface RootAwareOutputPathGenerator extends OutputPathGenerator {
      * @param resultType The type to generate the path for
      * @return The relative path
      */
-    String generateRelativePathToRootFor(Class<?> resultType);
+    String generatePathRelativeToRootFor(Class<?> resultType);
 }

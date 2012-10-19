@@ -16,6 +16,9 @@
 
 package org.springframework.migrationanalyzer.contributions.transactions;
 
+import org.springframework.stereotype.Component;
+
+@Component
 final class ProgrammaticJtaTransactionDemarcationDetector extends ProgrammaticTransactionDemarcationDetector {
 
     private static final String CLASS_NAME_USER_TRANSACTION = "javax.transaction.UserTransaction";

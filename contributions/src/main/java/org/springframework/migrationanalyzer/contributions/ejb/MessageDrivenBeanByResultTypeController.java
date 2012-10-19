@@ -17,7 +17,9 @@
 package org.springframework.migrationanalyzer.contributions.ejb;
 
 import org.springframework.migrationanalyzer.render.ByResultTypeController;
+import org.springframework.stereotype.Component;
 
+@Component
 final class MessageDrivenBeanByResultTypeController extends AbstractModelCreatingMessageDrivenBeanController implements
     ByResultTypeController<MessageDrivenBean> {
 

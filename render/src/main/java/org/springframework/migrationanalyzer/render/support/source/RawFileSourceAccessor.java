@@ -24,16 +24,10 @@ import java.util.List;
 
 import org.springframework.migrationanalyzer.analyze.fs.FileSystemEntry;
 import org.springframework.migrationanalyzer.util.IoUtils;
+import org.springframework.stereotype.Component;
 
-/**
- * Accesses a source file by reading the raw source from the file system
- * <p />
- * 
- * <strong>Concurrent Semantics</strong><br />
- * 
- * Thread-safe
- */
-public final class RawFileSourceAccessor implements SourceAccessor {
+@Component
+final class RawFileSourceAccessor implements SourceAccessor {
 
     private final List<String> fileSuffixes = Arrays.asList(".xml", ".xmi");
 

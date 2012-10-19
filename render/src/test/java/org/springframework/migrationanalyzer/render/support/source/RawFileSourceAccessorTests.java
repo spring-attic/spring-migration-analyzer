@@ -18,9 +18,9 @@ package org.springframework.migrationanalyzer.render.support.source;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
-import java.io.InputStream;
-import java.io.Reader;
 import java.io.StringReader;
 
 import org.junit.Test;
@@ -32,46 +32,24 @@ public class RawFileSourceAccessorTests {
 
     @Test
     public void sourceAvailableForXmlFile() {
-        assertEquals("the source for the file", this.sourceAccessor.getSource(new StubFileSystemEntry("foo.xml")));
+        assertEquals("the source for the file foo.xml", this.sourceAccessor.getSource(createFileSystemEntry("foo.xml")));
     }
 
     @Test
     public void sourceAvailableForXmiFile() {
-        assertEquals("the source for the file", this.sourceAccessor.getSource(new StubFileSystemEntry("foo.xmi")));
+        assertEquals("the source for the file foo.xmi", this.sourceAccessor.getSource(createFileSystemEntry("foo.xmi")));
     }
 
     @Test
     public void sourceUnavailableForClassFile() {
-        assertNull(this.sourceAccessor.getSource(new StubFileSystemEntry("foo.class")));
+        assertNull(this.sourceAccessor.getSource(createFileSystemEntry("foo.class")));
     }
 
-    private static final class StubFileSystemEntry implements FileSystemEntry {
-
-        private final String name;
-
-        public StubFileSystemEntry(String name) {
-            this.name = name;
-        }
-
-        @Override
-        public InputStream getInputStream() {
-            return null;
-        }
-
-        @Override
-        public String getName() {
-            return this.name;
-        }
-
-        @Override
-        public Reader getReader() {
-            return new StringReader("the source for the file");
-        }
-
-        @Override
-        public boolean isDirectory() {
-            return false;
-        }
+    private FileSystemEntry createFileSystemEntry(String name) {
+        FileSystemEntry fileSystemEntry = mock(FileSystemEntry.class);
+        when(fileSystemEntry.getName()).thenReturn(name);
+        when(fileSystemEntry.getReader()).thenReturn(new StringReader("the source for the file " + name));
+        return fileSystemEntry;
     }
 
 }

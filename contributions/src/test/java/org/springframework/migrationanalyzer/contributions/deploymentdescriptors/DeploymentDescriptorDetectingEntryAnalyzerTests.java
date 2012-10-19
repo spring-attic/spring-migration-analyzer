@@ -18,12 +18,14 @@ package org.springframework.migrationanalyzer.contributions.deploymentdescriptor
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 import java.util.Set;
 
 import org.junit.Test;
+import org.springframework.migrationanalyzer.analyze.fs.FileSystemEntry;
 import org.springframework.migrationanalyzer.analyze.support.AnalysisFailedException;
-import org.springframework.migrationanalyzer.contributions.StubFileSystemEntry;
 
 public class DeploymentDescriptorDetectingEntryAnalyzerTests {
 
@@ -31,7 +33,7 @@ public class DeploymentDescriptorDetectingEntryAnalyzerTests {
 
     @Test
     public void noMatchReturnsAnEmptySet() throws AnalysisFailedException {
-        Set<DeploymentDescriptor> analysis = this.analyzer.analyze(new StubFileSystemEntry("a/b/c/d/e/no-match.xml"));
+        Set<DeploymentDescriptor> analysis = this.analyzer.analyze(createFileSystemEntry("a/b/c/d/e/no-match.xml"));
         assertNotNull(analysis);
         assertEquals(0, analysis.size());
     }
@@ -99,7 +101,7 @@ public class DeploymentDescriptorDetectingEntryAnalyzerTests {
     }
 
     private void assertDescriptorDetected(String name, String expectedCategory) throws AnalysisFailedException {
-        StubFileSystemEntry fileSystemEntry = new StubFileSystemEntry("foo/" + name);
+        FileSystemEntry fileSystemEntry = createFileSystemEntry("foo/" + name);
         Set<DeploymentDescriptor> analysis = this.analyzer.analyze(fileSystemEntry);
         assertNotNull(analysis);
         assertEquals(1, analysis.size());
@@ -112,5 +114,11 @@ public class DeploymentDescriptorDetectingEntryAnalyzerTests {
         assertEquals(expectedCategory, actualDescriptor.getCategory());
         assertEquals(expectedName, actualDescriptor.getName());
         assertEquals(expectedLocation, actualDescriptor.getLocation().getName());
+    }
+
+    private FileSystemEntry createFileSystemEntry(String name) {
+        FileSystemEntry entry = mock(FileSystemEntry.class);
+        when(entry.getName()).thenReturn(name);
+        return entry;
     }
 }

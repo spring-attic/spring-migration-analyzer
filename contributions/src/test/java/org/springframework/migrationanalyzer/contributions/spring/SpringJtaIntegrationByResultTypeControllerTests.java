@@ -20,7 +20,6 @@ import java.io.File;
 
 import org.springframework.migrationanalyzer.analyze.AnalysisResultEntry;
 import org.springframework.migrationanalyzer.analyze.fs.FileSystemEntry;
-import org.springframework.migrationanalyzer.contributions.StubFileSystemEntry;
 
 public class SpringJtaIntegrationByResultTypeControllerTests extends AbstractSpringIntegrationByResultTypeControllerTests {
 
@@ -31,7 +30,7 @@ public class SpringJtaIntegrationByResultTypeControllerTests extends AbstractSpr
     @SuppressWarnings("rawtypes")
     @Override
     AnalysisResultEntry getAnalysisResultEntry(String path) {
-        FileSystemEntry fileSystemEntry = new StubFileSystemEntry(path);
+        FileSystemEntry fileSystemEntry = createFileSystemEntry(path);
         SpringJtaIntegration result = new SpringJtaIntegration(new File(path).getName(), fileSystemEntry);
         return new AnalysisResultEntry<SpringJtaIntegration>(fileSystemEntry, result);
     }

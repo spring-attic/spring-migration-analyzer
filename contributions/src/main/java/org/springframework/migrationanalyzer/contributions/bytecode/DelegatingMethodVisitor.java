@@ -23,9 +23,7 @@ import org.objectweb.asm.AnnotationVisitor;
 import org.objectweb.asm.Attribute;
 import org.objectweb.asm.Label;
 import org.objectweb.asm.MethodVisitor;
-import org.springframework.migrationanalyzer.analyze.util.IgnoredByClassPathScan;
 
-@IgnoredByClassPathScan
 final class DelegatingMethodVisitor implements ResultGatheringMethodVisitor<Object> {
 
     private final Set<MethodVisitor> delegates;

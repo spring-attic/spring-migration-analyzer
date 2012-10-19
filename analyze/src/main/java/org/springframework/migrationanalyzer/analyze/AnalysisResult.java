@@ -32,6 +32,13 @@ import org.springframework.migrationanalyzer.analyze.fs.FileSystemEntry;
 public interface AnalysisResult {
 
     /**
+     * Returns the name of the archive that was analyzed to produce this result
+     * 
+     * @return The name of the analyzed archive
+     */
+    String getArchiveName();
+
+    /**
      * Returns a <code>Set</code> of results of the given <code>type</code>.
      * 
      * @param <T> The type of the results

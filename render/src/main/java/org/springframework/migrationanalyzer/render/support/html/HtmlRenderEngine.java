@@ -23,12 +23,17 @@ import java.io.Writer;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.migrationanalyzer.analyze.AnalysisResult;
 import org.springframework.migrationanalyzer.render.OutputPathGenerator;
 import org.springframework.migrationanalyzer.render.RenderEngine;
 import org.springframework.migrationanalyzer.util.IoUtils;
+import org.springframework.stereotype.Component;
 
+@Component
 final class HtmlRenderEngine implements RenderEngine {
+
+    private static final String OUTPUT_TYPE = "html";
 
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
@@ -44,6 +49,7 @@ final class HtmlRenderEngine implements RenderEngine {
 
     private final WriterFactory writerFactory;
 
+    @Autowired
     HtmlRenderEngine(HtmlIndexRenderer indexRenderer, HtmlFileSystemEntryRenderer fileSystemEntryRenderer, HtmlSummaryRenderer summaryRenderer,
         HtmlResultTypeRenderer resultTypeRenderer, OutputPathGenerator outputPathGenerator, WriterFactory writerFactory) {
         this.indexRenderer = indexRenderer;
@@ -55,12 +61,17 @@ final class HtmlRenderEngine implements RenderEngine {
     }
 
     @Override
-    public void render(AnalysisResult analysisResult) {
+    public boolean canRender(String outputType) {
+        return OUTPUT_TYPE.equals(outputType);
+    }
+
+    @Override
+    public void render(AnalysisResult analysisResult, String outputPath) {
         this.logger.info("Starting HTML rendering");
 
-        copyStaticResources();
+        copyStaticResources(analysisResult.getArchiveName());
 
-        this.indexRenderer.renderIndex();
+        this.indexRenderer.renderIndex(analysisResult);
         this.summaryRenderer.renderSummary(analysisResult);
         this.resultTypeRenderer.renderResultTypes(analysisResult);
         this.fileSystemEntryRenderer.renderFileSystemEntries(analysisResult);
@@ -68,20 +79,20 @@ final class HtmlRenderEngine implements RenderEngine {
         this.logger.info("Finished HTML rendering");
     }
 
-    private void copyStaticResources() {
-        copyResource("css/style.css");
-        copyResource("img/ModHdr_BG.png");
-        copyResource("img/hdr-background.png");
-        copyResource("img/hdr-glow.png");
-        copyResource("img/springsource-logo.png");
-        copyResource("img/title-background.png");
-        copyResource("js/script.js");
-        copyResource("banner.html");
+    private void copyStaticResources(String archiveName) {
+        copyResource("css/style.css", archiveName);
+        copyResource("img/ModHdr_BG.png", archiveName);
+        copyResource("img/hdr-background.png", archiveName);
+        copyResource("img/hdr-glow.png", archiveName);
+        copyResource("img/springsource-logo.png", archiveName);
+        copyResource("img/title-background.png", archiveName);
+        copyResource("js/script.js", archiveName);
+        copyResource("banner.html", archiveName);
     }
 
-    private void copyResource(String resource) {
+    private void copyResource(String resource, String archiveName) {
         Reader reader = new InputStreamReader(getClass().getResourceAsStream(resource));
-        Writer writer = this.writerFactory.createWriter(this.outputPathGenerator.generatePathFor(resource));
+        Writer writer = this.writerFactory.createWriter(this.outputPathGenerator.generatePathFor(resource), archiveName);
         try {
             IoUtils.copy(reader, writer);
         } catch (IOException ioe) {

@@ -22,17 +22,10 @@ import java.util.Set;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Component;
 
-/**
- * The standard implementation of {@link ApiUsageDetector}. This implementation reads a file for a list of apis that
- * should be detected.
- * <p />
- * 
- * <strong>Concurrent Semantics</strong><br />
- * 
- * Thread-safe
- */
-public final class StandardApiUsageDetector implements ApiUsageDetector {
+@Component
+final class StandardApiUsageDetector implements ApiUsageDetector {
 
     private static final String DETECTED_APIS_PROPERTIES_FILE_NAME = "org/springframework/migrationanalyzer/contributions/apiusage/detected-apis.properties";
 
@@ -40,15 +33,12 @@ public final class StandardApiUsageDetector implements ApiUsageDetector {
 
     private final Map<String, DetectedApiConfiguration> detectedApisByPackageName;
 
-    StandardApiUsageDetector(String propertiesFileName) {
-        this.detectedApisByPackageName = new DetectedApiConfigurationReader().readConfiguration(propertiesFileName);
+    StandardApiUsageDetector() {
+        this(DETECTED_APIS_PROPERTIES_FILE_NAME);
     }
 
-    /**
-     * Creates a new instance specifying a default value for the file containing the list of detected apis
-     */
-    public StandardApiUsageDetector() {
-        this(DETECTED_APIS_PROPERTIES_FILE_NAME);
+    StandardApiUsageDetector(String detectedApis) {
+        this.detectedApisByPackageName = new DetectedApiConfigurationReader().readConfiguration(detectedApis);
     }
 
     private ApiUsage recordApiUsage(ApiUsageType usageType, DetectedApiConfiguration configuration, String user, String usageDescription) {

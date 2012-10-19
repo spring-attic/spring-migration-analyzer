@@ -20,6 +20,8 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 import java.util.Collections;
 import java.util.HashSet;
@@ -31,7 +33,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 import org.junit.Test;
 import org.springframework.migrationanalyzer.analyze.AnalysisResultEntry;
-import org.springframework.migrationanalyzer.contributions.StubFileSystemEntry;
+import org.springframework.migrationanalyzer.analyze.fs.FileSystemEntry;
 import org.springframework.migrationanalyzer.render.ModelAndView;
 import org.springframework.migrationanalyzer.render.SummaryController;
 
@@ -68,12 +70,12 @@ public class DeploymentDescriptorSummaryControllerTests {
     public void modelGeneration() {
         Set<AnalysisResultEntry<DeploymentDescriptor>> resultEntries = new HashSet<AnalysisResultEntry<DeploymentDescriptor>>();
 
-        resultEntries.add(new AnalysisResultEntry<DeploymentDescriptor>(null, new DeploymentDescriptor("category1", new StubFileSystemEntry(
-            "a/b/c/dd.xml"), "dd.xml")));
-        resultEntries.add(new AnalysisResultEntry<DeploymentDescriptor>(null, new DeploymentDescriptor("category1", new StubFileSystemEntry(
-            "d/e/f/dd.xml"), "dd.xml")));
-        resultEntries.add(new AnalysisResultEntry<DeploymentDescriptor>(null, new DeploymentDescriptor("category2", new StubFileSystemEntry(
-            "d/e/f/hh.xml"), "hh.xml")));
+        resultEntries.add(new AnalysisResultEntry<DeploymentDescriptor>(null, new DeploymentDescriptor("category1",
+            createFileSystemEntry("a/b/c/dd.xml"), "dd.xml")));
+        resultEntries.add(new AnalysisResultEntry<DeploymentDescriptor>(null, new DeploymentDescriptor("category1",
+            createFileSystemEntry("d/e/f/dd.xml"), "dd.xml")));
+        resultEntries.add(new AnalysisResultEntry<DeploymentDescriptor>(null, new DeploymentDescriptor("category2",
+            createFileSystemEntry("d/e/f/hh.xml"), "hh.xml")));
 
         ModelAndView modelAndView = this.controller.handle(resultEntries);
 
@@ -92,5 +94,11 @@ public class DeploymentDescriptorSummaryControllerTests {
         entry = entries.next();
         assertEquals("category2", entry.getKey());
         assertEquals(1, entry.getValue().get());
+    }
+
+    private FileSystemEntry createFileSystemEntry(String name) {
+        FileSystemEntry entry = mock(FileSystemEntry.class);
+        when(entry.getName()).thenReturn(name);
+        return entry;
     }
 }

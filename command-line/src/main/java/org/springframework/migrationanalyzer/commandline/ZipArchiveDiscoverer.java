@@ -26,7 +26,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.migrationanalyzer.util.IoUtils;
 import org.springframework.migrationanalyzer.util.ZipUtils;
+import org.springframework.stereotype.Component;
 
+@Component
 final class ZipArchiveDiscoverer implements ArchiveDiscoverer {
 
     private final Logger logger = LoggerFactory.getLogger(ZipArchiveDiscoverer.class);

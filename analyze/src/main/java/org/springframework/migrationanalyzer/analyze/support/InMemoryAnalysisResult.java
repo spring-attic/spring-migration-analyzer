@@ -35,6 +35,12 @@ final class InMemoryAnalysisResult implements MutableAnalysisResult {
 
     private final Map<FileSystemEntry, Set<AnalysisResultEntry<?>>> resultsByFileSystemEntry = new HashMap<FileSystemEntry, Set<AnalysisResultEntry<?>>>();
 
+    private final String archiveName;
+
+    InMemoryAnalysisResult(String archiveName) {
+        this.archiveName = archiveName;
+    }
+
     @Override
     @SuppressWarnings("unchecked")
     public <T> Set<AnalysisResultEntry<T>> getResultEntries(Class<T> type) {
@@ -83,7 +89,7 @@ final class InMemoryAnalysisResult implements MutableAnalysisResult {
     @Override
     public AnalysisResult getResultForEntry(FileSystemEntry fileSystemEntry) {
         Set<AnalysisResultEntry<?>> resultsForFileSystemEntry = getResultsForFileSystemEntry(fileSystemEntry, false);
-        InMemoryAnalysisResult result = new InMemoryAnalysisResult();
+        InMemoryAnalysisResult result = new InMemoryAnalysisResult(this.archiveName);
 
         if (resultsForFileSystemEntry != null) {
             for (AnalysisResultEntry<?> analysisResultEntry : resultsForFileSystemEntry) {
@@ -102,6 +108,11 @@ final class InMemoryAnalysisResult implements MutableAnalysisResult {
     @Override
     public String toString() {
         return String.format("%s result types, %s file system entries", this.resultsByType.size(), this.resultsByFileSystemEntry.size());
+    }
+
+    @Override
+    public String getArchiveName() {
+        return this.archiveName;
     }
 
 }

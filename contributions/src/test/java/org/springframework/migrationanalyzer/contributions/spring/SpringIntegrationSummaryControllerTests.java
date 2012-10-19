@@ -20,6 +20,8 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 import java.util.HashSet;
 import java.util.List;
@@ -29,7 +31,6 @@ import java.util.Set;
 import org.junit.Test;
 import org.springframework.migrationanalyzer.analyze.AnalysisResultEntry;
 import org.springframework.migrationanalyzer.analyze.fs.FileSystemEntry;
-import org.springframework.migrationanalyzer.contributions.StubFileSystemEntry;
 import org.springframework.migrationanalyzer.render.MigrationCost;
 import org.springframework.migrationanalyzer.render.ModelAndView;
 import org.springframework.migrationanalyzer.render.SummaryController;
@@ -50,13 +51,13 @@ public class SpringIntegrationSummaryControllerTests {
     public void handleProducesOneModelAndViewForEachTypeOfIntegrationGuidance() {
         Set<AnalysisResultEntry<AbstractSpringIntegration>> results = new HashSet<AnalysisResultEntry<AbstractSpringIntegration>>();
 
-        StubFileSystemEntry fileSystemEntry = new StubFileSystemEntry("location1");
+        FileSystemEntry fileSystemEntry = createFileSystemEntry("location1");
         results.add(new AnalysisResultEntry<AbstractSpringIntegration>(fileSystemEntry, new SpringAlphaIntegration("user1", fileSystemEntry)));
 
-        fileSystemEntry = new StubFileSystemEntry("location2");
+        fileSystemEntry = createFileSystemEntry("location2");
         results.add(new AnalysisResultEntry<AbstractSpringIntegration>(fileSystemEntry, new SpringAlphaIntegration("user2", fileSystemEntry)));
 
-        fileSystemEntry = new StubFileSystemEntry("location3");
+        fileSystemEntry = createFileSystemEntry("location3");
         results.add(new AnalysisResultEntry<AbstractSpringIntegration>(fileSystemEntry, new SpringBravoIntegration("user3", fileSystemEntry)));
 
         List<ModelAndView> modelsAndViews = this.controller.handle(results, MigrationCost.LOW);
@@ -68,13 +69,13 @@ public class SpringIntegrationSummaryControllerTests {
     public void handleForSummary() {
         Set<AnalysisResultEntry<AbstractSpringIntegration>> results = new HashSet<AnalysisResultEntry<AbstractSpringIntegration>>();
 
-        StubFileSystemEntry fileSystemEntry = new StubFileSystemEntry("location1");
+        FileSystemEntry fileSystemEntry = createFileSystemEntry("location1");
         results.add(new AnalysisResultEntry<AbstractSpringIntegration>(fileSystemEntry, new SpringAlphaIntegration("user1", fileSystemEntry)));
 
-        fileSystemEntry = new StubFileSystemEntry("location2");
+        fileSystemEntry = createFileSystemEntry("location2");
         results.add(new AnalysisResultEntry<AbstractSpringIntegration>(fileSystemEntry, new SpringAlphaIntegration("user2", fileSystemEntry)));
 
-        fileSystemEntry = new StubFileSystemEntry("location3");
+        fileSystemEntry = createFileSystemEntry("location3");
         results.add(new AnalysisResultEntry<AbstractSpringIntegration>(fileSystemEntry, new SpringBravoIntegration("user3", fileSystemEntry)));
 
         ModelAndView modelAndView = this.controller.handle(results);
@@ -98,12 +99,17 @@ public class SpringIntegrationSummaryControllerTests {
 
     }
 
+    private FileSystemEntry createFileSystemEntry(String name) {
+        FileSystemEntry entry = mock(FileSystemEntry.class);
+        when(entry.getName()).thenReturn(name);
+        return entry;
+    }
+
     private static final class SpringAlphaIntegration extends AbstractSpringIntegration {
 
         SpringAlphaIntegration(String userName, FileSystemEntry userLocation) {
             super("Alpha", "alpha-guidance", MigrationCost.LOW, userName, userLocation);
         }
-
     }
 
     private static final class SpringBravoIntegration extends AbstractSpringIntegration {
@@ -111,6 +117,5 @@ public class SpringIntegrationSummaryControllerTests {
         SpringBravoIntegration(String userName, FileSystemEntry userLocation) {
             super("Bravo", "bravo-guidance", MigrationCost.LOW, userName, userLocation);
         }
-
     }
 }

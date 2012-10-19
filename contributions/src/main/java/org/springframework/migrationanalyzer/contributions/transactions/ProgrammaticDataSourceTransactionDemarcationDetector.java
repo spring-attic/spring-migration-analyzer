@@ -16,6 +16,9 @@
 
 package org.springframework.migrationanalyzer.contributions.transactions;
 
+import org.springframework.stereotype.Component;
+
+@Component
 final class ProgrammaticDataSourceTransactionDemarcationDetector extends ProgrammaticTransactionDemarcationDetector {
 
     private static final String CLASS_NAME_CONNECTION = "java.sql.Connection";

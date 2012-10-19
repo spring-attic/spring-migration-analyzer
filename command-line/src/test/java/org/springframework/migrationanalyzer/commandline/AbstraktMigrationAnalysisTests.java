@@ -44,7 +44,7 @@ public class AbstraktMigrationAnalysisTests {
         private volatile int code;
 
         @Override
-        protected MigrationAnalysisExecutor getExecutor(String inputPath, String outputType, String outpathPath, String[] excludes) {
+        protected MigrationAnalysisExecutor getExecutor(Configuration configuration) {
             return this.executor;
         }
 

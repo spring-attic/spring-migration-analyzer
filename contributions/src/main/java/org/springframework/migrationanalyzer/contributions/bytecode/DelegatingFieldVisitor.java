@@ -22,9 +22,7 @@ import java.util.Set;
 import org.objectweb.asm.AnnotationVisitor;
 import org.objectweb.asm.Attribute;
 import org.objectweb.asm.FieldVisitor;
-import org.springframework.migrationanalyzer.analyze.util.IgnoredByClassPathScan;
 
-@IgnoredByClassPathScan
 final class DelegatingFieldVisitor implements ResultGatheringFieldVisitor<Object> {
 
     private final Set<FieldVisitor> delegates;

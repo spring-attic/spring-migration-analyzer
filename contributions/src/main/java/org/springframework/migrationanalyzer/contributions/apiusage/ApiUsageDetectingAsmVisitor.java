@@ -25,9 +25,12 @@ import org.objectweb.asm.Label;
 import org.objectweb.asm.MethodVisitor;
 import org.objectweb.asm.Type;
 import org.objectweb.asm.commons.EmptyVisitor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.migrationanalyzer.contributions.bytecode.DescriptionBuilder;
 import org.springframework.migrationanalyzer.contributions.bytecode.ResultGatheringClassVisitor;
+import org.springframework.stereotype.Component;
 
+@Component
 final class ApiUsageDetectingAsmVisitor extends EmptyVisitor implements ResultGatheringClassVisitor<ApiUsage> {
 
     private final ApiUsageDetector delegateDetector;
@@ -62,6 +65,7 @@ final class ApiUsageDetectingAsmVisitor extends EmptyVisitor implements ResultGa
         this.delegateDetector = new StandardApiUsageDetector();
     }
 
+    @Autowired
     ApiUsageDetectingAsmVisitor(ApiUsageDetector detector) {
         this.delegateDetector = detector;
     }

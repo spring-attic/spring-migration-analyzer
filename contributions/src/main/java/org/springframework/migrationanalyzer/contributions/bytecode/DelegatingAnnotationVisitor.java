@@ -20,9 +20,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 import org.objectweb.asm.AnnotationVisitor;
-import org.springframework.migrationanalyzer.analyze.util.IgnoredByClassPathScan;
 
-@IgnoredByClassPathScan
 final class DelegatingAnnotationVisitor implements ResultGatheringAnnotationVisitor<Object> {
 
     private final Set<AnnotationVisitor> delegates;

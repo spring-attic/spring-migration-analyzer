@@ -17,7 +17,9 @@
 package org.springframework.migrationanalyzer.contributions.ejb;
 
 import org.springframework.migrationanalyzer.render.ByResultTypeController;
+import org.springframework.stereotype.Component;
 
+@Component
 final class EntityBeanByResultTypeController extends AbstractModelCreatingEntityBeanController implements ByResultTypeController<EntityBean> {
 
     private static final String VIEW_NAME = "entity-bean-by-result-type";

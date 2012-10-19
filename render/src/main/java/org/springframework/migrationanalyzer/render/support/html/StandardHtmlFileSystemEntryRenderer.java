@@ -23,23 +23,28 @@ import java.util.Set;
 import java.util.TreeMap;
 import java.util.TreeSet;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.migrationanalyzer.analyze.AnalysisResult;
 import org.springframework.migrationanalyzer.analyze.fs.FileSystemEntry;
 import org.springframework.migrationanalyzer.render.ByFileSystemEntryController;
 import org.springframework.migrationanalyzer.render.OutputPathGenerator;
 import org.springframework.migrationanalyzer.render.support.source.SourceAccessor;
 import org.springframework.migrationanalyzer.util.IoUtils;
+import org.springframework.stereotype.Component;
 
+@Component
 @SuppressWarnings("rawtypes")
 final class StandardHtmlFileSystemEntryRenderer implements HtmlFileSystemEntryRenderer {
 
-    private static final String VIEW_NAME_BY_FILE_HEADER = "by-file-header";
+    private static final String REPORT_TYPE = "html";
 
-    private static final String VIEW_NAME_BY_FILE_SOURCE = "by-file-source";
+    private static final String VIEW_NAME_BY_FILE_HEADER = "html-by-file-header";
 
-    private static final String VIEW_NAME_BY_FILE_FOOTER = "by-file-footer";
+    private static final String VIEW_NAME_BY_FILE_SOURCE = "html-by-file-source";
 
-    private static final String VIEW_NAME_FILE_CONTENTS = "file-contents";
+    private static final String VIEW_NAME_BY_FILE_FOOTER = "html-by-file-footer";
+
+    private static final String VIEW_NAME_FILE_CONTENTS = "html-file-contents";
 
     private final RootAwareOutputPathGenerator outputPathGenerator;
 
@@ -51,6 +56,7 @@ final class StandardHtmlFileSystemEntryRenderer implements HtmlFileSystemEntryRe
 
     private final WriterFactory writerFactory;
 
+    @Autowired
     StandardHtmlFileSystemEntryRenderer(Set<ByFileSystemEntryController> fileSystemEntryControllers, ViewRenderer viewRenderer,
         RootAwareOutputPathGenerator outputPathGenerator, WriterFactory writerFactory, SourceAccessor sourceAccessor) {
         this.fileSystemEntryControllers = fileSystemEntryControllers;
@@ -64,17 +70,17 @@ final class StandardHtmlFileSystemEntryRenderer implements HtmlFileSystemEntryRe
     public void renderFileSystemEntries(AnalysisResult analysisResult) {
         Set<FileSystemEntry> fileSystemEntries = analysisResult.getFileSystemEntries();
 
-        renderFileSystemEntryContents(fileSystemEntries);
+        renderFileSystemEntryContents(fileSystemEntries, analysisResult.getArchiveName());
 
         for (FileSystemEntry fileSystemEntry : fileSystemEntries) {
             Writer writer = null;
             try {
-                writer = this.writerFactory.createWriter(this.outputPathGenerator.generatePathFor(fileSystemEntry));
+                writer = this.writerFactory.createWriter(this.outputPathGenerator.generatePathFor(fileSystemEntry), analysisResult.getArchiveName());
                 AnalysisResult entryResult = analysisResult.getResultForEntry(fileSystemEntry);
                 renderByFileHeader(fileSystemEntry, writer);
                 for (Class<?> resultType : entryResult.getResultTypes()) {
                     this.viewRenderer.render(resultType, entryResult.getResultEntries(resultType), this.fileSystemEntryControllers, writer,
-                        new LocationAwareOutputPathGenerator(this.outputPathGenerator, fileSystemEntry));
+                        new LocationAwareOutputPathGenerator(this.outputPathGenerator, fileSystemEntry), REPORT_TYPE);
                 }
                 renderByFileSource(fileSystemEntry, writer);
                 renderByFileFooter(writer);
@@ -84,7 +90,7 @@ final class StandardHtmlFileSystemEntryRenderer implements HtmlFileSystemEntryRe
         }
     }
 
-    private void renderFileSystemEntryContents(Set<FileSystemEntry> fileSystemEntries) {
+    private void renderFileSystemEntryContents(Set<FileSystemEntry> fileSystemEntries, String archiveName) {
         String contentsPath = this.outputPathGenerator.generatePathForFileSystemEntryContents();
         OutputPathGenerator locationAwarePathGenerator = new LocationAwareOutputPathGenerator(this.outputPathGenerator, contentsPath);
 
@@ -93,7 +99,7 @@ final class StandardHtmlFileSystemEntryRenderer implements HtmlFileSystemEntryRe
         Writer writer = null;
 
         try {
-            writer = this.writerFactory.createWriter(contentsPath);
+            writer = this.writerFactory.createWriter(contentsPath, archiveName);
             this.viewRenderer.renderViewWithModel(VIEW_NAME_FILE_CONTENTS, model, writer);
         } finally {
             IoUtils.closeQuietly(writer);
@@ -142,7 +148,7 @@ final class StandardHtmlFileSystemEntryRenderer implements HtmlFileSystemEntryRe
     private void renderByFileHeader(FileSystemEntry fileSystemEntry, Writer writer) {
         Map<String, Object> model = new HashMap<String, Object>();
         model.put("fileName", fileSystemEntry.getName());
-        model.put("pathToRoot", this.outputPathGenerator.generateRelativePathToRootFor(fileSystemEntry));
+        model.put("pathToRoot", this.outputPathGenerator.generatePathRelativeToRootFor(fileSystemEntry));
         this.viewRenderer.renderViewWithModel(VIEW_NAME_BY_FILE_HEADER, model, writer);
     }
 

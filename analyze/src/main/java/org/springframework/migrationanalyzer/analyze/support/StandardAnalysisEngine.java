@@ -16,18 +16,20 @@
 
 package org.springframework.migrationanalyzer.analyze.support;
 
-import java.util.Arrays;
 import java.util.Set;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.migrationanalyzer.analyze.AnalysisEngine;
 import org.springframework.migrationanalyzer.analyze.AnalysisResult;
 import org.springframework.migrationanalyzer.analyze.AnalysisResultEntry;
 import org.springframework.migrationanalyzer.analyze.fs.FileSystem;
 import org.springframework.migrationanalyzer.analyze.fs.FileSystemEntry;
+import org.springframework.stereotype.Component;
 import org.springframework.util.AntPathMatcher;
 
+@Component
 final class StandardAnalysisEngine implements AnalysisEngine {
 
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
@@ -37,26 +39,21 @@ final class StandardAnalysisEngine implements AnalysisEngine {
 
     private final MutableAnalysisResultFactory analysisResultFactory;
 
-    private final FileSystem fileSystem;
-
-    private final String[] excludes;
-
     @SuppressWarnings("rawtypes")
-    StandardAnalysisEngine(Set<EntryAnalyzer> analyzers, MutableAnalysisResultFactory analysisResultFactory, FileSystem fileSystem, String[] excludes) {
+    @Autowired
+    StandardAnalysisEngine(Set<EntryAnalyzer> analyzers, MutableAnalysisResultFactory analysisResultFactory) {
         this.analyzers = analyzers;
         this.analysisResultFactory = analysisResultFactory;
-        this.fileSystem = fileSystem;
-        this.excludes = Arrays.copyOf(excludes, excludes.length);
     }
 
     @Override
-    public AnalysisResult analyze() {
+    public AnalysisResult analyze(FileSystem fileSystem, String[] excludes, String archiveName) {
         this.logger.info("Starting analysis");
 
-        MutableAnalysisResult analysisResult = this.analysisResultFactory.create();
+        MutableAnalysisResult analysisResult = this.analysisResultFactory.create(archiveName);
 
-        for (FileSystemEntry fileSystemEntry : this.fileSystem) {
-            if (!isExcluded(fileSystemEntry)) {
+        for (FileSystemEntry fileSystemEntry : fileSystem) {
+            if (!isExcluded(fileSystemEntry, excludes)) {
                 for (EntryAnalyzer<?> analyzer : this.analyzers) {
                     this.logger.debug("Analyzing '{}' with '{}'", fileSystemEntry, analyzer);
                     try {
@@ -74,9 +71,9 @@ final class StandardAnalysisEngine implements AnalysisEngine {
         return analysisResult;
     }
 
-    private boolean isExcluded(FileSystemEntry fileSystemEntry) {
+    private boolean isExcluded(FileSystemEntry fileSystemEntry, String[] excludes) {
         AntPathMatcher pathMatcher = new AntPathMatcher();
-        for (String exclude : this.excludes) {
+        for (String exclude : excludes) {
             if (pathMatcher.match(exclude, fileSystemEntry.getName())) {
                 this.logger.debug("'{}' is excluded as it matches pattern '{}'", fileSystemEntry, exclude);
                 return true;

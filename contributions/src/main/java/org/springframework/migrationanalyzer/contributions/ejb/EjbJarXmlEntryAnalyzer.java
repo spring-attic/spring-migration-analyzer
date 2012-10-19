@@ -34,11 +34,13 @@ import org.springframework.migrationanalyzer.contributions.xml.NodeAnalyzer;
 import org.springframework.migrationanalyzer.contributions.xml.StandardXmlArtifactAnalyzer;
 import org.springframework.migrationanalyzer.contributions.xml.ValueAnalyzer;
 import org.springframework.migrationanalyzer.contributions.xml.XmlArtifactAnalyzer;
+import org.springframework.stereotype.Component;
 import org.w3c.dom.Node;
 import org.xml.sax.EntityResolver;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
+@Component
 final class EjbJarXmlEntryAnalyzer implements EntryAnalyzer<Ejb> {
 
     @Override

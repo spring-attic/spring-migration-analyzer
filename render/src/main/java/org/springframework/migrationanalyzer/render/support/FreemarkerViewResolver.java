@@ -16,6 +16,7 @@
 
 package org.springframework.migrationanalyzer.render.support;
 
+import java.io.File;
 import java.io.IOException;
 import java.net.URLClassLoader;
 import java.util.HashMap;
@@ -24,53 +25,39 @@ import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.springframework.migrationanalyzer.analyze.util.StandardClassPathScanner;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.migrationanalyzer.analyze.util.ClassPathScanner;
+import org.springframework.stereotype.Component;
 
 import freemarker.template.Configuration;
 import freemarker.template.DefaultObjectWrapper;
 
-/**
- * A view resolver that creates {@link FreemarkerView}s for a given output type
- * <p />
- * 
- * <strong>Concurrent Semantics</strong><br />
- * 
- * Thread-safe
- * 
- * @see FreemarkerView
- */
-public final class FreemarkerViewResolver implements ViewResolver {
+@Component
+final class FreemarkerViewResolver implements ViewResolver {
 
-    private static final String VIEW_PATTERN_FORMAT = ".*%s-(.*)\\.ftl";
-
-    private final String outputType;
+    private static final String VIEW_PATTERN_FORMAT = ".*\\.ftl";
 
     private final Configuration configuration;
 
     private final Map<String, String> templatePathCache = new HashMap<String, String>();
 
-    /**
-     * Creates a new instance of this resolver that resolves views for a specified type of output
-     * 
-     * @param outputType The type of output to resolve views for
-     */
-    public FreemarkerViewResolver(String outputType) {
-        this(outputType, //
-            new StandardClassPathScanner().findResources(Pattern.compile(String.format(VIEW_PATTERN_FORMAT, outputType)), //
-                (URLClassLoader) Thread.currentThread().getContextClassLoader()));
+    @Autowired
+    FreemarkerViewResolver(ClassPathScanner classPathScanner) {
+        this(classPathScanner.findResources(Pattern.compile(String.format(VIEW_PATTERN_FORMAT)), //
+            (URLClassLoader) Thread.currentThread().getContextClassLoader()));
     }
 
-    FreemarkerViewResolver(String outputType, Set<String> templatePaths) {
-        this.outputType = outputType;
+    FreemarkerViewResolver(Set<String> templatePaths) {
         this.configuration = new Configuration();
         this.configuration.setClassForTemplateLoading(this.getClass(), "/");
         this.configuration.setObjectWrapper(new DefaultObjectWrapper());
 
-        Pattern viewPattern = Pattern.compile(String.format(VIEW_PATTERN_FORMAT, outputType));
+        Pattern viewPattern = Pattern.compile(String.format(VIEW_PATTERN_FORMAT));
         for (String templatePath : templatePaths) {
             Matcher matcher = viewPattern.matcher(templatePath);
             if (matcher.find()) {
-                this.templatePathCache.put(matcher.group(1), templatePath);
+                String name = new File(templatePath).getName();
+                this.templatePathCache.put(name.substring(0, name.length() - ".ftl".length()), templatePath);
             }
         }
     }
@@ -87,8 +74,7 @@ public final class FreemarkerViewResolver implements ViewResolver {
             return new FreemarkerView(this.configuration.getTemplate(path));
         } catch (IOException e) {
             throw new IllegalArgumentException(String.format(
-                "Unable to find template for '%s'.  Make sure you have a Freemarker template named %s-%s.ftl on the classpath", viewName,
-                this.outputType, viewName), e);
+                "Unable to find template for '%s'.  Make sure you have a Freemarker template named %s.ftl on the classpath", viewName, viewName), e);
         }
     }
 

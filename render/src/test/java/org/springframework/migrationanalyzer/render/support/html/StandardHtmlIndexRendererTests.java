@@ -16,30 +16,28 @@
 
 package org.springframework.migrationanalyzer.render.support.html;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
 
-import java.util.List;
+import java.io.Writer;
 
 import org.junit.Test;
+import org.springframework.migrationanalyzer.analyze.AnalysisResult;
 
 public class StandardHtmlIndexRendererTests {
 
-    private final StubViewRenderer viewRenderer = new StubViewRenderer();
+    private final ViewRenderer viewRenderer = mock(ViewRenderer.class);
 
-    private final RootAwareOutputPathGenerator outputPathGenerator = new StubOutputPathGenerator("target");
+    private final WriterFactory writerFactory = mock(WriterFactory.class);
 
-    private final StubWriterFactory writerFactory = new StubWriterFactory();
-
-    private final StandardHtmlIndexRenderer renderer = new StandardHtmlIndexRenderer(this.viewRenderer, this.outputPathGenerator, this.writerFactory);
+    private final StandardHtmlIndexRenderer renderer = new StandardHtmlIndexRenderer(this.viewRenderer, mock(RootAwareOutputPathGenerator.class),
+        this.writerFactory);
 
     @Test
     public void renderIndex() {
-
-        this.renderer.renderIndex();
-
-        List<String> viewsRendered = this.viewRenderer.getViewsRendered();
-        assertEquals(1, viewsRendered.size());
-        assertTrue(viewsRendered.contains("index"));
+        this.renderer.renderIndex(mock(AnalysisResult.class));
+        verify(this.viewRenderer).renderViewWithEmptyModel(eq("html-index"), any(Writer.class));
     }
 }

@@ -23,19 +23,23 @@ import java.util.Set;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.migrationanalyzer.analyze.AnalysisResultEntry;
 import org.springframework.migrationanalyzer.render.Controller;
 import org.springframework.migrationanalyzer.render.ModelAndView;
 import org.springframework.migrationanalyzer.render.OutputPathGenerator;
 import org.springframework.migrationanalyzer.render.support.View;
 import org.springframework.migrationanalyzer.render.support.ViewResolver;
+import org.springframework.stereotype.Component;
 
+@Component
 final class StandardViewRenderer implements ViewRenderer {
 
     private final ViewResolver viewResolver;
 
     private final Logger logger = LoggerFactory.getLogger(getClass());
 
+    @Autowired
     StandardViewRenderer(ViewResolver viewResolver) {
         this.viewResolver = viewResolver;
     }
@@ -58,7 +62,7 @@ final class StandardViewRenderer implements ViewRenderer {
     @Override
     @SuppressWarnings({ "rawtypes", "unchecked" })
     public <T> void render(Class<?> resultType, Set<AnalysisResultEntry<T>> entries, Set<? extends Controller> controllers, Writer writer,
-        OutputPathGenerator outputPathGenerator) {
+        OutputPathGenerator outputPathGenerator, String reportType) {
         for (Controller<?> controller : controllers) {
             if (controller.canHandle(resultType)) {
                 this.logger.debug("Generating model with {}", controller);
@@ -67,7 +71,7 @@ final class StandardViewRenderer implements ViewRenderer {
                 modelAndView.getModel().put("link", outputPathGenerator.generatePathFor(resultType));
                 modelAndView.getModel().put("outputPathGenerator", outputPathGenerator);
 
-                renderViewWithModel(modelAndView.getViewName(), modelAndView.getModel(), writer);
+                renderViewWithModel(reportType + "-" + modelAndView.getViewName(), modelAndView.getModel(), writer);
             }
         }
     }

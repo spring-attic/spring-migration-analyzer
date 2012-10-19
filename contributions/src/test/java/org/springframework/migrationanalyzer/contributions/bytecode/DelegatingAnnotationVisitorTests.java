@@ -17,7 +17,8 @@
 package org.springframework.migrationanalyzer.contributions.bytecode;
 
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -27,7 +28,7 @@ import org.objectweb.asm.AnnotationVisitor;
 
 public class DelegatingAnnotationVisitorTests {
 
-    private final StubResultGatheringAnnotationVisitor delegate = new StubResultGatheringAnnotationVisitor();
+    private final ResultGatheringAnnotationVisitor<?> delegate = mock(ResultGatheringAnnotationVisitor.class);
 
     private final DelegatingAnnotationVisitor visitor;
 
@@ -40,37 +41,37 @@ public class DelegatingAnnotationVisitorTests {
     @Test
     public void getResults() {
         assertNotNull(this.visitor.getResults());
-        assertTrue(this.delegate.getGetResultsCalled());
+        verify(this.delegate).getResults();
     }
 
     @Test
     public void visit() {
         this.visitor.visit(null, null);
-        assertTrue(this.delegate.getVisitCalled());
+        verify(this.delegate).visit(null, null);
     }
 
     @Test
     public void visitAnnotation() {
         this.visitor.visitAnnotation(null, null);
-        assertTrue(this.delegate.getVisitAnnotationCalled());
+        verify(this.delegate).visitAnnotation(null, null);
     }
 
     @Test
     public void visitArray() {
         this.visitor.visitArray(null);
-        assertTrue(this.delegate.getVisitArrayCalled());
+        verify(this.delegate).visitArray(null);
     }
 
     @Test
     public void visitEnd() {
         this.visitor.visitEnd();
-        assertTrue(this.delegate.getVisitEndCalled());
+        verify(this.delegate).visitEnd();
     }
 
     @Test
     public void visitEnum() {
         this.visitor.visitEnum(null, null, null);
-        assertTrue(this.delegate.getVisitEnumCalled());
+        verify(this.delegate).visitEnum(null, null, null);
     }
 
 }

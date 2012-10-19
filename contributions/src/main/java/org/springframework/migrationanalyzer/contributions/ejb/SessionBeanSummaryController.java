@@ -29,7 +29,9 @@ import org.springframework.migrationanalyzer.contributions.transactions.Transact
 import org.springframework.migrationanalyzer.render.MigrationCost;
 import org.springframework.migrationanalyzer.render.ModelAndView;
 import org.springframework.migrationanalyzer.render.SummaryController;
+import org.springframework.stereotype.Component;
 
+@Component
 final class SessionBeanSummaryController extends AbstractSessionBeanController implements SummaryController<SessionBean> {
 
     private static final String VIEW_NAME_SUMMARY = "session-bean-summary";

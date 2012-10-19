@@ -17,9 +17,8 @@
 package org.springframework.migrationanalyzer.render.support.html;
 
 import static org.junit.Assert.assertEquals;
-
-import java.io.InputStream;
-import java.io.Reader;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 import org.junit.Test;
 import org.springframework.migrationanalyzer.analyze.fs.FileSystemEntry;
@@ -36,7 +35,7 @@ public class StandardOutputPathGeneratorTests {
 
     @Test
     public void generateForFileSystemEntry() {
-        String path = this.pathGenerator.generatePathFor(new StubFileSystemEntry("a/b/c/test.xml"));
+        String path = this.pathGenerator.generatePathFor(createFileSystemEntry("a/b/c/test.xml"));
         assertEquals("file-entry/a/b/c/test.xml.html", path);
     }
 
@@ -72,45 +71,19 @@ public class StandardOutputPathGeneratorTests {
 
     @Test
     public void generateRelativePathToRootForClass() {
-        String path = this.pathGenerator.generateRelativePathToRootFor(getClass());
+        String path = this.pathGenerator.generatePathRelativeToRootFor(getClass());
         assertEquals("../", path);
     }
 
     @Test
     public void generateRelativePathToRootForFileSystemEntry() {
-        String path = this.pathGenerator.generateRelativePathToRootFor(new StubFileSystemEntry("a/b/c/d.txt"));
-        // a/b/c/d.txt will generate a path of file-entry/a/b/c/d.txt
+        String path = this.pathGenerator.generatePathRelativeToRootFor(createFileSystemEntry("a/b/c/d.txt"));
         assertEquals("../../../../", path);
     }
 
-    private final static class StubFileSystemEntry implements FileSystemEntry {
-
-        private final String name;
-
-        public StubFileSystemEntry(String name) {
-            super();
-            this.name = name;
-        }
-
-        @Override
-        public InputStream getInputStream() {
-            return null;
-        }
-
-        @Override
-        public String getName() {
-            return this.name;
-        }
-
-        @Override
-        public Reader getReader() {
-            return null;
-        }
-
-        @Override
-        public boolean isDirectory() {
-            return false;
-        }
-
+    private FileSystemEntry createFileSystemEntry(String name) {
+        FileSystemEntry fileSystemEntry = mock(FileSystemEntry.class);
+        when(fileSystemEntry.getName()).thenReturn(name);
+        return fileSystemEntry;
     }
 }

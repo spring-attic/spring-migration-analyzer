@@ -18,10 +18,9 @@ package org.springframework.migrationanalyzer.contributions.apiusage.jboss;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.Reader;
 import java.util.Set;
 
 import org.junit.Test;
@@ -39,7 +38,12 @@ public class JBossServiceXmlEntryAnalyzerTests {
 
     @Test
     public void mBeanCodeClassDetection() throws AnalysisFailedException {
-        Set<ApiUsage> analysis = this.entryAnalyzer.analyze(new StubFileSystemEntry("jboss-service.xml"));
+        FileSystemEntry fileSystemEntry = mock(FileSystemEntry.class);
+        when(fileSystemEntry.getName()).thenReturn("jboss-service.xml");
+        when(fileSystemEntry.getInputStream()).thenReturn(getClass().getResourceAsStream("jboss-service.xml"));
+
+        Set<ApiUsage> analysis = this.entryAnalyzer.analyze(fileSystemEntry);
+
         assertNotNull(analysis);
         assertEquals(6, analysis.size());
     }
@@ -49,35 +53,6 @@ public class JBossServiceXmlEntryAnalyzerTests {
         @Override
         public ApiUsage detectApiUsage(String className, ApiUsageType usageType, String user, String usageDescription) {
             return new ApiUsage(usageType, "Test", user, usageDescription, "view", MigrationCost.MEDIUM);
-        }
-    }
-
-    private static final class StubFileSystemEntry implements FileSystemEntry {
-
-        private final String name;
-
-        public StubFileSystemEntry(String name) {
-            this.name = name;
-        }
-
-        @Override
-        public InputStream getInputStream() {
-            return getClass().getResourceAsStream(this.name);
-        }
-
-        @Override
-        public String getName() {
-            return this.name;
-        }
-
-        @Override
-        public Reader getReader() {
-            return new InputStreamReader(getInputStream());
-        }
-
-        @Override
-        public boolean isDirectory() {
-            return false;
         }
     }
 }

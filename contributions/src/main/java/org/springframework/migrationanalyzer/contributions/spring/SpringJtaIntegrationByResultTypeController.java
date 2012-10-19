@@ -16,6 +16,9 @@
 
 package org.springframework.migrationanalyzer.contributions.spring;
 
+import org.springframework.stereotype.Component;
+
+@Component
 class SpringJtaIntegrationByResultTypeController extends AbstractSpringIntegrationByResultTypeController<SpringJtaIntegration> {
 
     SpringJtaIntegrationByResultTypeController() {

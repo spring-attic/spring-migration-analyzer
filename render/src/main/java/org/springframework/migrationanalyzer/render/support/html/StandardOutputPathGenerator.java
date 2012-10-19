@@ -19,7 +19,9 @@ package org.springframework.migrationanalyzer.render.support.html;
 import java.io.File;
 
 import org.springframework.migrationanalyzer.analyze.fs.FileSystemEntry;
+import org.springframework.stereotype.Component;
 
+@Component
 final class StandardOutputPathGenerator implements RootAwareOutputPathGenerator {
 
     private static final String RESULT_TYPE_FORMAT = "result-type/%s.html";
@@ -68,17 +70,17 @@ final class StandardOutputPathGenerator implements RootAwareOutputPathGenerator 
     }
 
     @Override
-    public String generateRelativePathToRootFor(Class<?> resultType) {
-        return generateRelativePathToRootFor(generatePathFor(resultType));
+    public String generatePathRelativeToRootFor(Class<?> resultType) {
+        return generatePathRelativeToRootFor(generatePathFor(resultType));
     }
 
     @Override
-    public String generateRelativePathToRootFor(FileSystemEntry fileSystemEntry) {
-        return generateRelativePathToRootFor(generatePathFor(fileSystemEntry));
+    public String generatePathRelativeToRootFor(FileSystemEntry fileSystemEntry) {
+        return generatePathRelativeToRootFor(generatePathFor(fileSystemEntry));
     }
 
     @Override
-    public String generateRelativePathToRootFor(String path) {
+    public String generatePathRelativeToRootFor(String path) {
         File file = new File(path);
         StringBuilder pathBuilder = new StringBuilder();
 
