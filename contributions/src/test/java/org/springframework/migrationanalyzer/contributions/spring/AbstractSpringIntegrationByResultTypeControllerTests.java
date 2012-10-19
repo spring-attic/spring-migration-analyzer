@@ -20,6 +20,8 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 import java.util.HashSet;
 import java.util.Map;
@@ -27,6 +29,7 @@ import java.util.Set;
 
 import org.junit.Test;
 import org.springframework.migrationanalyzer.analyze.AnalysisResultEntry;
+import org.springframework.migrationanalyzer.analyze.fs.FileSystemEntry;
 import org.springframework.migrationanalyzer.render.ByResultTypeController;
 import org.springframework.migrationanalyzer.render.ModelAndView;
 
@@ -74,5 +77,11 @@ public abstract class AbstractSpringIntegrationByResultTypeControllerTests {
         Map<String, String> users = (Map<String, String>) model.get("users");
         assertNotNull(users);
         assertEquals(2, users.size());
+    }
+
+    protected final FileSystemEntry createFileSystemEntry(String name) {
+        FileSystemEntry entry = mock(FileSystemEntry.class);
+        when(entry.getName()).thenReturn(name);
+        return entry;
     }
 }

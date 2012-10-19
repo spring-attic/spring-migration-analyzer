@@ -24,9 +24,7 @@ import org.objectweb.asm.Attribute;
 import org.objectweb.asm.ClassVisitor;
 import org.objectweb.asm.FieldVisitor;
 import org.objectweb.asm.MethodVisitor;
-import org.springframework.migrationanalyzer.analyze.util.IgnoredByClassPathScan;
 
-@IgnoredByClassPathScan
 final class DelegatingClassVisitor implements ResultGatheringClassVisitor<Object> {
 
     @SuppressWarnings("rawtypes")

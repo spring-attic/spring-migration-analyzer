@@ -24,7 +24,9 @@ import java.util.TreeMap;
 
 import org.springframework.migrationanalyzer.analyze.AnalysisResultEntry;
 import org.springframework.migrationanalyzer.render.ByResultTypeController;
+import org.springframework.stereotype.Component;
 
+@Component
 final class ApiUsageByResultTypeController extends AbstractApiUsageController implements ByResultTypeController<ApiUsage> {
 
     private static final String VIEW_NAME = "api-by-result-type";

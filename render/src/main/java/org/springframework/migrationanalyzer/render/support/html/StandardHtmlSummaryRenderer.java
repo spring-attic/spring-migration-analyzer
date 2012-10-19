@@ -23,31 +23,38 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.migrationanalyzer.analyze.AnalysisResult;
 import org.springframework.migrationanalyzer.analyze.AnalysisResultEntry;
 import org.springframework.migrationanalyzer.render.MigrationCost;
 import org.springframework.migrationanalyzer.render.ModelAndView;
 import org.springframework.migrationanalyzer.render.SummaryController;
 import org.springframework.migrationanalyzer.util.IoUtils;
+import org.springframework.stereotype.Component;
 
+@Component
 @SuppressWarnings("rawtypes")
 final class StandardHtmlSummaryRenderer implements HtmlSummaryRenderer {
 
-    private static final String VIEW_NAME_SUMMARY_HEADER = "summary-header";
+    private static final String REPORT_TYPE = "html";
 
-    private static final String VIEW_NAME_SUMMARY_FOOTER = "summary-footer";
+    private static final String VIEW_NAME_GUIDANCE_HEADER = "html-guidance-header";
 
-    private static final String VIEW_NAME_GUIDANCE_HEADER = "guidance-header";
+    private static final String VIEW_NAME_GUIDANCE_FOOTER = "html-guidance-footer";
 
-    private static final String VIEW_NAME_GUIDANCE_FOOTER = "guidance-footer";
+    private static final String VIEW_NAME_GUIDANCE_CATEGORY_HEADER = "html-guidance-category-header";
 
-    private static final String VIEW_NAME_GUIDANCE_CATEGORY_HEADER = "guidance-category-header";
+    private static final String VIEW_NAME_GUIDANCE_CATEGORY_FOOTER = "html-guidance-category-footer";
 
-    private static final String VIEW_NAME_GUIDANCE_CATEGORY_FOOTER = "guidance-category-footer";
+    private static final String VIEW_NAME_GUIDANCE_ENTRY_HEADER = "html-guidance-entry-header";
 
-    private static final String VIEW_NAME_GUIDANCE_ENTRY_HEADER = "guidance-entry-header";
+    private static final String VIEW_NAME_GUIDANCE_ENTRY_FOOTER = "html-guidance-entry-footer";
 
-    private static final String VIEW_NAME_GUIDANCE_ENTRY_FOOTER = "guidance-entry-footer";
+    private static final String VIEW_NAME_PREFIX = "html-";
+
+    private static final String VIEW_NAME_SUMMARY_HEADER = "html-summary-header";
+
+    private static final String VIEW_NAME_SUMMARY_FOOTER = "html-summary-footer";
 
     private final RootAwareOutputPathGenerator outputPathGenerator;
 
@@ -57,6 +64,7 @@ final class StandardHtmlSummaryRenderer implements HtmlSummaryRenderer {
 
     private final ViewRenderer viewRenderer;
 
+    @Autowired
     StandardHtmlSummaryRenderer(Set<SummaryController> summaryControllers, ViewRenderer viewRenderer,
         RootAwareOutputPathGenerator outputPathGenerator, WriterFactory writerFactory) {
         this.summaryControllers = summaryControllers;
@@ -70,7 +78,7 @@ final class StandardHtmlSummaryRenderer implements HtmlSummaryRenderer {
         Writer writer = null;
         try {
             String summaryPath = this.outputPathGenerator.generatePathForSummary();
-            writer = this.writerFactory.createWriter(summaryPath);
+            writer = this.writerFactory.createWriter(summaryPath, analysisResult.getArchiveName());
 
             this.viewRenderer.renderViewWithEmptyModel(VIEW_NAME_SUMMARY_HEADER, writer);
 
@@ -84,7 +92,7 @@ final class StandardHtmlSummaryRenderer implements HtmlSummaryRenderer {
 
             for (Class<?> resultType : analysisResult.getResultTypes()) {
                 this.viewRenderer.render(resultType, analysisResult.getResultEntries(resultType), this.summaryControllers, writer,
-                    new LocationAwareOutputPathGenerator(this.outputPathGenerator, summaryPath));
+                    new LocationAwareOutputPathGenerator(this.outputPathGenerator, summaryPath), REPORT_TYPE);
             }
 
             this.viewRenderer.renderViewWithEmptyModel(VIEW_NAME_SUMMARY_FOOTER, writer);
@@ -109,7 +117,7 @@ final class StandardHtmlSummaryRenderer implements HtmlSummaryRenderer {
 
             for (ModelAndView modelAndView : modelsAndViews) {
                 this.viewRenderer.renderViewWithEmptyModel(VIEW_NAME_GUIDANCE_ENTRY_HEADER, writer);
-                this.viewRenderer.renderViewWithModel(modelAndView.getViewName(), modelAndView.getModel(), writer);
+                this.viewRenderer.renderViewWithModel(VIEW_NAME_PREFIX + modelAndView.getViewName(), modelAndView.getModel(), writer);
                 this.viewRenderer.renderViewWithEmptyModel(VIEW_NAME_GUIDANCE_ENTRY_FOOTER, writer);
             }
 

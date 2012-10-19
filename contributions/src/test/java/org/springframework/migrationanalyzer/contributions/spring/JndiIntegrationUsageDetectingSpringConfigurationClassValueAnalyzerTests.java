@@ -18,9 +18,11 @@ package org.springframework.migrationanalyzer.contributions.spring;
 
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 import org.junit.Test;
-import org.springframework.migrationanalyzer.contributions.StubFileSystemEntry;
+import org.springframework.migrationanalyzer.analyze.fs.FileSystemEntry;
 
 public final class JndiIntegrationUsageDetectingSpringConfigurationClassValueAnalyzerTests {
 
@@ -28,13 +30,19 @@ public final class JndiIntegrationUsageDetectingSpringConfigurationClassValueAna
 
     @Test
     public void analyzeClassWithNameStartingWithOrgSpringFrameworkJndi() {
-        SpringJndiIntegration result = this.analyzer.analyze("org.springframework.jndi.Alpha", new StubFileSystemEntry("entry-name"));
+        SpringJndiIntegration result = this.analyzer.analyze("org.springframework.jndi.Alpha", createFileSystemEntry("entry-name"));
         assertNotNull(result);
     }
 
     @Test
     public void analyzeNonJndiPackageClass() {
-        SpringJndiIntegration result = this.analyzer.analyze("org.springframework.beans.Alpha", new StubFileSystemEntry("entry-name"));
+        SpringJndiIntegration result = this.analyzer.analyze("org.springframework.beans.Alpha", createFileSystemEntry("entry-name"));
         assertNull(result);
+    }
+
+    private FileSystemEntry createFileSystemEntry(String name) {
+        FileSystemEntry entry = mock(FileSystemEntry.class);
+        when(entry.getName()).thenReturn(name);
+        return entry;
     }
 }

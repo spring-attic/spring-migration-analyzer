@@ -17,7 +17,8 @@
 package org.springframework.migrationanalyzer.contributions.bytecode;
 
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -26,7 +27,13 @@ import org.junit.Test;
 
 public class DelegatingClassVisitorTests {
 
-    private final StubResultGatheringClassVisitor delegate = new StubResultGatheringClassVisitor();
+    private final ResultGatheringClassVisitor<?> delegate = mock(ResultGatheringClassVisitor.class);
+
+    private final ResultGatheringAnnotationVisitor<?> annotationVisitor = mock(ResultGatheringAnnotationVisitor.class);
+
+    private final ResultGatheringFieldVisitor<?> fieldVisitor = mock(ResultGatheringFieldVisitor.class);
+
+    private final ResultGatheringMethodVisitor<?> methodVisitor = mock(ResultGatheringMethodVisitor.class);
 
     private final DelegatingClassVisitor visitor;
 
@@ -34,67 +41,70 @@ public class DelegatingClassVisitorTests {
     public DelegatingClassVisitorTests() {
         Set<ResultGatheringClassVisitor> delegates = new HashSet<ResultGatheringClassVisitor>();
         delegates.add(this.delegate);
-        this.visitor = new DelegatingClassVisitor(delegates, new StubResultGatheringAnnotationVisitor(), new StubResultGatheringFieldVisitor(),
-            new StubResultGatheringMethodVisitor());
+        this.visitor = new DelegatingClassVisitor(delegates, this.annotationVisitor, this.fieldVisitor, this.methodVisitor);
     }
 
     @Test
     public void getResults() {
         assertNotNull(this.visitor.getResults());
-        assertTrue(this.delegate.getGetResultsCalled());
+        verify(this.delegate).getResults();
     }
 
     @Test
     public void visit() {
         this.visitor.visit(0, 0, "java/lang/Object", null, null, null);
-        assertTrue(this.delegate.getVisitCalled());
+        verify(this.delegate).visit(0, 0, "java/lang/Object", null, null, null);
     }
 
     @Test
     public void visitAnnotation() {
-        this.visitor.visitAnnotation(null, false);
-        assertTrue(this.delegate.getVisitAnnotationCalled());
+        this.visitor.visitAnnotation(null, false).visitEnd();
+        verify(this.delegate).visitAnnotation(null, false);
+        verify(this.annotationVisitor).visitEnd();
     }
 
     @Test
     public void visitAttribute() {
         this.visitor.visitAttribute(null);
-        assertTrue(this.delegate.getVisitAttributeCalled());
+        verify(this.delegate).visitAttribute(null);
     }
 
     @Test
     public void visitEnd() {
         this.visitor.visitEnd();
-        assertTrue(this.delegate.getVisitEndCalled());
+        verify(this.delegate).visitEnd();
+
     }
 
     @Test
     public void visitField() {
-        this.visitor.visitField(0, null, null, null, null);
-        assertTrue(this.delegate.getVisitFieldCalled());
+        this.visitor.visitField(0, null, null, null, null).visitEnd();
+        verify(this.delegate).visitField(0, null, null, null, null);
+        verify(this.fieldVisitor).visitEnd();
     }
 
     @Test
     public void visitInnerClass() {
         this.visitor.visitInnerClass(null, null, null, 0);
-        assertTrue(this.delegate.getVisitInnerClassCalled());
+        verify(this.delegate).visitInnerClass(null, null, null, 0);
     }
 
     @Test
     public void visitMethod() {
-        this.visitor.visitMethod(0, null, null, null, null);
-        assertTrue(this.delegate.getVisitMethodCalled());
+        this.visitor.visitMethod(0, null, null, null, null).visitEnd();
+        verify(this.delegate).visitMethod(0, null, null, null, null);
+        verify(this.methodVisitor).visitEnd();
     }
 
     @Test
     public void visitOuterClass() {
         this.visitor.visitOuterClass(null, null, null);
-        assertTrue(this.delegate.getVisitOuterClassCalled());
+        verify(this.delegate).visitOuterClass(null, null, null);
     }
 
     @Test
     public void visitSource() {
         this.visitor.visitSource(null, null);
-        assertTrue(this.delegate.getVisitSourceCalled());
+        verify(this.delegate).visitSource(null, null);
     }
 }

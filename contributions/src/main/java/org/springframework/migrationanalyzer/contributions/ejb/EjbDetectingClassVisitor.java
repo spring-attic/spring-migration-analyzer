@@ -24,7 +24,9 @@ import org.objectweb.asm.Type;
 import org.objectweb.asm.commons.EmptyVisitor;
 import org.springframework.migrationanalyzer.contributions.bytecode.ResultGatheringClassVisitor;
 import org.springframework.migrationanalyzer.contributions.transactions.TransactionPropagationType;
+import org.springframework.stereotype.Component;
 
+@Component
 final class EjbDetectingClassVisitor extends EmptyVisitor implements ResultGatheringClassVisitor<Ejb> {
 
     private static final String CLASS_NAME_STATELESS_ANNOTATION = "javax.ejb.Stateless";

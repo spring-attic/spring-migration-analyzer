@@ -26,7 +26,9 @@ import java.util.TreeMap;
 import org.springframework.migrationanalyzer.analyze.AnalysisResultEntry;
 import org.springframework.migrationanalyzer.render.ByResultTypeController;
 import org.springframework.migrationanalyzer.render.ModelAndView;
+import org.springframework.stereotype.Component;
 
+@Component
 final class ProgrammaticTransactionDemarcationByResultTypeController implements ByResultTypeController<ProgrammaticTransactionDemarcation> {
 
     private static final String VIEW_NAME = "programmatic-transaction-demarcation-by-result-type";

@@ -18,16 +18,17 @@ package org.springframework.migrationanalyzer.contributions.spring;
 
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 import org.junit.Test;
 import org.springframework.migrationanalyzer.analyze.fs.FileSystemEntry;
-import org.springframework.migrationanalyzer.contributions.StubFileSystemEntry;
 
 public final class JtaIntegrationUsageDetectingSpringConfigurationClassValueAnalyzerTests {
 
     private final JtaIntegrationUsageDetectingSpringConfigurationClassValueAnalyzer analyzer = new JtaIntegrationUsageDetectingSpringConfigurationClassValueAnalyzer();
 
-    private final FileSystemEntry fileSystemEntry = new StubFileSystemEntry("entry-name");
+    private final FileSystemEntry fileSystemEntry = createFileSystemEntry("entry-name");
 
     @Test
     public void analyzeJtaTransactionManager() {
@@ -52,6 +53,12 @@ public final class JtaIntegrationUsageDetectingSpringConfigurationClassValueAnal
     @Test
     public void analyzeAnotherJtaTransactionManager() {
         assertNull(this.analyzer.analyze("org.springframework.transaction.jta.AnotherJtaTransactionManager", this.fileSystemEntry));
+    }
+
+    private FileSystemEntry createFileSystemEntry(String name) {
+        FileSystemEntry entry = mock(FileSystemEntry.class);
+        when(entry.getName()).thenReturn(name);
+        return entry;
     }
 
 }

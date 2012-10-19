@@ -16,70 +16,52 @@
 
 package org.springframework.migrationanalyzer.contributions.bytecode;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoMoreInteractions;
+import static org.mockito.Mockito.when;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.io.InputStream;
-import java.io.Reader;
 
 import org.junit.Test;
 import org.springframework.migrationanalyzer.analyze.fs.FileSystemEntry;
-import org.springframework.migrationanalyzer.analyze.fs.FileSystemException;
 import org.springframework.migrationanalyzer.analyze.support.AnalysisFailedException;
+import org.springframework.migrationanalyzer.util.IoUtils;
 
 public class DelegatingByteCodeEntryAnalyzerTests {
 
-    private final StubResultGatheringClassVisitorFactory factory = new StubResultGatheringClassVisitorFactory();
+    private final ResultGatheringClassVisitorFactory factory = mock(ResultGatheringClassVisitorFactory.class);
+
+    private final FileSystemEntry fileSystemEntry = mock(FileSystemEntry.class);
+
+    @SuppressWarnings("unchecked")
+    private final ResultGatheringClassVisitor<Object> visitor = mock(ResultGatheringClassVisitor.class);
+
+    public DelegatingByteCodeEntryAnalyzerTests() {
+        when(this.factory.create()).thenReturn(this.visitor);
+    }
 
     private final DelegatingByteCodeEntryAnalyzer analyzer = new DelegatingByteCodeEntryAnalyzer(this.factory);
 
     @Test
-    public void analyze() throws AnalysisFailedException {
-        this.analyzer.analyze(new StubFileSystemEntry(false));
-        assertTrue(this.factory.getVisitor().getGetResultsCalled());
+    public void analyze() throws AnalysisFailedException, FileNotFoundException {
+        when(this.fileSystemEntry.getName()).thenReturn("Test.class");
+        FileInputStream input = new FileInputStream(
+            "target/test-classes/org/springframework/migrationanalyzer/contributions/bytecode/DelegatingByteCodeEntryAnalyzerTests.class");
+        try {
+            when(this.fileSystemEntry.getInputStream()).thenReturn(input);
+            this.analyzer.analyze(this.fileSystemEntry);
+            verify(this.visitor).getResults();
+        } finally {
+            IoUtils.closeQuietly(input);
+        }
     }
 
     @Test
     public void analyzeDirectory() throws AnalysisFailedException {
-        this.analyzer.analyze(new StubFileSystemEntry(true));
-        assertFalse(this.factory.getVisitor().getGetResultsCalled());
+        when(this.fileSystemEntry.isDirectory()).thenReturn(true);
+        this.analyzer.analyze(this.fileSystemEntry);
+        verifyNoMoreInteractions(this.visitor);
     }
-
-    private static class StubFileSystemEntry implements FileSystemEntry {
-
-        private final boolean isDirectory;
-
-        public StubFileSystemEntry(boolean isDirectory) {
-            this.isDirectory = isDirectory;
-        }
-
-        @Override
-        public InputStream getInputStream() {
-            try {
-                return new FileInputStream(
-                    "target/test-classes/org/springframework/migrationanalyzer/contributions/bytecode/DelegatingByteCodeEntryAnalyzerTests.class");
-            } catch (FileNotFoundException e) {
-                throw new FileSystemException(e);
-            }
-        }
-
-        @Override
-        public String getName() {
-            return "test.class";
-        }
-
-        @Override
-        public Reader getReader() {
-            return null;
-        }
-
-        @Override
-        public boolean isDirectory() {
-            return this.isDirectory;
-        }
-
-    }
-
 }

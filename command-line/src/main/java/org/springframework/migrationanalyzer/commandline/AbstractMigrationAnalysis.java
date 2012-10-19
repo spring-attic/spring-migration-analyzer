@@ -54,7 +54,7 @@ abstract class AbstractMigrationAnalysis {
             String inputPath = getInputPath(commandLine);
 
             try {
-                getExecutor(inputPath, outputType, outputPath, excludes).execute();
+                getExecutor(new Configuration(inputPath, outputPath, outputType, excludes)).execute();
             } catch (RuntimeException re) {
                 this.logger.error("A failure occurred. Please see earlier output for details.");
                 exit(-1);
@@ -102,7 +102,7 @@ abstract class AbstractMigrationAnalysis {
         }
     }
 
-    protected abstract MigrationAnalysisExecutor getExecutor(String inputPath, String outputType, String outputPath, String[] excludes);
+    protected abstract MigrationAnalysisExecutor getExecutor(Configuration configuration);
 
     protected abstract void exit(int code);
 }

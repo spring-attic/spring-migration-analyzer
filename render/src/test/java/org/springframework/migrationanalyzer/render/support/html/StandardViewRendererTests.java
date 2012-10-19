@@ -16,78 +16,78 @@
 
 package org.springframework.migrationanalyzer.render.support.html;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.same;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoMoreInteractions;
+import static org.mockito.Mockito.when;
 
 import java.io.StringWriter;
+import java.io.Writer;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.HashSet;
-import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import org.junit.Test;
 import org.springframework.migrationanalyzer.analyze.AnalysisResultEntry;
+import org.springframework.migrationanalyzer.render.Controller;
+import org.springframework.migrationanalyzer.render.ModelAndView;
 import org.springframework.migrationanalyzer.render.OutputPathGenerator;
-import org.springframework.migrationanalyzer.render.StubController;
-import org.springframework.migrationanalyzer.render.support.StubView;
-import org.springframework.migrationanalyzer.render.support.StubViewResolver;
+import org.springframework.migrationanalyzer.render.support.View;
+import org.springframework.migrationanalyzer.render.support.ViewResolver;
 
 public class StandardViewRendererTests {
 
-    private final StubView view = new StubView();
+    private final View view = mock(View.class);
 
-    private final StubViewResolver viewResolver = new StubViewResolver(this.view);
+    private final ViewResolver viewResolver = mock(ViewResolver.class);
 
-    private final StubViewResolver nullViewResolver = new StubViewResolver();
+    private final ViewRenderer viewRenderer = new StandardViewRenderer(this.viewResolver);
 
-    private final StandardViewRenderer viewRenderer = new StandardViewRenderer(this.viewResolver);
-
-    private final StandardViewRenderer viewlessRenderer = new StandardViewRenderer(this.nullViewResolver);
-
+    @SuppressWarnings("unchecked")
     @Test
     public void renderWithEmptyModel() {
+        when(this.viewResolver.getView("the-view")).thenReturn(this.view);
         this.viewRenderer.renderViewWithEmptyModel("the-view", new StringWriter());
-        assertEquals(1, this.viewResolver.getViewsRequested().size());
-        assertTrue(this.viewResolver.getViewsRequested().contains("the-view"));
-        assertEquals(1, this.view.getRenderCount());
+        verify(this.view).render(any(Map.class), any(Writer.class));
     }
 
     @Test
     public void renderWithModel() {
-        this.viewRenderer.renderViewWithModel("the-view", Collections.<String, Object> emptyMap(), new StringWriter());
-        assertEquals(1, this.viewResolver.getViewsRequested().size());
-        assertTrue(this.viewResolver.getViewsRequested().contains("the-view"));
-        assertEquals(1, this.view.getRenderCount());
+        when(this.viewResolver.getView("the-view")).thenReturn(this.view);
+        Map<String, Object> model = Collections.<String, Object> emptyMap();
+        this.viewRenderer.renderViewWithModel("the-view", model, new StringWriter());
+        verify(this.view).render(same(model), any(Writer.class));
     }
 
     @Test
     public void renderWithModelWhenViewIsNull() {
-        this.viewlessRenderer.renderViewWithModel("the-view", Collections.<String, Object> emptyMap(), new StringWriter());
-        assertEquals(1, this.nullViewResolver.getViewsRequested().size());
-        assertTrue(this.nullViewResolver.getViewsRequested().contains("the-view"));
-        assertEquals(0, this.view.getRenderCount());
+        this.viewRenderer.renderViewWithModel("the-view", Collections.<String, Object> emptyMap(), new StringWriter());
+        verify(this.viewResolver).getView("the-view");
+        verifyNoMoreInteractions(this.view);
     }
 
     @Test
     public void render() {
-        OutputPathGenerator outputPathGenerator = new StubOutputPathGenerator("target");
+        Set<Controller<?>> controllers = new HashSet<Controller<?>>();
+        controllers.add(createController("view-1"));
+        controllers.add(createController("view-2"));
 
-        StringWriter writer = new StringWriter();
+        this.viewRenderer.render(Object.class, new HashSet<AnalysisResultEntry<Object>>(), controllers, new StringWriter(),
+            mock(OutputPathGenerator.class), "test");
 
-        StubController stubController1 = new StubController("view-1");
-        StubController stubController2 = new StubController("view-2");
+        verify(this.viewResolver).getView("test-view-1");
+        verify(this.viewResolver).getView("test-view-2");
+    }
 
-        Set<StubController> controllers = new HashSet<StubController>();
-        controllers.add(stubController1);
-        controllers.add(stubController2);
-
-        this.viewRenderer.render(Object.class, new HashSet<AnalysisResultEntry<Object>>(), controllers, writer, outputPathGenerator);
-
-        assertEquals(1, stubController1.getResultsHandled().size());
-
-        List<String> viewsRequested = this.viewResolver.getViewsRequested();
-        assertEquals(2, viewsRequested.size());
-        assertTrue(viewsRequested.contains("view-1"));
-        assertTrue(viewsRequested.contains("view-2"));
+    @SuppressWarnings("unchecked")
+    private Controller<?> createController(String viewName) {
+        Controller<?> controller = mock(Controller.class);
+        when(controller.handle(any(Set.class))).thenReturn(new ModelAndView(new HashMap<String, Object>(), viewName));
+        when(controller.canHandle(Object.class)).thenReturn(true);
+        return controller;
     }
 }

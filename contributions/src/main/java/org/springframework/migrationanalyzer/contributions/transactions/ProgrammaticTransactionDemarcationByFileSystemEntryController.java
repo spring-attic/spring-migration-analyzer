@@ -26,7 +26,9 @@ import java.util.TreeMap;
 import org.springframework.migrationanalyzer.analyze.AnalysisResultEntry;
 import org.springframework.migrationanalyzer.render.ByFileSystemEntryController;
 import org.springframework.migrationanalyzer.render.ModelAndView;
+import org.springframework.stereotype.Component;
 
+@Component
 final class ProgrammaticTransactionDemarcationByFileSystemEntryController implements ByFileSystemEntryController<ProgrammaticTransactionDemarcation> {
 
     private static final String VIEW_NAME = "programmatic-transaction-demarcation-by-file";

@@ -20,27 +20,26 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.migrationanalyzer.analyze.fs.FileSystemEntry;
 import org.springframework.migrationanalyzer.analyze.support.AnalysisFailedException;
 import org.springframework.migrationanalyzer.analyze.support.EntryAnalyzer;
 import org.springframework.migrationanalyzer.contributions.apiusage.ApiUsage;
 import org.springframework.migrationanalyzer.contributions.apiusage.ApiUsageDetector;
 import org.springframework.migrationanalyzer.contributions.apiusage.ApiUsageType;
-import org.springframework.migrationanalyzer.contributions.apiusage.StandardApiUsageDetector;
 import org.springframework.migrationanalyzer.contributions.xml.StandardXmlArtifactAnalyzer;
 import org.springframework.migrationanalyzer.contributions.xml.ValueAnalyzer;
 import org.springframework.migrationanalyzer.contributions.xml.XmlArtifactAnalyzer;
+import org.springframework.stereotype.Component;
 
+@Component
 final class JBossServiceXmlEntryAnalyzer implements EntryAnalyzer<ApiUsage> {
 
     private static final String XPATH_EXPRESSION_SERVER_MBEAN_CODE = "/server/mbean/@code";
 
     private final ApiUsageDetector apiUsageDetector;
 
-    JBossServiceXmlEntryAnalyzer() {
-        this(new StandardApiUsageDetector());
-    }
-
+    @Autowired
     JBossServiceXmlEntryAnalyzer(ApiUsageDetector detector) {
         this.apiUsageDetector = detector;
     }

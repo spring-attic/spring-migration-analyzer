@@ -17,7 +17,9 @@
 package org.springframework.migrationanalyzer.contributions.ejb;
 
 import org.springframework.migrationanalyzer.render.ByFileSystemEntryController;
+import org.springframework.stereotype.Component;
 
+@Component
 final class MessageDrivenBeanByFileSystemEntryController extends AbstractModelCreatingMessageDrivenBeanController implements
     ByFileSystemEntryController<MessageDrivenBean> {
 

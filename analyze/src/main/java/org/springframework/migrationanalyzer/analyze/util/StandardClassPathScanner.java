@@ -33,26 +33,12 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.migrationanalyzer.util.IoUtils;
 import org.springframework.migrationanalyzer.util.ZipUtils;
+import org.springframework.stereotype.Component;
 
-/**
- * Standard implementation of <code>ClassPathScanner</code>.
- * <p />
- * 
- * <strong>Concurrent Semantics</strong><br />
- * 
- * Not thread-safe.
- * 
- */
-public final class StandardClassPathScanner implements ClassPathScanner {
+@Component
+final class StandardClassPathScanner implements ClassPathScanner {
 
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
-
-    @Override
-    public <T> Set<Class<? extends T>> findImplementations(Class<? extends T> candidateInterface, URLClassLoader classLoader) {
-        ClassLoaderClassPathScanningTemplate<T> template = new ClassLoaderClassPathScanningTemplate<T>(candidateInterface, classLoader);
-        scan(classLoader, template);
-        return template.getResources();
-    }
 
     @Override
     public Set<String> findResources(Pattern pattern, URLClassLoader classLoader) {

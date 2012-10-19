@@ -16,37 +16,48 @@
 
 package org.springframework.migrationanalyzer.render.support.html;
 
-import static org.junit.Assert.assertEquals;
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
+import java.io.Writer;
 import java.util.Arrays;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 
 import org.junit.Test;
+import org.mockito.InOrder;
+import org.mockito.Mockito;
 import org.springframework.migrationanalyzer.analyze.AnalysisResult;
-import org.springframework.migrationanalyzer.analyze.AnalysisResultEntry;
+import org.springframework.migrationanalyzer.analyze.fs.FileSystemEntry;
 import org.springframework.migrationanalyzer.render.ByResultTypeController;
-import org.springframework.migrationanalyzer.render.StubAnalysisResult;
 
 @SuppressWarnings("rawtypes")
 public class StandardHtmlResultTypeRendererTests {
 
     private final Set<ByResultTypeController> resultTypeControllers = new HashSet<ByResultTypeController>();
 
-    private final StubViewRenderer viewRenderer = new StubViewRenderer();
-
-    private final RootAwareOutputPathGenerator outputPathGenerator = new StubOutputPathGenerator("target");
-
-    private final StubWriterFactory writerFactory = new StubWriterFactory();
+    private final ViewRenderer viewRenderer = mock(ViewRenderer.class);
 
     private final StandardHtmlResultTypeRenderer renderer = new StandardHtmlResultTypeRenderer(this.resultTypeControllers, this.viewRenderer,
-        this.outputPathGenerator, this.writerFactory);
+        mock(RootAwareOutputPathGenerator.class), mock(WriterFactory.class));
 
+    @SuppressWarnings("unchecked")
     @Test
     public void render() {
-        AnalysisResult analysisResult = new StubAnalysisResult(
-            new AnalysisResultEntry<Object>(new StubFileSystemEntry("a/b/c/Foo.txt"), new Object()));
+        AnalysisResult analysisResult = mock(AnalysisResult.class);
+        FileSystemEntry entry = mock(FileSystemEntry.class);
+        when(analysisResult.getFileSystemEntries()).thenReturn(new HashSet<FileSystemEntry>(Arrays.asList(entry)));
+        when(analysisResult.getResultTypes()).thenReturn(new HashSet<Class<?>>(Arrays.asList(Object.class)));
+
         this.renderer.renderResultTypes(analysisResult);
-        assertEquals(Arrays.asList("result-contents", "by-result-header", "by-result-footer"), this.viewRenderer.getViewsRendered());
+
+        InOrder inOrder = Mockito.inOrder(this.viewRenderer);
+
+        inOrder.verify(this.viewRenderer).renderViewWithModel(eq("html-result-contents"), any(Map.class), any(Writer.class));
+        inOrder.verify(this.viewRenderer).renderViewWithModel(eq("html-by-result-header"), any(Map.class), any(Writer.class));
+        inOrder.verify(this.viewRenderer).renderViewWithEmptyModel(eq("html-by-result-footer"), any(Writer.class));
     }
 }

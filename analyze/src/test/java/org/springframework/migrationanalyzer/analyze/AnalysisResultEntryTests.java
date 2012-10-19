@@ -18,15 +18,16 @@ package org.springframework.migrationanalyzer.analyze;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertSame;
+import static org.mockito.Mockito.mock;
 
 import org.junit.Test;
-import org.springframework.migrationanalyzer.analyze.fs.StubFileSystemEntry;
+import org.springframework.migrationanalyzer.analyze.fs.FileSystemEntry;
 
 public class AnalysisResultEntryTests {
 
     @Test
     public void test() {
-        StubFileSystemEntry fileSystemEntry = new StubFileSystemEntry();
+        FileSystemEntry fileSystemEntry = mock(FileSystemEntry.class);
         Object result = new Object();
         AnalysisResultEntry<Object> entry = new AnalysisResultEntry<Object>(fileSystemEntry, result);
         assertSame(fileSystemEntry, entry.getFileSystemEntry());

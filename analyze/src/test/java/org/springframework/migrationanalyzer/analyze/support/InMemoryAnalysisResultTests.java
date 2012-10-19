@@ -31,7 +31,7 @@ import org.springframework.migrationanalyzer.analyze.fs.FileSystemEntry;
 
 public class InMemoryAnalysisResultTests {
 
-    private final InMemoryAnalysisResult result = new InMemoryAnalysisResult();
+    private final InMemoryAnalysisResult result = new InMemoryAnalysisResult("archive.war");
 
     @Test
     public void getEntryTypeDoesNotExist() {

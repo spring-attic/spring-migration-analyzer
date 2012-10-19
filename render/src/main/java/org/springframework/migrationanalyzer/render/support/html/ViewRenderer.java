@@ -52,9 +52,10 @@ interface ViewRenderer {
      * @param entries The results to render
      * @param controllers The controllers to render with in the MVC pattern
      * @param writer The writer to render to
-     * @param outputPathGenerator The generator for linked output paths
+     * @param outputPathGenerator The generator for output paths
+     * @param reportType The type of report that's being generated
      */
     @SuppressWarnings("rawtypes")
     <T> void render(Class<?> resultType, Set<AnalysisResultEntry<T>> entries, Set<? extends Controller> controllers, Writer writer,
-        OutputPathGenerator outputPathGenerator);
+        OutputPathGenerator outputPathGenerator, String reportType);
 }

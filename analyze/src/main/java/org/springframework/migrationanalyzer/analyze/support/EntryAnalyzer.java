@@ -21,7 +21,7 @@ import java.util.Set;
 import org.springframework.migrationanalyzer.analyze.fs.FileSystemEntry;
 
 /**
- * An <code>Analyzer</code> is used to perform migration analysis of an individual entry.
+ * An <code>EntryAnalyzer</code> is used to perform migration analysis of an individual entry.
  */
 public interface EntryAnalyzer<T> {
 

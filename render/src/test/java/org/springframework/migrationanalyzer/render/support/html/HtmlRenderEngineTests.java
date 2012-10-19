@@ -16,91 +16,46 @@
 
 package org.springframework.migrationanalyzer.render.support.html;
 
-import static org.junit.Assert.assertEquals;
+import static org.mockito.Matchers.anyString;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
-import java.util.List;
+import java.io.StringWriter;
 
 import org.junit.Test;
 import org.springframework.migrationanalyzer.analyze.AnalysisResult;
-import org.springframework.migrationanalyzer.analyze.AnalysisResultEntry;
-import org.springframework.migrationanalyzer.analyze.fs.FileSystemEntry;
-import org.springframework.migrationanalyzer.render.StubAnalysisResult;
-import org.springframework.migrationanalyzer.render.StubFileSystemEntry;
 
 public class HtmlRenderEngineTests {
 
-    private final FileSystemEntry fileSytemEntry = new StubFileSystemEntry();
+    private final AnalysisResult result = mock(AnalysisResult.class);
 
-    private final AnalysisResultEntry<Object> resultEntry = new AnalysisResultEntry<Object>(this.fileSytemEntry, new Object());
+    private final HtmlIndexRenderer indexRenderer = mock(HtmlIndexRenderer.class);
 
-    private final StubAnalysisResult result = new StubAnalysisResult(this.resultEntry);
+    private final HtmlFileSystemEntryRenderer fileSystemEntryRenderer = mock(HtmlFileSystemEntryRenderer.class);
 
-    private final StubHtmlIndexRenderer indexRenderer = new StubHtmlIndexRenderer();
+    private final HtmlResultTypeRenderer resultTypeRenderer = mock(HtmlResultTypeRenderer.class);
 
-    private final StubHtmlFileSystemEntryRenderer fileSystemEntryRenderer = new StubHtmlFileSystemEntryRenderer();
+    private final HtmlSummaryRenderer summaryRenderer = mock(HtmlSummaryRenderer.class);
 
-    private final StubHtmlResultTypeRenderer resultTypeRenderer = new StubHtmlResultTypeRenderer();
+    private final RootAwareOutputPathGenerator outputPathGenerator = mock(RootAwareOutputPathGenerator.class);
 
-    private final StubHtmlSummaryRenderer summaryRenderer = new StubHtmlSummaryRenderer();
-
-    private final RootAwareOutputPathGenerator outputPathGenerator = new StubOutputPathGenerator("target/path");
-
-    private final StubWriterFactory writerFactory = new StubWriterFactory();
+    private final WriterFactory writerFactory = mock(WriterFactory.class);
 
     private final HtmlRenderEngine renderEngine = new HtmlRenderEngine(this.indexRenderer, this.fileSystemEntryRenderer, this.summaryRenderer,
         this.resultTypeRenderer, this.outputPathGenerator, this.writerFactory);
 
     @Test
     public void render() {
-        this.renderEngine.render(this.result);
+        when(this.writerFactory.createWriter(anyString(), anyString())).thenReturn(new StringWriter());
 
-        assertEquals(1, this.indexRenderer.renderCount);
-        assertEquals(1, this.fileSystemEntryRenderer.renderCount);
-        assertEquals(1, this.resultTypeRenderer.renderCount);
-        assertEquals(1, this.summaryRenderer.renderCount);
+        this.renderEngine.render(this.result, "output/path");
 
-        List<String> writersCreated = this.writerFactory.writersCreated;
-        assertEquals(8, writersCreated.size());
+        verify(this.indexRenderer).renderIndex(this.result);
+        verify(this.fileSystemEntryRenderer).renderFileSystemEntries(this.result);
+        verify(this.resultTypeRenderer).renderResultTypes(this.result);
+        verify(this.summaryRenderer).renderSummary(this.result);
+        verify(this.writerFactory, times(8)).createWriter(anyString(), anyString());
     }
-
-    private static final class StubHtmlIndexRenderer implements HtmlIndexRenderer {
-
-        private int renderCount;
-
-        @Override
-        public void renderIndex() {
-            this.renderCount++;
-        }
-    }
-
-    private static final class StubHtmlFileSystemEntryRenderer implements HtmlFileSystemEntryRenderer {
-
-        private int renderCount;
-
-        @Override
-        public void renderFileSystemEntries(AnalysisResult result) {
-            this.renderCount++;
-        }
-    }
-
-    private static final class StubHtmlResultTypeRenderer implements HtmlResultTypeRenderer {
-
-        private int renderCount;
-
-        @Override
-        public void renderResultTypes(AnalysisResult analysisResult) {
-            this.renderCount++;
-        }
-    }
-
-    private static final class StubHtmlSummaryRenderer implements HtmlSummaryRenderer {
-
-        private int renderCount;
-
-        @Override
-        public void renderSummary(AnalysisResult analysisResult) {
-            this.renderCount++;
-        }
-    }
-
 }

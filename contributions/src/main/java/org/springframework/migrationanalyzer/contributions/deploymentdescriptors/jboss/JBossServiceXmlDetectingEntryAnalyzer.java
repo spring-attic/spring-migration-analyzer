@@ -28,9 +28,11 @@ import org.slf4j.LoggerFactory;
 import org.springframework.migrationanalyzer.analyze.fs.FileSystemEntry;
 import org.springframework.migrationanalyzer.analyze.support.EntryAnalyzer;
 import org.springframework.migrationanalyzer.contributions.deploymentdescriptors.DeploymentDescriptor;
+import org.springframework.stereotype.Component;
 import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
 
+@Component
 final class JBossServiceXmlDetectingEntryAnalyzer implements EntryAnalyzer<DeploymentDescriptor> {
 
     private static final String NODE_NAME_SERVER = "server";

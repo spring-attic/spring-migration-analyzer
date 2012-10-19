@@ -31,8 +31,8 @@ public class FreeMarkerViewResolverTests {
     public void getView() {
         Set<String> templatePaths = new HashSet<String>();
         templatePaths.add("test-view-resolver/test-test.ftl");
-        FreemarkerViewResolver viewResolver = new FreemarkerViewResolver("test", templatePaths);
-        View view = viewResolver.getView("test");
+        FreemarkerViewResolver viewResolver = new FreemarkerViewResolver(templatePaths);
+        View view = viewResolver.getView("test-test");
         assertNotNull(view);
         assertTrue(view instanceof FreemarkerView);
     }
@@ -40,8 +40,8 @@ public class FreeMarkerViewResolverTests {
     @Test
     public void getViewDoesNotExist() {
         Set<String> templatePaths = new HashSet<String>();
-        templatePaths.add("console-viewr-esolver/console-test.ftl");
-        FreemarkerViewResolver viewResolver = new FreemarkerViewResolver("test", templatePaths);
+        templatePaths.add("test-view-resolver/test-test.ftl");
+        FreemarkerViewResolver viewResolver = new FreemarkerViewResolver(templatePaths);
         assertNull(viewResolver.getView("does-not-exist"));
     }
 }

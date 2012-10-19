@@ -32,16 +32,6 @@ import java.util.regex.Pattern;
 public interface ClassPathScanner {
 
     /**
-     * Returns a <code>Set</code> of <code>Classes</code> that implement the supplied <code>candidateInterface</code>
-     * found on the class path of the supplied <code>classLoader</code>.
-     * 
-     * @param candidateInterface The interface that a class must implement to be found by the scanner
-     * @param classLoader The class loader that determines the class path to scan
-     * @return The Set of classes, never <code>null</code>
-     */
-    <T> Set<Class<? extends T>> findImplementations(Class<? extends T> candidateInterface, URLClassLoader classLoader);
-
-    /**
      * Returns a {@code Set} of resource names that match the supplied {@code Pattern} found on the class path of the
      * supplied {@link ClassLoader}
      * 

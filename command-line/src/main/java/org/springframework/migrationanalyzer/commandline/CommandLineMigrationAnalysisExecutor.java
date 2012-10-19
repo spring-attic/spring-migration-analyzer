@@ -19,67 +19,46 @@ package org.springframework.migrationanalyzer.commandline;
 import java.io.File;
 import java.io.IOException;
 import java.util.List;
+import java.util.Set;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.migrationanalyzer.analyze.AnalysisEngine;
 import org.springframework.migrationanalyzer.analyze.AnalysisResult;
 import org.springframework.migrationanalyzer.analyze.fs.FileSystem;
 import org.springframework.migrationanalyzer.analyze.fs.FileSystemFactory;
-import org.springframework.migrationanalyzer.analyze.fs.support.DirectoryFileSystemFactory;
-import org.springframework.migrationanalyzer.analyze.support.AnalysisEngineFactory;
-import org.springframework.migrationanalyzer.analyze.support.StandardAnalysisEngineFactory;
 import org.springframework.migrationanalyzer.render.RenderEngine;
-import org.springframework.migrationanalyzer.render.support.RenderEngineFactory;
-import org.springframework.migrationanalyzer.render.support.StandardRenderEngineFactory;
+import org.springframework.stereotype.Component;
 
+@Component
 final class CommandLineMigrationAnalysisExecutor implements MigrationAnalysisExecutor {
-
-    private static final String[] DEFAULT_EXCLUDES = new String[0];
-
-    private static final String DEFAULT_OUTPUT_PATH = ".";
-
-    private static final String DEFAULT_OUTPUT_TYPE = "html";
 
     private final Logger logger = LoggerFactory.getLogger(CommandLineMigrationAnalysisExecutor.class);
 
-    private final AnalysisEngineFactory analysisEngineFactory;
+    private final AnalysisEngine analysisEngine;
 
-    private final RenderEngineFactory renderEngineFactory;
+    private final Set<RenderEngine> renderEngines;
 
     private final FileSystemFactory fileSystemFactory;
 
     private final ArchiveDiscoverer archiveDiscoverer;
 
-    private final String inputPath;
+    private final Configuration configuration;
 
-    private final String outputPath;
-
-    private final String outputType;
-
-    private final String[] excludes;
-
-    CommandLineMigrationAnalysisExecutor(String inputPath, String outputType, String outputDirectory, String[] excludes) {
-        this(inputPath, outputType, outputDirectory, excludes, new StandardAnalysisEngineFactory(), new StandardRenderEngineFactory(),
-            new DirectoryFileSystemFactory(), new ZipArchiveDiscoverer());
-    }
-
-    CommandLineMigrationAnalysisExecutor(String inputPath, String outputType, String outputDirectory, String[] excludes,
-        AnalysisEngineFactory analysisEngineFactory, RenderEngineFactory renderEngineFactory, FileSystemFactory fileSystemFactory,
-        ArchiveDiscoverer archiveDiscoverer) {
-        this.analysisEngineFactory = analysisEngineFactory;
-        this.renderEngineFactory = renderEngineFactory;
+    @Autowired
+    CommandLineMigrationAnalysisExecutor(AnalysisEngine analysisEngine, Set<RenderEngine> renderEngines, FileSystemFactory fileSystemFactory,
+        ArchiveDiscoverer archiveDiscoverer, Configuration configuration) {
+        this.analysisEngine = analysisEngine;
+        this.renderEngines = renderEngines;
         this.fileSystemFactory = fileSystemFactory;
         this.archiveDiscoverer = archiveDiscoverer;
-        this.inputPath = inputPath;
-        this.outputType = outputType == null ? DEFAULT_OUTPUT_TYPE : outputType;
-        this.outputPath = outputDirectory == null ? DEFAULT_OUTPUT_PATH : outputDirectory;
-        this.excludes = excludes == null ? DEFAULT_EXCLUDES : excludes;
+        this.configuration = configuration;
     }
 
     @Override
     public void execute() {
-        File inputFile = new File(this.inputPath);
+        File inputFile = new File(this.configuration.getInputPath());
 
         if (!inputFile.exists()) {
             this.logger.error("The input path '{}' does not exist.", inputFile);
@@ -95,19 +74,27 @@ final class CommandLineMigrationAnalysisExecutor implements MigrationAnalysisExe
 
     private void analyzeArchive(File archive, File inputFile) {
         FileSystem fileSystem = createFileSystem(archive);
-        AnalysisEngine analysisEngine = this.analysisEngineFactory.createAnalysisEngine(fileSystem, this.excludes);
-        RenderEngine renderEngine = this.renderEngineFactory.create(this.outputType, getOutputPath(inputFile, archive));
-
-        AnalysisResult analysis = analysisEngine.analyze();
-        renderEngine.render(analysis);
+        RenderEngine renderEngine = getRenderEngine();
+        AnalysisResult analysis = this.analysisEngine.analyze(fileSystem, this.configuration.getExcludes(), archive.getName());
+        renderEngine.render(analysis, getOutputPath(inputFile, archive));
         fileSystem.cleanup();
+    }
+
+    private RenderEngine getRenderEngine() {
+        for (RenderEngine renderEngine : this.renderEngines) {
+            if (renderEngine.canRender(this.configuration.getOutputType())) {
+                return renderEngine;
+            }
+        }
+
+        throw new IllegalArgumentException(String.format("No rendering engine for report type '%s' is available", this.configuration.getOutputType()));
     }
 
     private String getOutputPath(File inputFile, File archive) {
         if (inputFile.equals(archive)) {
-            return new File(this.outputPath, archive.getName()).getAbsolutePath();
+            return new File(this.configuration.getOutputPath(), archive.getName()).getAbsolutePath();
         } else {
-            return new File(this.outputPath, inputFile.toURI().relativize(archive.toURI()).getPath()).getAbsolutePath();
+            return new File(this.configuration.getOutputPath(), inputFile.toURI().relativize(archive.toURI()).getPath()).getAbsolutePath();
         }
     }
 

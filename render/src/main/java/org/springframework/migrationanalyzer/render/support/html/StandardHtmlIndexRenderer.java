@@ -18,12 +18,16 @@ package org.springframework.migrationanalyzer.render.support.html;
 
 import java.io.Writer;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.migrationanalyzer.analyze.AnalysisResult;
 import org.springframework.migrationanalyzer.render.OutputPathGenerator;
 import org.springframework.migrationanalyzer.util.IoUtils;
+import org.springframework.stereotype.Component;
 
+@Component
 final class StandardHtmlIndexRenderer implements HtmlIndexRenderer {
 
-    private static final String VIEW_NAME_INDEX = "index";
+    private static final String VIEW_NAME_INDEX = "html-index";
 
     private final OutputPathGenerator outputPathGenerator;
 
@@ -31,6 +35,7 @@ final class StandardHtmlIndexRenderer implements HtmlIndexRenderer {
 
     private final WriterFactory writerFactory;
 
+    @Autowired
     StandardHtmlIndexRenderer(ViewRenderer viewRenderer, OutputPathGenerator outputPathGenerator, WriterFactory writerFactory) {
         this.viewRenderer = viewRenderer;
         this.outputPathGenerator = outputPathGenerator;
@@ -38,10 +43,10 @@ final class StandardHtmlIndexRenderer implements HtmlIndexRenderer {
     }
 
     @Override
-    public void renderIndex() {
+    public void renderIndex(AnalysisResult analysisResult) {
         Writer writer = null;
         try {
-            writer = this.writerFactory.createWriter(this.outputPathGenerator.generatePathForIndex());
+            writer = this.writerFactory.createWriter(this.outputPathGenerator.generatePathForIndex(), analysisResult.getArchiveName());
             this.viewRenderer.renderViewWithEmptyModel(VIEW_NAME_INDEX, writer);
         } finally {
             IoUtils.closeQuietly(writer);

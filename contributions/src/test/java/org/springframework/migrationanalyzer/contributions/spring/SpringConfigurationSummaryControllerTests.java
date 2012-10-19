@@ -19,6 +19,8 @@ package org.springframework.migrationanalyzer.contributions.spring;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 import java.util.Collections;
 import java.util.HashSet;
@@ -27,7 +29,7 @@ import java.util.Set;
 
 import org.junit.Test;
 import org.springframework.migrationanalyzer.analyze.AnalysisResultEntry;
-import org.springframework.migrationanalyzer.contributions.StubFileSystemEntry;
+import org.springframework.migrationanalyzer.analyze.fs.FileSystemEntry;
 import org.springframework.migrationanalyzer.render.ModelAndView;
 
 public class SpringConfigurationSummaryControllerTests {
@@ -50,14 +52,20 @@ public class SpringConfigurationSummaryControllerTests {
     public void modelCreation() {
         Set<AnalysisResultEntry<SpringConfiguration>> resultEntries = new HashSet<AnalysisResultEntry<SpringConfiguration>>();
 
-        resultEntries.add(new AnalysisResultEntry<SpringConfiguration>(new StubFileSystemEntry("foo"), new SpringConfiguration(null, null)));
-        resultEntries.add(new AnalysisResultEntry<SpringConfiguration>(new StubFileSystemEntry("bar"), new SpringConfiguration(null, null)));
-        resultEntries.add(new AnalysisResultEntry<SpringConfiguration>(new StubFileSystemEntry("baz"), new SpringConfiguration(null, null)));
+        resultEntries.add(new AnalysisResultEntry<SpringConfiguration>(createFileSystemEntry("foo"), new SpringConfiguration(null, null)));
+        resultEntries.add(new AnalysisResultEntry<SpringConfiguration>(createFileSystemEntry("bar"), new SpringConfiguration(null, null)));
+        resultEntries.add(new AnalysisResultEntry<SpringConfiguration>(createFileSystemEntry("baz"), new SpringConfiguration(null, null)));
 
         ModelAndView modelAndView = this.controller.handle(resultEntries);
         Map<String, Object> model = modelAndView.getModel();
         assertEquals(1, model.size());
         assertEquals(3, model.get("springConfigurationCount"));
+    }
+
+    private FileSystemEntry createFileSystemEntry(String name) {
+        FileSystemEntry entry = mock(FileSystemEntry.class);
+        when(entry.getName()).thenReturn(name);
+        return entry;
     }
 
 }

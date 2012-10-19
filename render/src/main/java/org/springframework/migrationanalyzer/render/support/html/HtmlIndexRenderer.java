@@ -16,10 +16,12 @@
 
 package org.springframework.migrationanalyzer.render.support.html;
 
+import org.springframework.migrationanalyzer.analyze.AnalysisResult;
+
 interface HtmlIndexRenderer {
 
     /**
      * Render the index page into HTML
      */
-    void renderIndex();
+    void renderIndex(AnalysisResult analysisResult);
 }

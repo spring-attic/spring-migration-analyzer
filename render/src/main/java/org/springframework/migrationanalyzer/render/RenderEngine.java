@@ -19,8 +19,8 @@ package org.springframework.migrationanalyzer.render;
 import org.springframework.migrationanalyzer.analyze.AnalysisResult;
 
 /**
- * An abstract for rendering the results of an analysis. Implementations are free to render the results into whatever
- * format at whatever location they choose.
+ * An abstraction for rendering the results of an analysis. Implementations are free to render the results into whatever
+ * format they choose.
  * <p />
  * 
  * <strong>Concurrent Semantics</strong><br />
@@ -30,10 +30,19 @@ import org.springframework.migrationanalyzer.analyze.AnalysisResult;
 public interface RenderEngine {
 
     /**
+     * Whether this engine can render the output type offered
+     * 
+     * @param outputType The type of output
+     * @return {@code true} if this engine can handle the output type, otherwise {@code false}
+     */
+    boolean canRender(String outputType);
+
+    /**
      * Render the analysis result
      * 
      * @param analysisResult The analysis result to render
+     * @param outputPath The path to which the output should be rendered
      */
-    void render(AnalysisResult analysisResult);
+    void render(AnalysisResult analysisResult, String outputPath);
 
 }

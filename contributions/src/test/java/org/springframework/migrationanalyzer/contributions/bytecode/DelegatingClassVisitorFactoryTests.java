@@ -18,33 +18,45 @@ package org.springframework.migrationanalyzer.contributions.bytecode;
 
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
 
+import java.util.Arrays;
 import java.util.HashSet;
-import java.util.Set;
 
 import org.junit.Test;
 
 public class DelegatingClassVisitorFactoryTests {
 
-    private final DelegatingClassVisitorFactory factory;
+    private final ResultGatheringAnnotationVisitor<?> annotationVisitor = mock(ResultGatheringAnnotationVisitor.class);
 
-    @SuppressWarnings("rawtypes")
-    public DelegatingClassVisitorFactoryTests() {
-        Set<Class<? extends ResultGatheringVisitor>> visitorClasses = new HashSet<Class<? extends ResultGatheringVisitor>>();
+    private final ResultGatheringFieldVisitor<?> fieldVisitor = mock(ResultGatheringFieldVisitor.class);
 
-        visitorClasses.add(StubResultGatheringAnnotationVisitor.class);
-        visitorClasses.add(StubResultGatheringFieldVisitor.class);
-        visitorClasses.add(StubResultGatheringMethodVisitor.class);
-        visitorClasses.add(StubResultGatheringClassVisitor.class);
+    private final ResultGatheringMethodVisitor<?> methodVisitor = mock(ResultGatheringMethodVisitor.class);
 
-        this.factory = new DelegatingClassVisitorFactory(visitorClasses);
-    }
+    private final ResultGatheringClassVisitor<?> classVisitor = mock(ResultGatheringClassVisitor.class);
+
+    @SuppressWarnings({ "rawtypes", "unchecked" })
+    private final DelegatingClassVisitorFactory factory = new DelegatingClassVisitorFactory(new HashSet<ResultGatheringVisitor>(Arrays.asList(
+        this.annotationVisitor, this.fieldVisitor, this.methodVisitor, this.classVisitor)));
 
     @Test
     public void create() {
         ResultGatheringClassVisitor<Object> visitor = this.factory.create();
         assertNotNull(visitor);
         assertTrue(visitor instanceof DelegatingClassVisitor);
+
+        visitor.visitAnnotation(null, true).visitEnd();
+        verify(this.annotationVisitor).visitEnd();
+
+        visitor.visitField(0, null, null, null, null).visitEnd();
+        verify(this.fieldVisitor).visitEnd();
+
+        visitor.visitMethod(0, null, null, null, null).visitEnd();
+        verify(this.methodVisitor).visitEnd();
+
+        visitor.visit(0, 0, null, null, null, null);
+        verify(this.classVisitor).visit(0, 0, null, null, null, null);
     }
 
 }

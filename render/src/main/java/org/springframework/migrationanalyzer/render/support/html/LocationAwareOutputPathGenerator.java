@@ -27,17 +27,17 @@ final class LocationAwareOutputPathGenerator implements OutputPathGenerator {
 
     LocationAwareOutputPathGenerator(RootAwareOutputPathGenerator delegate, Class<?> relativeTo) {
         this.delegate = delegate;
-        this.relativeLocation = this.delegate.generateRelativePathToRootFor(relativeTo);
+        this.relativeLocation = this.delegate.generatePathRelativeToRootFor(relativeTo);
     }
 
     LocationAwareOutputPathGenerator(RootAwareOutputPathGenerator delegate, FileSystemEntry relativeTo) {
         this.delegate = delegate;
-        this.relativeLocation = this.delegate.generateRelativePathToRootFor(relativeTo);
+        this.relativeLocation = this.delegate.generatePathRelativeToRootFor(relativeTo);
     }
 
     LocationAwareOutputPathGenerator(RootAwareOutputPathGenerator delegate, String relativeTo) {
         this.delegate = delegate;
-        this.relativeLocation = this.delegate.generateRelativePathToRootFor(relativeTo);
+        this.relativeLocation = this.delegate.generatePathRelativeToRootFor(relativeTo);
     }
 
     @Override

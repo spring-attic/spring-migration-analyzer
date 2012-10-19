@@ -19,9 +19,11 @@ package org.springframework.migrationanalyzer.analyze.support;
 interface MutableAnalysisResultFactory {
 
     /**
-     * Create a result
+     * Create a result.
+     * 
+     * @param The name of the archive that the result is for
      * 
      * @return A newly created result
      */
-    MutableAnalysisResult create();
+    MutableAnalysisResult create(String archiveName);
 }

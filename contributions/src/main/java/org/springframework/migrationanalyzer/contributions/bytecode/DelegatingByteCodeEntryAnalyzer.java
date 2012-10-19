@@ -23,10 +23,13 @@ import java.util.Set;
 import org.objectweb.asm.ClassReader;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.migrationanalyzer.analyze.fs.FileSystemEntry;
 import org.springframework.migrationanalyzer.analyze.support.AnalysisFailedException;
 import org.springframework.migrationanalyzer.analyze.support.EntryAnalyzer;
+import org.springframework.stereotype.Component;
 
+@Component
 final class DelegatingByteCodeEntryAnalyzer implements EntryAnalyzer<Object> {
 
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
@@ -35,10 +38,7 @@ final class DelegatingByteCodeEntryAnalyzer implements EntryAnalyzer<Object> {
 
     private final ResultGatheringClassVisitorFactory factory;
 
-    DelegatingByteCodeEntryAnalyzer() {
-        this(new DelegatingClassVisitorFactory());
-    }
-
+    @Autowired
     DelegatingByteCodeEntryAnalyzer(ResultGatheringClassVisitorFactory factory) {
         this.factory = factory;
     }

@@ -30,7 +30,9 @@ import org.springframework.migrationanalyzer.analyze.fs.FileSystemEntry;
 import org.springframework.migrationanalyzer.analyze.support.AnalysisFailedException;
 import org.springframework.migrationanalyzer.analyze.support.EntryAnalyzer;
 import org.springframework.migrationanalyzer.util.IoUtils;
+import org.springframework.stereotype.Component;
 
+@Component
 final class DeploymentDescriptorDetectingEntryAnalyzer implements EntryAnalyzer<DeploymentDescriptor> {
 
     private static final String DETECTED_DEPLOYMENT_DESCRIPTORS_PROPERTIES_FILE_NAME = "org/springframework/migrationanalyzer/contributions/deploymentdescriptors/detected-deployment-descriptors.properties";

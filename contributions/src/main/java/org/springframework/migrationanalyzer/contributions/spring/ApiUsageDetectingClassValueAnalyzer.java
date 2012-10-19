@@ -16,15 +16,22 @@
 
 package org.springframework.migrationanalyzer.contributions.spring;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.migrationanalyzer.analyze.fs.FileSystemEntry;
 import org.springframework.migrationanalyzer.contributions.apiusage.ApiUsage;
 import org.springframework.migrationanalyzer.contributions.apiusage.ApiUsageDetector;
 import org.springframework.migrationanalyzer.contributions.apiusage.ApiUsageType;
-import org.springframework.migrationanalyzer.contributions.apiusage.StandardApiUsageDetector;
+import org.springframework.stereotype.Component;
 
+@Component
 final class ApiUsageDetectingClassValueAnalyzer implements SpringConfigurationClassValueAnalyzer<ApiUsage> {
 
-    private final ApiUsageDetector detector = new StandardApiUsageDetector();
+    private final ApiUsageDetector detector;
+
+    @Autowired
+    ApiUsageDetectingClassValueAnalyzer(ApiUsageDetector apiUsageDetector) {
+        this.detector = apiUsageDetector;
+    }
 
     @Override
     public ApiUsage analyze(String className, FileSystemEntry fileSystemEntry) {

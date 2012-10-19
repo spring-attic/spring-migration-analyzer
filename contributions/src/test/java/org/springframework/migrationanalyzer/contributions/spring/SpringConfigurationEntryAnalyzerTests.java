@@ -19,18 +19,19 @@ package org.springframework.migrationanalyzer.contributions.spring;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.InputStream;
-import java.io.Reader;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
 import org.junit.Test;
+import org.mockito.invocation.InvocationOnMock;
+import org.mockito.stubbing.Answer;
 import org.springframework.migrationanalyzer.analyze.fs.FileSystemEntry;
-import org.springframework.migrationanalyzer.analyze.fs.FileSystemException;
 import org.springframework.migrationanalyzer.analyze.support.AnalysisFailedException;
 
 public class SpringConfigurationEntryAnalyzerTests {
@@ -43,7 +44,7 @@ public class SpringConfigurationEntryAnalyzerTests {
 
     @Test
     public void springConfigurationFile() throws AnalysisFailedException {
-        Set<Object> results = this.analyzer.analyze(new StubFileSystemEntry("spring-jndi.xml"));
+        Set<Object> results = this.analyzer.analyze(createFileSystemEntry("spring-jndi.xml"));
         assertNotNull(results);
         assertEquals(4, results.size());
 
@@ -53,43 +54,22 @@ public class SpringConfigurationEntryAnalyzerTests {
 
     @Test
     public void nonSpringConfigurationXmlFile() throws AnalysisFailedException {
-        Set<Object> results = this.analyzer.analyze(new StubFileSystemEntry("web.xml"));
+        Set<Object> results = this.analyzer.analyze(createFileSystemEntry("web.xml"));
         assertNotNull(results);
         assertEquals(0, results.size());
     }
 
-    private static final class StubFileSystemEntry implements FileSystemEntry {
+    private FileSystemEntry createFileSystemEntry(final String name) {
+        FileSystemEntry fileSystemEntry = mock(FileSystemEntry.class);
+        when(fileSystemEntry.getName()).thenReturn(name);
+        when(fileSystemEntry.getInputStream()).thenAnswer(new Answer<InputStream>() {
 
-        private final String name;
-
-        public StubFileSystemEntry(String name) {
-            this.name = name;
-        }
-
-        @Override
-        public InputStream getInputStream() {
-            try {
-                return new FileInputStream("src/test/resources/org/springframework/migrationanalyzer/contributions/spring/" + this.name);
-            } catch (FileNotFoundException e) {
-                throw new FileSystemException(e);
+            @Override
+            public InputStream answer(InvocationOnMock invocation) throws Throwable {
+                return new FileInputStream("src/test/resources/org/springframework/migrationanalyzer/contributions/spring/" + name);
             }
-        }
-
-        @Override
-        public String getName() {
-            return this.name;
-        }
-
-        @Override
-        public Reader getReader() {
-            return null;
-        }
-
-        @Override
-        public boolean isDirectory() {
-            return false;
-        }
-
+        });
+        return fileSystemEntry;
     }
 
     private static final class StubSpringConfigurationClassValueAnalyzer implements SpringConfigurationClassValueAnalyzer<String> {

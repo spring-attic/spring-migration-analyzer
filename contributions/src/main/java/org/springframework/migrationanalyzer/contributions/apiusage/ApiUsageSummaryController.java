@@ -30,7 +30,9 @@ import org.springframework.migrationanalyzer.analyze.AnalysisResultEntry;
 import org.springframework.migrationanalyzer.render.MigrationCost;
 import org.springframework.migrationanalyzer.render.ModelAndView;
 import org.springframework.migrationanalyzer.render.SummaryController;
+import org.springframework.stereotype.Component;
 
+@Component
 final class ApiUsageSummaryController extends AbstractApiUsageController implements SummaryController<ApiUsage> {
 
     private static final String VIEW_NAME = "api-summary";

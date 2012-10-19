@@ -18,10 +18,9 @@ package org.springframework.migrationanalyzer.contributions.deploymentdescriptor
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.Reader;
 import java.util.Set;
 
 import org.junit.Test;
@@ -36,58 +35,36 @@ public class JBossServiceXmlDetectingEntryAnalyzerTests {
 
     @Test
     public void jBossServiceXmlIsDetected() throws AnalysisFailedException {
-        Set<DeploymentDescriptor> analyze = this.entryAnalyzer.analyze(new StubFileSystemEntry("jboss-service.xml"));
+        Set<DeploymentDescriptor> analyze = this.entryAnalyzer.analyze(createFileSystemEntry("jboss-service.xml"));
         assertNotNull(analyze);
         assertEquals(1, analyze.size());
     }
 
     @Test
     public void otherServiceXmlWithCorrectContentAreDetected() throws AnalysisFailedException {
-        Set<DeploymentDescriptor> analyze = this.entryAnalyzer.analyze(new StubFileSystemEntry("another-service.xml"));
+        Set<DeploymentDescriptor> analyze = this.entryAnalyzer.analyze(createFileSystemEntry("another-service.xml"));
         assertNotNull(analyze);
         assertEquals(1, analyze.size());
     }
 
     @Test
     public void filesWithMatchingNameButIncorrectContentAreNotDetected() throws AnalysisFailedException {
-        Set<DeploymentDescriptor> analyze = this.entryAnalyzer.analyze(new StubFileSystemEntry("something-else-service.xml"));
+        Set<DeploymentDescriptor> analyze = this.entryAnalyzer.analyze(createFileSystemEntry("something-else-service.xml"));
         assertNotNull(analyze);
         assertEquals(0, analyze.size());
     }
 
     @Test
     public void nonServiceXmlProducesEmptySet() throws AnalysisFailedException {
-        Set<DeploymentDescriptor> analyze = this.entryAnalyzer.analyze(new StubFileSystemEntry("/something-else.xml"));
+        Set<DeploymentDescriptor> analyze = this.entryAnalyzer.analyze(createFileSystemEntry("/something-else.xml"));
         assertNotNull(analyze);
         assertEquals(0, analyze.size());
     }
 
-    private static final class StubFileSystemEntry implements FileSystemEntry {
-
-        private final String name;
-
-        public StubFileSystemEntry(String name) {
-            this.name = name;
-        }
-
-        @Override
-        public InputStream getInputStream() {
-            return getClass().getResourceAsStream(this.name);
-        }
-
-        @Override
-        public String getName() {
-            return this.name;
-        }
-
-        @Override
-        public Reader getReader() {
-            return new InputStreamReader(getInputStream());
-        }
-
-        @Override
-        public boolean isDirectory() {
-            return false;
-        }
+    private FileSystemEntry createFileSystemEntry(String name) {
+        FileSystemEntry fileSystemEntry = mock(FileSystemEntry.class);
+        when(fileSystemEntry.getName()).thenReturn(name);
+        when(fileSystemEntry.getInputStream()).thenReturn(getClass().getResourceAsStream(name));
+        return fileSystemEntry;
     }
 }

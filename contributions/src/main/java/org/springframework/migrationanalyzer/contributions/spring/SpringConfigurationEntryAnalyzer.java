@@ -19,7 +19,6 @@ package org.springframework.migrationanalyzer.contributions.spring;
 import java.io.File;
 import java.io.IOException;
 import java.io.StringReader;
-import java.net.URLClassLoader;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -29,15 +28,15 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.migrationanalyzer.analyze.fs.FileSystemEntry;
 import org.springframework.migrationanalyzer.analyze.support.AnalysisFailedException;
 import org.springframework.migrationanalyzer.analyze.support.EntryAnalyzer;
-import org.springframework.migrationanalyzer.analyze.util.InstanceCreator;
-import org.springframework.migrationanalyzer.analyze.util.StandardClassPathScanner;
 import org.springframework.migrationanalyzer.contributions.xml.NodeAnalyzer;
 import org.springframework.migrationanalyzer.contributions.xml.StandardXmlArtifactAnalyzer;
 import org.springframework.migrationanalyzer.contributions.xml.ValueAnalyzer;
 import org.springframework.migrationanalyzer.contributions.xml.XmlArtifactAnalyzer;
+import org.springframework.stereotype.Component;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.xml.sax.EntityResolver;
@@ -47,6 +46,7 @@ import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
 
 @SuppressWarnings("rawtypes")
+@Component
 final class SpringConfigurationEntryAnalyzer implements EntryAnalyzer<Object> {
 
     private static final String FILE_NAME_SUFFIX = ".xml";
@@ -102,11 +102,7 @@ final class SpringConfigurationEntryAnalyzer implements EntryAnalyzer<Object> {
 
     private final Set<SpringConfigurationClassValueAnalyzer> classValueAnalyzers;
 
-    SpringConfigurationEntryAnalyzer() {
-        this(InstanceCreator.createInstances(new StandardClassPathScanner().findImplementations(SpringConfigurationClassValueAnalyzer.class,
-            (URLClassLoader) Thread.currentThread().getContextClassLoader())));
-    }
-
+    @Autowired
     SpringConfigurationEntryAnalyzer(Set<SpringConfigurationClassValueAnalyzer> analyzers) {
         this.classValueAnalyzers = analyzers;
     }

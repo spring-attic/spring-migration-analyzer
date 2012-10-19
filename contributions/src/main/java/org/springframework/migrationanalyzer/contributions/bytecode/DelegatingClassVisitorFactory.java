@@ -16,44 +16,34 @@
 
 package org.springframework.migrationanalyzer.contributions.bytecode;
 
-import static org.springframework.migrationanalyzer.analyze.util.InstanceCreator.createInstances;
-
-import java.net.URLClassLoader;
 import java.util.HashSet;
 import java.util.Set;
 
 import org.objectweb.asm.AnnotationVisitor;
 import org.objectweb.asm.FieldVisitor;
 import org.objectweb.asm.MethodVisitor;
-import org.springframework.migrationanalyzer.analyze.util.ClassPathScanner;
-import org.springframework.migrationanalyzer.analyze.util.StandardClassPathScanner;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 @SuppressWarnings("rawtypes")
+@Component
 final class DelegatingClassVisitorFactory implements ResultGatheringClassVisitorFactory {
 
-    private final Set<Class<? extends ResultGatheringVisitor>> resultGatheringVisitorClasses;
+    private final Set<ResultGatheringVisitor> resultGatheringVisitors;
 
-    private final ClassPathScanner classPathScanner = new StandardClassPathScanner();
-
-    DelegatingClassVisitorFactory() {
-        URLClassLoader classLoader = (URLClassLoader) Thread.currentThread().getContextClassLoader();
-        this.resultGatheringVisitorClasses = this.classPathScanner.findImplementations(ResultGatheringVisitor.class, classLoader);
-    }
-
-    DelegatingClassVisitorFactory(Set<Class<? extends ResultGatheringVisitor>> resultGatheringVisitorClasses) {
-        this.resultGatheringVisitorClasses = resultGatheringVisitorClasses;
+    @Autowired
+    DelegatingClassVisitorFactory(Set<ResultGatheringVisitor> resultGatheringVisitors) {
+        this.resultGatheringVisitors = resultGatheringVisitors;
     }
 
     @Override
     public ResultGatheringClassVisitor<Object> create() {
-        Set<ResultGatheringVisitor> allVisitorInstances = createInstances(this.resultGatheringVisitorClasses);
-
         Set<AnnotationVisitor> annotationVisitorInstances = new HashSet<AnnotationVisitor>();
         Set<FieldVisitor> fieldVisitorInstances = new HashSet<FieldVisitor>();
         Set<MethodVisitor> methodVisitorInstances = new HashSet<MethodVisitor>();
         Set<ResultGatheringClassVisitor> classVisitorInstances = new HashSet<ResultGatheringClassVisitor>();
 
-        for (ResultGatheringVisitor visitor : allVisitorInstances) {
+        for (ResultGatheringVisitor visitor : this.resultGatheringVisitors) {
 
             if (visitor instanceof ResultGatheringAnnotationVisitor) {
                 annotationVisitorInstances.add((ResultGatheringAnnotationVisitor) visitor);

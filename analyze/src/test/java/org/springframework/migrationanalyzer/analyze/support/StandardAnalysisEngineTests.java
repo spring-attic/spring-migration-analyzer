@@ -16,61 +16,78 @@
 
 package org.springframework.migrationanalyzer.analyze.support;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoMoreInteractions;
+import static org.mockito.Mockito.when;
 
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
 import org.junit.Test;
-import org.springframework.migrationanalyzer.analyze.fs.StubFileSystem;
+import org.springframework.migrationanalyzer.analyze.fs.FileSystem;
+import org.springframework.migrationanalyzer.analyze.fs.FileSystemEntry;
 
 @SuppressWarnings("rawtypes")
 public class StandardAnalysisEngineTests {
 
-    @Test
-    public void nullResult() {
-        Set<EntryAnalyzer> analyzers = new HashSet<EntryAnalyzer>();
-        StubEntryAnalyzer analyzer1 = new StubEntryAnalyzer();
-        StubEntryAnalyzer analyzer2 = new StubEntryAnalyzer();
-        analyzers.add(analyzer1);
-        analyzers.add(analyzer2);
-        StubFileSystem fileSystem = new StubFileSystem();
+    private final FileSystem fileSystem = mock(FileSystem.class);
 
-        StandardAnalysisEngine analysisEngine = new StandardAnalysisEngine(analyzers, new StubMutableAnalysisResultFactory(), fileSystem,
-            new String[0]);
-        analysisEngine.analyze();
-        assertTrue(analyzer1.getCalled());
-        assertTrue(analyzer2.getCalled());
+    private final FileSystemEntry fileSystemEntry = mock(FileSystemEntry.class);
+
+    private final MutableAnalysisResultFactory mutableAnalysisResultFactory = mock(MutableAnalysisResultFactory.class);
+
+    public StandardAnalysisEngineTests() {
+        when(this.fileSystemEntry.getName()).thenReturn("stub-entry");
+        when(this.fileSystem.iterator()).thenReturn(Arrays.asList(this.fileSystemEntry).iterator());
     }
 
     @Test
-    public void analyze() {
+    public void nullResult() throws AnalysisFailedException {
+        EntryAnalyzer analyzer1 = mock(EntryAnalyzer.class);
+        EntryAnalyzer analyzer2 = mock(EntryAnalyzer.class);
+
         Set<EntryAnalyzer> analyzers = new HashSet<EntryAnalyzer>();
-        StubEntryAnalyzer analyzer1 = new StubEntryAnalyzer(new Object());
-        StubEntryAnalyzer analyzer2 = new StubEntryAnalyzer();
         analyzers.add(analyzer1);
         analyzers.add(analyzer2);
-        StubFileSystem fileSystem = new StubFileSystem();
-        StandardAnalysisEngine analysisEngine = new StandardAnalysisEngine(analyzers, new StubMutableAnalysisResultFactory(), fileSystem,
-            new String[0]);
-        analysisEngine.analyze();
-        assertTrue(analyzer1.getCalled());
-        assertTrue(analyzer2.getCalled());
+
+        StandardAnalysisEngine analysisEngine = new StandardAnalysisEngine(analyzers, this.mutableAnalysisResultFactory);
+        analysisEngine.analyze(this.fileSystem, new String[0], "archive.war");
+
+        verify(analyzer1).analyze(this.fileSystemEntry);
+        verify(analyzer2).analyze(this.fileSystemEntry);
+    }
+
+    @Test
+    public void analyze() throws AnalysisFailedException {
+        EntryAnalyzer analyzer1 = mock(EntryAnalyzer.class);
+        EntryAnalyzer analyzer2 = mock(EntryAnalyzer.class);
+
+        Set<EntryAnalyzer> analyzers = new HashSet<EntryAnalyzer>();
+        analyzers.add(analyzer1);
+        analyzers.add(analyzer2);
+
+        StandardAnalysisEngine analysisEngine = new StandardAnalysisEngine(analyzers, this.mutableAnalysisResultFactory);
+        analysisEngine.analyze(this.fileSystem, new String[0], "archive.war");
+
+        verify(analyzer1).analyze(this.fileSystemEntry);
+        verify(analyzer2).analyze(this.fileSystemEntry);
     }
 
     @Test
     public void analyzeWithExclusions() {
+        EntryAnalyzer analyzer1 = mock(EntryAnalyzer.class);
+        EntryAnalyzer analyzer2 = mock(EntryAnalyzer.class);
+
         Set<EntryAnalyzer> analyzers = new HashSet<EntryAnalyzer>();
-        StubEntryAnalyzer analyzer1 = new StubEntryAnalyzer(new Object());
-        StubEntryAnalyzer analyzer2 = new StubEntryAnalyzer();
         analyzers.add(analyzer1);
         analyzers.add(analyzer2);
-        StubFileSystem fileSystem = new StubFileSystem();
-        StandardAnalysisEngine analysisEngine = new StandardAnalysisEngine(analyzers, new StubMutableAnalysisResultFactory(), fileSystem,
-            new String[] { "stub-entry" });
-        analysisEngine.analyze();
-        assertFalse(analyzer1.getCalled());
-        assertFalse(analyzer2.getCalled());
+
+        StandardAnalysisEngine analysisEngine = new StandardAnalysisEngine(analyzers, this.mutableAnalysisResultFactory);
+        analysisEngine.analyze(this.fileSystem, new String[] { "stub-entry" }, "archive.war");
+
+        verifyNoMoreInteractions(analyzer1);
+        verifyNoMoreInteractions(analyzer2);
     }
 }

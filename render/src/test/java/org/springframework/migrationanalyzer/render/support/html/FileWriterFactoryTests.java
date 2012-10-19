@@ -31,10 +31,10 @@ public final class FileWriterFactoryTests {
 
     @Test
     public void createWriter() throws IOException {
-        Writer writer = this.writerFactory.createWriter("alpha/bravo.txt");
+        Writer writer = this.writerFactory.createWriter("alpha/bravo.txt", "prefix");
 
         try {
-            File dir = new File("target", "alpha");
+            File dir = new File(new File("target", "prefix"), "alpha");
             assertTrue(dir.isDirectory());
             writer.append("hello world");
 

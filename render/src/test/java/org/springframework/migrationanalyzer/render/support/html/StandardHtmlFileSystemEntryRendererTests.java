@@ -16,18 +16,23 @@
 
 package org.springframework.migrationanalyzer.render.support.html;
 
-import static org.junit.Assert.assertEquals;
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
+import java.io.Writer;
 import java.util.Arrays;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 
 import org.junit.Test;
+import org.mockito.InOrder;
+import org.mockito.Mockito;
 import org.springframework.migrationanalyzer.analyze.AnalysisResult;
-import org.springframework.migrationanalyzer.analyze.AnalysisResultEntry;
 import org.springframework.migrationanalyzer.analyze.fs.FileSystemEntry;
 import org.springframework.migrationanalyzer.render.ByFileSystemEntryController;
-import org.springframework.migrationanalyzer.render.StubAnalysisResult;
 import org.springframework.migrationanalyzer.render.support.source.SourceAccessor;
 
 @SuppressWarnings("rawtypes")
@@ -35,30 +40,32 @@ public class StandardHtmlFileSystemEntryRendererTests {
 
     private final Set<ByFileSystemEntryController> fileSystemEntryControllers = new HashSet<ByFileSystemEntryController>();
 
-    private final StubViewRenderer viewRenderer = new StubViewRenderer();
+    private final ViewRenderer viewRenderer = mock(ViewRenderer.class);
 
-    private final RootAwareOutputPathGenerator outputPathGenerator = new StubOutputPathGenerator("target");
+    private final WriterFactory writerFactory = mock(WriterFactory.class);
 
-    private final StubWriterFactory writerFactory = new StubWriterFactory();
-
-    private final SourceAccessor sourceAccessor = new StubSourceAccessor();
+    private final SourceAccessor sourceAccessor = mock(SourceAccessor.class);
 
     private final StandardHtmlFileSystemEntryRenderer renderer = new StandardHtmlFileSystemEntryRenderer(this.fileSystemEntryControllers,
-        this.viewRenderer, this.outputPathGenerator, this.writerFactory, this.sourceAccessor);
+        this.viewRenderer, mock(RootAwareOutputPathGenerator.class), this.writerFactory, this.sourceAccessor);
 
+    @SuppressWarnings("unchecked")
     @Test
     public void renderFileSystemEntries() {
-        AnalysisResult analysisResult = new StubAnalysisResult(
-            new AnalysisResultEntry<Object>(new StubFileSystemEntry("a/b/c/Foo.txt"), new Object()));
+        when(this.sourceAccessor.getSource(any(FileSystemEntry.class))).thenReturn("the-source");
+
+        AnalysisResult analysisResult = mock(AnalysisResult.class);
+        FileSystemEntry entry = mock(FileSystemEntry.class);
+        when(analysisResult.getFileSystemEntries()).thenReturn(new HashSet<FileSystemEntry>(Arrays.asList(entry)));
+        when(analysisResult.getResultForEntry(entry)).thenReturn(analysisResult);
+        when(analysisResult.getResultTypes()).thenReturn(new HashSet<Class<?>>(Arrays.asList(Object.class)));
+
         this.renderer.renderFileSystemEntries(analysisResult);
-        assertEquals(Arrays.asList("file-contents", "by-file-header", "by-file-source", "by-file-footer"), this.viewRenderer.getViewsRendered());
-    }
 
-    private static final class StubSourceAccessor implements SourceAccessor {
-
-        @Override
-        public String getSource(FileSystemEntry fileSystemEntry) {
-            return "the-source";
-        }
+        InOrder inOrder = Mockito.inOrder(this.viewRenderer);
+        inOrder.verify(this.viewRenderer).renderViewWithModel(eq("html-file-contents"), any(Map.class), any(Writer.class));
+        inOrder.verify(this.viewRenderer).renderViewWithModel(eq("html-by-file-header"), any(Map.class), any(Writer.class));
+        inOrder.verify(this.viewRenderer).renderViewWithModel(eq("html-by-file-source"), any(Map.class), any(Writer.class));
+        inOrder.verify(this.viewRenderer).renderViewWithEmptyModel(eq("html-by-file-footer"), any(Writer.class));
     }
 }

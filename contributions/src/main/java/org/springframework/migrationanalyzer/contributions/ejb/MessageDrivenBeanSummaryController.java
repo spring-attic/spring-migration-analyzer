@@ -28,7 +28,9 @@ import org.springframework.migrationanalyzer.contributions.transactions.Transact
 import org.springframework.migrationanalyzer.render.MigrationCost;
 import org.springframework.migrationanalyzer.render.ModelAndView;
 import org.springframework.migrationanalyzer.render.SummaryController;
+import org.springframework.stereotype.Component;
 
+@Component
 final class MessageDrivenBeanSummaryController extends AbstractMessageDrivenBeanController implements SummaryController<MessageDrivenBean> {
 
     private static final String VIEW_NAME_SUMMARY = "message-driven-bean-summary";

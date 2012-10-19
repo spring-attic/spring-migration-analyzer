@@ -28,7 +28,9 @@ import java.util.TreeMap;
 import org.springframework.migrationanalyzer.analyze.AnalysisResultEntry;
 import org.springframework.migrationanalyzer.render.ByFileSystemEntryController;
 import org.springframework.migrationanalyzer.render.ModelAndView;
+import org.springframework.stereotype.Component;
 
+@Component
 final class ApiUsageByFileSystemEntryController implements ByFileSystemEntryController<ApiUsage> {
 
     private static final String VIEW_NAME = "api-by-file";

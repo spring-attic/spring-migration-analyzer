@@ -16,6 +16,7 @@
 
 package org.springframework.migrationanalyzer.analyze.support;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
@@ -26,6 +27,8 @@ public class InMemoryAnalysisResultFactoryTests {
 
     @Test
     public void create() {
-        assertTrue(this.factory.create() instanceof InMemoryAnalysisResult);
+        MutableAnalysisResult analysisResult = this.factory.create("archive.war");
+        assertTrue(analysisResult instanceof InMemoryAnalysisResult);
+        assertEquals("archive.war", analysisResult.getArchiveName());
     }
 }

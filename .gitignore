@@ -3,3 +3,4 @@ target
 .freemarker-ide.xml
 .project
 .settings
+.springBeans

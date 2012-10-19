@@ -17,7 +17,8 @@
 package org.springframework.migrationanalyzer.contributions.bytecode;
 
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -27,7 +28,7 @@ import org.objectweb.asm.FieldVisitor;
 
 public class DelegatingFieldVisitorTests {
 
-    private final StubResultGatheringFieldVisitor delegate = new StubResultGatheringFieldVisitor();
+    private final ResultGatheringFieldVisitor<?> delegate = mock(ResultGatheringFieldVisitor.class);
 
     private final DelegatingFieldVisitor visitor;
 
@@ -40,25 +41,25 @@ public class DelegatingFieldVisitorTests {
     @Test
     public void getResults() {
         assertNotNull(this.visitor.getResults());
-        assertTrue(this.delegate.getGetResultsCalled());
+        verify(this.delegate).getResults();
     }
 
     @Test
     public void visitAnnotation() {
         this.visitor.visitAnnotation(null, false);
-        assertTrue(this.delegate.getVisitAnnotationCalled());
+        verify(this.delegate).visitAnnotation(null, false);
     }
 
     @Test
     public void visitAttribute() {
         this.visitor.visitAttribute(null);
-        assertTrue(this.delegate.getVisitAttributeCalled());
+        verify(this.delegate).visitAttribute(null);
     }
 
     @Test
     public void visitEnd() {
         this.visitor.visitEnd();
-        assertTrue(this.delegate.getVisitEndCalled());
+        verify(this.delegate).visitEnd();
     }
 
 }

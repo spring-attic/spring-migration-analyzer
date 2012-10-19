@@ -26,14 +26,10 @@ import org.springframework.migrationanalyzer.analyze.fs.FileSystem;
 import org.springframework.migrationanalyzer.analyze.fs.FileSystemException;
 import org.springframework.migrationanalyzer.analyze.fs.FileSystemFactory;
 import org.springframework.migrationanalyzer.util.ZipUtils;
+import org.springframework.stereotype.Component;
 
-/**
- * A factory for creating {@link FileSystem} instances.
- * 
- * </p> <strong>Concurrent semantics:</strong><br />
- * Thread-safe.
- */
-public final class DirectoryFileSystemFactory implements FileSystemFactory {
+@Component
+final class DirectoryFileSystemFactory implements FileSystemFactory {
 
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
