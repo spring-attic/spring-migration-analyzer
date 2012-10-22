@@ -41,7 +41,7 @@ public class ZipUtilsTests {
 
     @Test
     public void zipToLocationThatIsAFile() throws IOException {
-        File destination = new File("target", "destination");
+        File destination = new File("build", "destination");
         delete(destination);
         assertTrue(destination.createNewFile());
 
@@ -55,7 +55,7 @@ public class ZipUtilsTests {
 
     @Test
     public void zipToDirectoryThatCannotBeCreated() throws IOException {
-        File parent = new File("target", "destination");
+        File parent = new File("build", "destination");
         delete(parent);
         assertTrue(parent.createNewFile());
 
@@ -71,7 +71,7 @@ public class ZipUtilsTests {
 
     @Test
     public void zipToDirectoryThatContainsFilePreventingDirectoryInZipFromBeingCreated() throws IOException {
-        File destination = new File("target", "destination");
+        File destination = new File("build", "destination");
         delete(destination);
         assertTrue(destination.mkdirs());
 
@@ -103,7 +103,7 @@ public class ZipUtilsTests {
     }
 
     private static File unzip(File file) throws IOException {
-        File unzipped = new File("target", file.getName());
+        File unzipped = new File("build", file.getName());
         delete(unzipped);
 
         ZipUtils.unzipTo(new ZipFile(file), unzipped);

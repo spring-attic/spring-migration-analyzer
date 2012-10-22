@@ -17,9 +17,13 @@
 package org.springframework.migrationanalyzer.commandline;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertNotNull;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
 
 import org.junit.Test;
+import org.springframework.context.ConfigurableApplicationContext;
+import org.springframework.context.support.StaticApplicationContext;
 
 public class AbstraktMigrationAnalysisTests {
 
@@ -28,7 +32,8 @@ public class AbstraktMigrationAnalysisTests {
     @Test
     public void execute() {
         this.migrationAnalysis.run(new String[] { "test input path", "-t", "test output type" });
-        assertTrue(this.migrationAnalysis.getStubExecutor().getCalled());
+        assertNotNull(this.migrationAnalysis.applicationContext.getBean(Configuration.class));
+        verify(this.migrationAnalysis.executor).execute();
     }
 
     @Test
@@ -39,13 +44,14 @@ public class AbstraktMigrationAnalysisTests {
 
     private static class StubMigrationAnalysis extends AbstractMigrationAnalysis {
 
-        private final StubMigrationAnalysisExecutor executor = new StubMigrationAnalysisExecutor();
+        private final MigrationAnalysisExecutor executor = mock(MigrationAnalysisExecutor.class);
+
+        private final StaticApplicationContext applicationContext = new StaticApplicationContext();
 
         private volatile int code;
 
-        @Override
-        protected MigrationAnalysisExecutor getExecutor(Configuration configuration) {
-            return this.executor;
+        public StubMigrationAnalysis() {
+            this.applicationContext.getDefaultListableBeanFactory().registerSingleton("executor", this.executor);
         }
 
         @Override
@@ -57,23 +63,9 @@ public class AbstraktMigrationAnalysisTests {
             return this.code;
         }
 
-        public StubMigrationAnalysisExecutor getStubExecutor() {
-            return this.executor;
-        }
-
-    }
-
-    private static class StubMigrationAnalysisExecutor implements MigrationAnalysisExecutor {
-
-        private volatile boolean called = false;
-
         @Override
-        public void execute() {
-            this.called = true;
-        }
-
-        public boolean getCalled() {
-            return this.called;
+        protected ConfigurableApplicationContext getApplicationContext() {
+            return this.applicationContext;
         }
     }
 }

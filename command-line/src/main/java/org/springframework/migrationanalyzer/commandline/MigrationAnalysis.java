@@ -16,10 +16,7 @@
 
 package org.springframework.migrationanalyzer.commandline;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.config.BeanFactoryPostProcessor;
-import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
+import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 /**
@@ -32,8 +29,6 @@ import org.springframework.context.support.ClassPathXmlApplicationContext;
  */
 public final class MigrationAnalysis extends AbstractMigrationAnalysis {
 
-    private final Logger logger = LoggerFactory.getLogger(getClass());
-
     /**
      * Main method for invoking the application
      * 
@@ -44,24 +39,8 @@ public final class MigrationAnalysis extends AbstractMigrationAnalysis {
     }
 
     @Override
-    protected MigrationAnalysisExecutor getExecutor(final Configuration configuration) {
-        try {
-            ClassPathXmlApplicationContext applicationContext = new ClassPathXmlApplicationContext(
-                new String[] { "META-INF/spring/application-context.xml" }, false);
-            applicationContext.addBeanFactoryPostProcessor(new BeanFactoryPostProcessor() {
-
-                @Override
-                public void postProcessBeanFactory(ConfigurableListableBeanFactory beanFactory) {
-                    beanFactory.registerSingleton("configuration", configuration);
-
-                }
-            });
-            applicationContext.refresh();
-            return applicationContext.getBean(MigrationAnalysisExecutor.class);
-        } catch (RuntimeException re) {
-            this.logger.error("Failed to initialize the application context", re);
-            throw re;
-        }
+    protected ConfigurableApplicationContext getApplicationContext() {
+        return new ClassPathXmlApplicationContext(new String[] { "META-INF/spring/application-context.xml" }, false);
     }
 
     @Override

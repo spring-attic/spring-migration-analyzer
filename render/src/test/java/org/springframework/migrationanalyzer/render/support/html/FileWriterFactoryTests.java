@@ -27,14 +27,14 @@ import org.springframework.migrationanalyzer.util.IoUtils;
 
 public final class FileWriterFactoryTests {
 
-    private final FileWriterFactory writerFactory = new FileWriterFactory("target");
+    private final FileWriterFactory writerFactory = new FileWriterFactory("build");
 
     @Test
     public void createWriter() throws IOException {
         Writer writer = this.writerFactory.createWriter("alpha/bravo.txt", "prefix");
 
         try {
-            File dir = new File(new File("target", "prefix"), "alpha");
+            File dir = new File(new File("build", "prefix"), "alpha");
             assertTrue(dir.isDirectory());
             writer.append("hello world");
 

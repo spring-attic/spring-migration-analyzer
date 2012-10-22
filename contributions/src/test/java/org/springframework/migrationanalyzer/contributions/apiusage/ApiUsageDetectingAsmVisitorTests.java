@@ -19,7 +19,6 @@ package org.springframework.migrationanalyzer.contributions.apiusage;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -94,9 +93,7 @@ public class ApiUsageDetectingAsmVisitorTests {
     }
 
     private void assertApiUsage(Class<?> clazz, ApiUsageType... expectedUsage) throws FileNotFoundException, IOException {
-        String fileName = "target/test-classes/" + clazz.getName().replace(".", "/") + ".class";
-
-        ClassReader reader = new ClassReader(new FileInputStream(fileName));
+        ClassReader reader = new ClassReader(getClass().getResourceAsStream("/" + clazz.getName().replace(".", "/") + ".class"));
         ApiUsageDetector detector = new StubApiUsageDetector();
 
         ApiUsageDetectingAsmVisitor visitor = new ApiUsageDetectingAsmVisitor(detector);

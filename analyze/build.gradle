@@ -1,0 +1,5 @@
+dependencies {
+	compile project(':util')
+	compile "org.springframework:spring-core:$springVersion"
+	compile "org.springframework:spring-context:$springVersion"
+}

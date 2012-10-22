@@ -72,7 +72,7 @@ public class DirectoryFileSystemTests {
 
     @Test
     public void cleanup() throws IOException {
-        File root = new File("target/directory-file-system");
+        File root = new File("build/directory-file-system");
         root.mkdirs();
         File content = new File(root, "content");
         content.createNewFile();

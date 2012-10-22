@@ -26,6 +26,9 @@ import org.apache.commons.cli.ParseException;
 import org.apache.commons.cli.PosixParser;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.config.BeanFactoryPostProcessor;
+import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
+import org.springframework.context.ConfigurableApplicationContext;
 
 abstract class AbstractMigrationAnalysis {
 
@@ -54,7 +57,11 @@ abstract class AbstractMigrationAnalysis {
             String inputPath = getInputPath(commandLine);
 
             try {
-                getExecutor(new Configuration(inputPath, outputPath, outputType, excludes)).execute();
+                ConfigurableApplicationContext applicationContext = getApplicationContext();
+                applicationContext.addBeanFactoryPostProcessor(new ConfigurationRegisteringBeanFactoryPostProcessor(new Configuration(inputPath,
+                    outputPath, outputType, excludes)));
+                applicationContext.refresh();
+                applicationContext.getBean(MigrationAnalysisExecutor.class).execute();
             } catch (RuntimeException re) {
                 this.logger.error("A failure occurred. Please see earlier output for details.");
                 exit(-1);
@@ -102,7 +109,21 @@ abstract class AbstractMigrationAnalysis {
         }
     }
 
-    protected abstract MigrationAnalysisExecutor getExecutor(Configuration configuration);
+    protected abstract ConfigurableApplicationContext getApplicationContext();
 
     protected abstract void exit(int code);
+
+    private static final class ConfigurationRegisteringBeanFactoryPostProcessor implements BeanFactoryPostProcessor {
+
+        private final Configuration configuration;
+
+        private ConfigurationRegisteringBeanFactoryPostProcessor(Configuration configuration) {
+            this.configuration = configuration;
+        }
+
+        @Override
+        public void postProcessBeanFactory(ConfigurableListableBeanFactory beanFactory) {
+            beanFactory.registerSingleton("configuration", this.configuration);
+        }
+    }
 }

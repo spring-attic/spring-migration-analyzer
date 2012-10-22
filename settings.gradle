@@ -1,0 +1,8 @@
+rootProject.name = 'spring-migration-analyzer'
+
+include 'analyze'
+include 'command-line'
+include 'contributions'
+include 'render'
+include 'util'
+include 'user-guide'

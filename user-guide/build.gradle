@@ -1,0 +1,41 @@
+buildscript {
+    repositories {
+        maven { url 'http://repo.springsource.org/plugins-release' }
+    }
+    dependencies {
+        classpath 'org.springframework.build.gradle:docbook-reference-plugin:0.1.5'
+    }
+}
+
+apply plugin: 'docbook-reference'
+
+task htmlSingle(type: HtmlSingleDocbookReferenceTask) {
+	sourceDir = file('src/reference/docbook')
+}
+
+task htmlMulti(type: HtmlMultiDocbookReferenceTask) {
+	sourceDir = file('src/reference/docbook')
+}
+
+task docs(dependsOn:[htmlSingle, htmlMulti])
+
+task docsZip(type:Zip, dependsOn:[docs]) {
+	from ("${buildDir}/reference") {
+		into (project.name)
+	}
+}
+
+rootProject.distZip {
+	dependsOn docs
+	from ("${this.project.buildDir}/reference") {
+		into ("${distRoot}/${this.project.name}")
+	}
+}
+
+rootProject.dist {
+	dependsOn docsZip
+}
+
+artifacts {
+	docsZip
+}

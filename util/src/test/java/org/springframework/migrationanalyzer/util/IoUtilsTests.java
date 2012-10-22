@@ -28,7 +28,7 @@ public final class IoUtilsTests {
 
     @Test
     public void create() throws IOException {
-        File file = new File("target/dir");
+        File file = new File("build/dir");
         delete(file);
 
         IoUtils.createDirectoryIfNecessary(file);
@@ -37,7 +37,7 @@ public final class IoUtilsTests {
 
     @Test
     public void createWhenDirectoryAlreadyExists() throws IOException {
-        File file = new File("target/directory");
+        File file = new File("build/directory");
         if (!file.isDirectory()) {
             assertTrue(file.mkdirs());
         }
@@ -48,7 +48,7 @@ public final class IoUtilsTests {
 
     @Test(expected = IOException.class)
     public void createFailsIfAlreadyExistsAsFile() throws IOException {
-        File file = new File("target/file");
+        File file = new File("build/file");
         delete(file);
 
         try {

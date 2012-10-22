@@ -21,8 +21,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
 
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
+import java.io.InputStream;
 
 import org.junit.Test;
 import org.springframework.migrationanalyzer.analyze.fs.FileSystemEntry;
@@ -45,10 +44,9 @@ public class DelegatingByteCodeEntryAnalyzerTests {
     private final DelegatingByteCodeEntryAnalyzer analyzer = new DelegatingByteCodeEntryAnalyzer(this.factory);
 
     @Test
-    public void analyze() throws AnalysisFailedException, FileNotFoundException {
+    public void analyze() throws AnalysisFailedException {
         when(this.fileSystemEntry.getName()).thenReturn("Test.class");
-        FileInputStream input = new FileInputStream(
-            "target/test-classes/org/springframework/migrationanalyzer/contributions/bytecode/DelegatingByteCodeEntryAnalyzerTests.class");
+        InputStream input = getClass().getResourceAsStream(getClass().getSimpleName() + ".class");
         try {
             when(this.fileSystemEntry.getInputStream()).thenReturn(input);
             this.analyzer.analyze(this.fileSystemEntry);

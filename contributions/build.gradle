@@ -1,0 +1,10 @@
+dependencies {
+	compile project(":analyze")
+	compile project(":render")
+	compile project(":util")
+	compile "asm:asm:$asmVersion"
+	compile "asm:asm-commons:$asmVersion"
+	compile "org.springframework:spring-context:$springVersion"
+	testCompile "org.apache.geronimo.specs:geronimo-ejb_3.0_spec:$ejb3Version"
+	testCompile "org.apache.geronimo.specs:geronimo-jta_1.1_spec:$jtaVersion"
+}

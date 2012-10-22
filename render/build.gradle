@@ -1,0 +1,4 @@
+dependencies {
+	compile project(":analyze")
+	compile "org.freemarker:freemarker:$freemarkerVersion"
+}
