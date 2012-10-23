@@ -45,6 +45,20 @@
 			<includes>
 				<include>org.springframework.migrationanalyzer</include>
 			</includes>
+			<excludes>
+				<exclude>org.springframework.migrationanalyzer:user-guide</exclude>
+			</excludes>
+			<useTransitiveFiltering>false</useTransitiveFiltering>
+		</dependencySet>
+		<dependencySet>
+			<outputDirectory>/user-guide</outputDirectory>
+			<useProjectArtifact>false</useProjectArtifact>
+			<fileMode>644</fileMode>
+			<directoryMode>755</directoryMode>
+			<includes>
+				<include>org.springframework.migrationanalyzer:user-guide</include>
+			</includes>
+			<unpack>true</unpack>
 			<useTransitiveFiltering>false</useTransitiveFiltering>
 		</dependencySet>
 	</dependencySets>

@@ -1,0 +1,512 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE book PUBLIC "-//OASIS//DTD DocBook XML V4.4//EN"
+    "http://www.oasis-open.org/docbook/xml/4.4/docbookx.dtd">
+
+<book xmlns:xi="http://www.w3.org/2001/XInclude">
+	<bookinfo>
+		<title>Spring Migration Analyzer - User Guide</title>
+		<releaseinfo>&version;</releaseinfo>
+		<authorgroup>
+			<author>
+				<firstname>Andy</firstname>
+				<surname>Wilkinson</surname>
+			</author>
+		</authorgroup>
+		<legalnotice>
+			<para>
+				Copies of this document may be made for your own use and for
+				distribution to others, provided that you do not charge any fee for such
+				copies and further provided that each copy contains this Copyright
+				Notice, whether distributed in print or electronically.
+			</para>
+		</legalnotice>
+		<copyright>
+			<year>2012</year>
+			<holder>VMware, Inc. All Rights Reserved.</holder>
+		</copyright>
+	</bookinfo>
+
+	<toc/>
+
+	<chapter id="introduction">
+		<title>Introduction</title>
+		<section id="introduction-what-is">
+			<title>What is Spring Migration Analyzer?</title>
+			<para>
+				Spring Migration Analyzer is a command-line tool that can be used to analyze
+				Java EE applications and produce a report that describes the application and
+				how it can be migrated to Spring.
+			</para>
+		</section>
+		<section id="introduction-installation">
+			<title>Installation</title>
+			<para>
+				Before installaing Spring Migration Analyzer, please ensure your system meets
+				the following requirements:
+				<itemizedlist>
+					<listitem>
+						A Windows, OS X or Linux operating system
+					</listitem>
+					<listitem>
+						A Java 5 or later installation, with the <envar>JAVA_HOME</envar>
+						environment variable configured to point to it
+					</listitem>
+				</itemizedlist>
+			</para>
+			<para>
+				The Spring Migration Analyzer installation is available as a zip file from the
+				<link linkend="resources-downloads">download site</link>. Once you have downloaded
+				the zip, Spring Migration Analyzer can be installed by unzipping it into a
+				directory of your choice. Once unzipped, you may wish to add Spring Migration
+				Analyzer's <code>bin</code> directory to your <envar>PATH</envar>.
+			</para>
+			<para>
+				Next, verify that Spring Migration Analyzer has been installed correctly. To do so on Windows, run the 
+				following command:
+<programlisting><prompt> &gt; </prompt><userinput>migration-analysis.bat</userinput></programlisting>
+				To do so on OS X and Linux, run the following command:
+<programlisting><prompt> &gt; </prompt><userinput>migration-analysis.sh</userinput></programlisting>
+				In both cases, you should be presented with a description of Spring Migration Analyzer and its usage
+				information:
+<programlisting> Usage: migration-analysis.sh &lt;inputPath&gt; [OPTION]...
+ 
+ Description:
+
+   Produces a migration analysis report for each archive found at the specified
+   input path. The input path may be either a single archive or a directory. In
+   the case of a directory, the entire directory structure is examined and all
+   archives that are found are analyzed. The reports are written to the output
+   path with each report being written into a sub-directory with the same name as
+   its input archive. For example, if my-app.ear is analyzed its report will be
+   written to &lt;outputPath&gt;/my-app.ear.
+
+ Options:
+
+   -e,--exclude &lt;excludedPaths&gt;  Paths within the input to be excluded from the
+                                 analysis. Supports Ant-style patterns and can be
+                                 specified multiple times.
+   -o &lt;outputPath&gt;               The path of the output directory. Defaults to
+                                 the current working directory
+   -t &lt;outputType&gt;               The type of the output to be created. Defaults
+                                 to html.
+</programlisting>
+			</para>
+		</section>
+	</chapter>
+	<chapter id="using">
+		<title>Using Spring Migration Analyzer</title>
+		<section id="using-analyzing">
+			<title>Analyzing an application</title>
+			<para>
+				To analyze an application you run the <code>migration-analysis</code>
+				script, passing it the path of the application archive that you want to
+				be analyzed. For example:
+			</para>
+<programlisting><prompt> &gt; </prompt><userinput>migration-analysis.sh /path/to/my-app.ear</userinput></programlisting>
+			<para>
+				This will perform an analysis of <code>my-app.ear</code>, producing
+				a migration report in the current working directory. The report will be
+				in HTML. The report is written into a directory with the same name as the
+				archive that we analyzed. For example if you analyzed
+				<code>my-app.ear</code>, the report will be written into a directory
+				named <code>my-app.ear</code>.
+			</para>
+			<section id="using-analyzing-customizing">
+				<title>Customizing the analysis</title>
+				<para>
+					A number of different options may be passed to
+					<code>migration-analysis</code>, allowing you to customize its
+					behaviour:
+					<table>
+						<thead>
+							<tr>
+								<td>Option</td>
+								<td>Description</td>
+							</tr>
+						</thead>
+						<tbody>
+							<tr>
+								<td>-e, --exclude</td>
+								<td>A path within the input that should be excluded from the
+									analysis. Supports <ulink type="http"
+									url="http://ant.apache.org/manual/dirtasks.html#patterns">Ant-style
+									path patterns</ulink>. This option can be specified mutiple
+									times.
+								</td>
+							</tr>
+							<tr>
+								<td>-o</td>
+								<td>
+									The path of the output directory to which the analysis
+									reports will be written. If not specified, the reports are
+									written to the current working directory.
+								</td>
+							</tr>
+							<tr>
+								<td>-t</td>
+								<td>
+									Allows you to specify the the type of report to create.
+									Defaults to html which is currently the only supported report
+									type.
+								</td>
+							</tr>
+						</tbody>
+					</table>
+				</para>
+			</section>
+			<section id="using-analyizing-multiple-archives">
+				<title>Analyzing multiple archives</title>
+				<para>
+					Spring Migration Analyzer can analyze multiple archives at the same time. To
+					analyze multiple archives you provide an input path that points to a directory
+					containing all of the archives that you want to be analyzed.
+				</para>
+				<para>
+					When Spring Migration Analyzer analyzes multiple archives it produces a
+					separate report for each archive that it analyzes. Each report is written into
+					a directory with the same name as its corresponding archive. For example, with
+					three applications in a directory named <code>apps</code>:
+<programlisting>apps/
+    one.ear
+    two.ear
+    three.ear
+</programlisting>
+						Running Spring Migration Analyzer with the following options:
+<programlisting><prompt> &gt; </prompt><userinput>migration-analysis apps -o reports</userinput></programlisting>
+						Will produce the following set of reports, each in its own directory:
+<programlisting>reports/
+    one.ear/
+        index.html
+        ...
+    two.ear/
+        index.html
+        ...
+    three.ear/
+        index.html
+        ...
+</programlisting>
+				</para>
+			</section>
+		</section>
+		<section id="using-viewing-report-html">
+			<title>Viewing an HTML report</title>
+			<para>
+				An HTML migration analysis report can be viewed by opening its
+				<code>index.html</code> file in any modern web browser.
+			</para>
+			<para>
+				<mediaobject>
+					<imageobject>
+						<imagedata fileref="images/report.png"></imagedata>
+					</imageobject>
+				</mediaobject>
+			
+				As shown in the image above, the report is divided into three main sections.
+				Sections one and two are used for navigation and the third section is used to
+				show the report's content. Section one lists the different categories that the
+				report's information falls into. Clicking on a category will show details of
+				that category's analysis. Section two lists all of the files in the application
+				that the report contains information for. Clicking on a file will show all of
+				the analysis for that file.
+			</para>
+			<section id="using-viewing-report-html-summary">
+				<title>The report's summary</title>
+				<para>
+					When the report is first viewed, or by clicking on
+					<code>Summary</code> in the top-left navigation section, a summary
+					of the report is shown. Reading the summary should help you to get a feel
+					for the effort involved in migrating the application. It provides a
+					high-level description of the application and provides some guidance on how
+					it can be migrated to Spring. Where applicable, the guidance provides links
+					to the relevant sections of the Spring reference documentation to help you get
+					started.
+				</para>
+			</section>
+			<section id="using-viewing-report-html-details">
+				<title>The report's details</title>
+				<para>
+					If you're interested in more details about the information in the report,
+					you can use the links in the summary text or on the left-hand side. For 
+					example, you may want to look at a particular class to see how extensive
+					its use of a Java EE API is, or you may want to find out more about the
+					application's use of programmatic transaction management.
+				</para>
+				<para>
+					For detailed information about everything that Spring Migration Analyzer can
+					detect, please refer to the chapter entitled
+					<link linkend="resources-downloads">"What is detected"</link>.
+				</para>
+			</section>
+		</section>
+	</chapter>
+	<chapter id="what-is-detected">
+		<title>What is detected</title>
+		<section id="what-is-detected-introduction">
+			<title>Introduction</title>
+			<para>
+				The analysis performed by Spring Migration Analyzer can detect many different
+				things about an application. Depending on the nature and complexity of an
+				application, some or even all of the following may appear in a migration report.
+			</para>
+		</section>
+		<section id="what-is-detected-api-usage">
+			<title>API usage</title>
+			<para>
+				Detects the usage of a variety of different APIs within the application's code.
+			</para>
+			<para>
+				The following APIs are detected:
+				<itemizedlist>
+					<listitem>EJB
+						<itemizedlist>
+							<listitem><code>javax.ejb.*</code></listitem>
+						</itemizedlist>
+					</listitem>
+					<listitem>JBoss
+						<itemizedlist>
+							<listitem><code>org.jboss.*</code></listitem>
+						</itemizedlist>
+					</listitem>
+					<listitem>JCA
+						<itemizedlist>
+							<listitem><code>javax.resource.*</code></listitem>
+						</itemizedlist>
+					</listitem>
+					<listitem>JMS
+						<itemizedlist>
+							<listitem><code>javax.jms.*</code></listitem>
+						</itemizedlist>
+					</listitem>
+					<listitem>JNDI
+						<itemizedlist>
+							<listitem><code>javax.naming.*</code></listitem>
+						</itemizedlist>
+					</listitem>
+					<listitem>JPA
+						<itemizedlist>
+							<listitem><code>javax.persistence.*</code></listitem>
+						</itemizedlist>
+					</listitem>
+					<listitem>JTA
+						<itemizedlist>
+							<listitem><code>javax.transaction.*</code></listitem>
+						</itemizedlist>
+					</listitem>
+					<listitem>Spring's EJB integration
+						<itemizedlist>
+							<listitem><code>org.springframework.ejb.*</code></listitem>
+						</itemizedlist>
+					</listitem>
+					<listitem>Spring's JNDI integration
+						<itemizedlist>
+							<listitem><code>org.springframework.jndi.*</code></listitem>
+						</itemizedlist>
+					</listitem>
+					<listitem>WebLogic
+						<itemizedlist>
+							<listitem><code>weblogic.*</code></listitem>
+						</itemizedlist>
+					</listitem>
+					<listitem>WebSphere
+						<itemizedlist>
+							<listitem><code>com.ibm.websphere.*</code></listitem>
+							<listitem><code>com.ibm.wsspi.*</code></listitem>
+						</itemizedlist>
+					</listitem>
+				</itemizedlist>
+			</para>
+		</section>
+		<section id="what-is-detected-deployment-descriptors">
+			<title>Deployment descriptors</title>
+			<para>
+				Detects the presence of deployment descriptors within the application.
+			</para>
+			<para>
+				The following Java EE and vendor-specific deployment descriptors are detected:
+				<itemizedlist>
+					<listitem>Java EE:
+						<itemizedlist>
+							<listitem><code>application.xml</code></listitem>
+							<listitem><code>application-client.xml</code></listitem>
+							<listitem><code>ejb-jar.xml</code></listitem>
+							<listitem><code>persistence.xml</code></listitem>
+							<listitem><code>ra.xml</code></listitem>
+							<listitem><code>web.xml</code></listitem>
+							<listitem><code>webservices.xml</code></listitem>
+						</itemizedlist>
+					</listitem>
+					<listitem>JBoss:
+						<itemizedlist>
+							<listitem><code>jaws.xml</code></listitem>
+							<listitem><code>jboss.xml</code></listitem>
+							<listitem><code>jbosscmp-jdbc.xml</code></listitem>
+							<listitem><code>jboss-service.xml</code></listitem>
+							<listitem><code>jboss-web.xml</code></listitem>
+						</itemizedlist>
+					</listitem>
+					<listitem>WebLogic:
+						<itemizedlist>
+							<listitem><code>weblogic.xml</code></listitem>
+							<listitem><code>weblogic-cmp-rdbms-jar.xml</code></listitem>
+							<listitem><code>weblogic-ejb-jar.xml</code></listitem>
+							<listitem><code>weblogic-ra.xml</code></listitem>
+							<listitem><code>persistence-configuration.xml</code></listitem>
+							<listitem><code>weblogic-webservices.xml</code></listitem>
+							<listitem><code>weblogic-wsee-clientHandlerChain.xml</code></listitem>
+							<listitem><code>webservice-policy-ref.xml</code></listitem>
+							<listitem><code>weblogic-wsee-standaloneclient.xml</code></listitem>
+							<listitem><code>weblogic-application.xml</code></listitem>
+						</itemizedlist>
+					</listitem>
+					<listitem>WebSphere:
+						<itemizedlist>
+							<listitem><code>client-resource.xmi</code></listitem>
+							<listitem><code>ibm-application-bnd.xmi</code></listitem>
+							<listitem><code>ibm-application-bnd.xml</code></listitem>
+							<listitem><code>ibm-application-client-bnd.xmi</code></listitem>
+							<listitem><code>ibm-application-client-bnd.xml</code></listitem>
+							<listitem><code>ibm-application-client-ext.xmi</code></listitem>
+							<listitem><code>ibm-application-client-ext.xml</code></listitem>
+							<listitem><code>ibm-application-ext.xmi</code></listitem>
+							<listitem><code>ibm-application-ext.xml</code></listitem>
+							<listitem><code>ibm-ejb-access-bean.xml</code></listitem>
+							<listitem><code>ibm-ejb-jar-bnd.xmi</code></listitem>
+							<listitem><code>ibm-ejb-jar-bnd.xml</code></listitem>
+							<listitem><code>ibm-ejb-jar-ext.xmi</code></listitem>
+							<listitem><code>ibm-ejb-jar-ext.xml</code></listitem>
+							<listitem><code>ibm-ejb-jar-ext-pme.xmi</code></listitem>
+							<listitem><code>ibm-ejb-jar-ext-pme.xml</code></listitem>
+							<listitem><code>ibm-webservices-bnd.xmi</code></listitem>
+							<listitem><code>ibm-webservices-ext.xmi</code></listitem>
+							<listitem><code>ibm-web-bnd.xmi</code></listitem>
+							<listitem><code>ibm-web-bnd.xml</code></listitem>
+							<listitem><code>ibm-web-ext.xmi</code></listitem>
+							<listitem><code>ibm-web-ext.xml</code></listitem>
+							<listitem><code>ibm-web-ext-pme.xmi</code></listitem>
+							<listitem><code>ibm-web-ext-pme.xml</code></listitem>
+							<listitem><code>j2c_plugin.xml</code></listitem>
+						</itemizedlist>
+					</listitem>	
+				</itemizedlist>
+			</para>
+		</section>
+		<section id="what-is-detected-ejbs">
+			<title>EJBs</title>
+			<para>
+				Detects the presence of EJBs in an application. Both EJBs declared in deployment
+				descriptors and EJBs identified by Java annotations are detected.
+			</para>
+			<para>
+				The following EJB-related information is detected:
+				<itemizedlist>
+					<listitem>Entity beans
+						<itemizedlist>
+							<listitem>
+								Persistence type: container-managed persistence (CMP) or
+								bean-managed persistence (BMP)
+							</listitem>
+							<listitem>Primary key class</listitem>
+							<listitem>CMP version</listitem>
+							<listitem>Reentrancy</listitem>
+							<listitem>CMP fields</listitem>
+						</itemizedlist>
+					</listitem>
+					<listitem>Session beans
+						<itemizedlist>
+							<listitem>Session type: stateful or stateless</listitem>
+							<listitem>
+								Transaction type: container-managed transactions (CMT) or
+								bean-managed transactions (BMT)
+							</listitem>
+							<listitem>
+								Transaction propagation configuration (required, requires
+								new, not supported, supports, never, or mandatory)
+							</listitem>
+						</itemizedlist>
+					</listitem>
+					<listitem>Message-driven beans (MDBs)
+						<itemizedlist>
+							<listitem>
+								Transaction type: container-managed transactions (CMT) or
+								bean-managed transactions (BMT)
+							</listitem>
+							<listitem>
+								Transaction propagation configuration (required or not
+								supported)
+							</listitem>
+						</itemizedlist>
+					</listitem>
+				</itemizedlist>
+			</para>
+		</section>
+		<section id="what-is-detected-spring">
+			<title>Spring</title>
+			<para>
+				Detects any existing usage of Spring in an application, focusing on usage that
+				relates to Java EE.
+			</para>
+			<para>
+				The following usage of Spring is detected:
+				<itemizedlist>
+					<listitem>Spring configuration files</listitem>
+					<listitem>Use of Spring's EJB integration namespace</listitem>
+					<listitem>Use of Spring's JNDI namespace</listitem>
+					<listitem>Use of Spring's JTA integration</listitem>
+				</itemizedlist>
+			</para>
+		</section>
+		<section id="what-is-detected-transactions">
+			<title>Transactions</title>
+			<para>
+				Detects an application's usage of transactions.
+			</para>
+			<para>
+				The following transaction usage is detected:
+				<itemizedlist>
+					<listitem>Direct use of <code>DataSource</code> transactions</listitem>
+					<listitem>
+						Programmatic transaction management, i.e. code that uses
+						<code>UserTransaction</code>
+					</listitem>
+				</itemizedlist>
+			</para>
+		</section>
+	</chapter>
+	<chapter id="resources">
+		<title>Resources</title>
+			<section id="resources-downloads">
+				<title>Downloads</title>
+				<para>
+					<ulink type="http" url="https://s3browse.springsource.com/browse/maven.springframework.org/snapshot/org/springframework/migrationanalyzer/spring-migration-analyzer/1.0.0.BUILD-SNAPSHOT/"/>
+				</para>
+				<para>
+					Pre-built snapshots of Spring Migration Analyzer are available for
+					<ulink type="http" url="https://s3browse.springsource.com/browse/maven.springframework.org/snapshot/org/springframework/migrationanalyzer/spring-migration-analyzer/1.0.0.BUILD-SNAPSHOT/">download</ulink>.
+				</para>
+			</section>
+			<section id="resources-source-code">
+				<title>Source code</title>
+				<para>
+					<ulink type="http" url="http://github.com/SpringSource/spring-migration-analyzer"/>
+				</para>
+				<para>
+					Spring Migration Analyzer's source code is available on 
+					<ulink type="http" url="http://github.com/SpringSource/spring-migration-analyzer">GitHub</ulink>
+				</para>
+			</section>
+			<section id="resources-issue-tracking">
+				<title>Issue tracking</title>
+				<para>
+					<ulink type="http" url="http://jira.springsource.org/browse/Spring Migration Analyzer"/>
+				</para>
+				<para>
+					If you've found a bug in Spring Migration Analyzer, or you have a suggestion
+					for a new feature or enhancement,
+					<ulink type="http" url="http://jira.springsource.org/browse/SMA">please let us
+					know</ulink>. If you're reporting a bug, please include detailed steps of how
+					to reproduce the problem. If you're suggesting a new feature or enhancement,
+					please include a detailed description of what you'd like to be added.
+				</para>
+			</section>
+	</chapter>
+</book>
