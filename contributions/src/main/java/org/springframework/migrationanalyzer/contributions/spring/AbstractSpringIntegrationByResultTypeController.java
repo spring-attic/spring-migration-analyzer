@@ -51,16 +51,16 @@ abstract class AbstractSpringIntegrationByResultTypeController<T extends Abstrac
     public ModelAndView handle(Set<AnalysisResultEntry<T>> results) {
 
         String title = getTitle(this.name, results.size());
-        Map<FileSystemEntry, String> users = new HashMap<FileSystemEntry, String>();
+        Map<String, FileSystemEntry> userLocationsByName = new HashMap<String, FileSystemEntry>();
 
         for (AnalysisResultEntry<T> analysisResultEntry : results) {
             T result = analysisResultEntry.getResult();
-            users.put(result.getUserLocation(), result.getUserName());
+            userLocationsByName.put(result.getUserLocation().getName(), result.getUserLocation());
         }
 
         Map<String, Object> model = new HashMap<String, Object>();
         model.put("title", title);
-        model.put("users", users);
+        model.put("userLocationsByName", userLocationsByName);
         model.put("name", this.name);
 
         return new ModelAndView(model, VIEW_NAME);
