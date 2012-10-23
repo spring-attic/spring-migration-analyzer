@@ -58,4 +58,13 @@ public final class DeploymentDescriptor {
     FileSystemEntry getLocation() {
         return this.location;
     }
+
+    /**
+     * Returns a name for this type, suitable for display in a report
+     * 
+     * @return The type's display name
+     */
+    public static String getDisplayName() {
+        return "Deployment Descriptors";
+    }
 }

@@ -25,4 +25,13 @@ final class SpringEjbIntegration extends AbstractSpringIntegration {
         super("EJB", "spring-ejb-integration-guidance", MigrationCost.LOW, name, location);
     }
 
+    /**
+     * Returns a name for this type, suitable for display in a report
+     * 
+     * @return The type's display name
+     */
+    public static String getDisplayName() {
+        return "Spring EJB Integration";
+    }
+
 }

@@ -49,4 +49,13 @@ final class ProgrammaticTransactionDemarcation {
     String getUsageDescription() {
         return this.usageDescription;
     }
+
+    /**
+     * Returns a name for this type, suitable for display in a report
+     * 
+     * @return The type's display name
+     */
+    public static String getDisplayName() {
+        return "Programmatic Transaction Demarcation";
+    }
 }
