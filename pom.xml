@@ -18,6 +18,7 @@
 		<module>contributions</module>
 		<module>packaging</module>
 		<module>render</module>
+		<module>user-guide</module>
 		<module>util</module>
 	</modules>
 	

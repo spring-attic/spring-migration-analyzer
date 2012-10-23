@@ -38,7 +38,13 @@
 			<groupId>org.springframework.migrationanalyzer</groupId>
 			<artifactId>render</artifactId>
 			<version>${project.version}</version>
-		</dependency>		
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.migrationanalyzer</groupId>
+			<artifactId>user-guide</artifactId>
+			<version>${project.version}</version>
+			<type>zip</type>
+		</dependency>
 		<dependency>
 			<groupId>org.springframework.migrationanalyzer</groupId>
 			<artifactId>util</artifactId>
