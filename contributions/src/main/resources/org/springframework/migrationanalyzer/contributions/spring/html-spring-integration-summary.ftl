@@ -2,7 +2,7 @@
 <div>
 	<#assign names = usage?keys>
 	<#list names as name>
-		<@itemheader_link id="summary_spring_${name}_integration_body" title="Spring ${name} Integration" link="${links[name]}"/>
+		<@itemheader_link id="summary_spring_${name}_integration_body" title="Spring ${name} Integration" link="${outputPathGenerator.generatePathFor(resultClassesByName[name])}"/>
 		<div class="item-body content" id="summary_spring_${name}_integration_body">
 			<ul>
 				<li>${usage[name]}</li>

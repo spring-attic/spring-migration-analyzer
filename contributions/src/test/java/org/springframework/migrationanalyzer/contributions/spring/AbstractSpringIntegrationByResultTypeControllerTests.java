@@ -74,7 +74,7 @@ public abstract class AbstractSpringIntegrationByResultTypeControllerTests {
 
         assertEquals(this.expectedName, model.get("name"));
 
-        Map<String, String> users = (Map<String, String>) model.get("users");
+        Map<String, String> users = (Map<String, String>) model.get("userLocationsByName");
         assertNotNull(users);
         assertEquals(2, users.size());
     }
