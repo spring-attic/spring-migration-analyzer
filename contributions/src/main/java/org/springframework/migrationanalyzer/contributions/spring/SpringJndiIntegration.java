@@ -24,4 +24,13 @@ class SpringJndiIntegration extends AbstractSpringIntegration {
     SpringJndiIntegration(String name, FileSystemEntry location) {
         super("JNDI", "spring-jndi-integration-guidance", MigrationCost.LOW, name, location);
     }
+
+    /**
+     * Returns a name for this type, suitable for display in a report
+     * 
+     * @return The type's display name
+     */
+    public static String getDisplayName() {
+        return "Spring JNDI Integration";
+    }
 }

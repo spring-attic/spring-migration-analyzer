@@ -26,6 +26,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.migrationanalyzer.analyze.AnalysisResult;
 import org.springframework.migrationanalyzer.render.ByResultTypeController;
 import org.springframework.migrationanalyzer.render.OutputPathGenerator;
+import org.springframework.migrationanalyzer.render.support.ResultTypeDisplayNameResolver;
 import org.springframework.migrationanalyzer.util.IoUtils;
 import org.springframework.stereotype.Component;
 
@@ -49,13 +50,16 @@ final class StandardHtmlResultTypeRenderer implements HtmlResultTypeRenderer {
 
     private final ViewRenderer viewRenderer;
 
+    private final ResultTypeDisplayNameResolver resultTypeDisplayNameResolver;
+
     @Autowired
     StandardHtmlResultTypeRenderer(Set<ByResultTypeController> resultTypeControllers, ViewRenderer viewRenderer,
-        RootAwareOutputPathGenerator outputPathGenerator, WriterFactory writerFactory) {
+        RootAwareOutputPathGenerator outputPathGenerator, WriterFactory writerFactory, ResultTypeDisplayNameResolver resultTypeDisplayNameResolver) {
         this.resultTypeControllers = resultTypeControllers;
         this.viewRenderer = viewRenderer;
         this.outputPathGenerator = outputPathGenerator;
         this.writerFactory = writerFactory;
+        this.resultTypeDisplayNameResolver = resultTypeDisplayNameResolver;
     }
 
     @Override
@@ -92,7 +96,7 @@ final class StandardHtmlResultTypeRenderer implements HtmlResultTypeRenderer {
     private Map<String, Object> createContentsModel(Set<Class<?>> resultTypes, OutputPathGenerator locationAwarePathGenerator) {
         Map<String, String> resultUrls = new TreeMap<String, String>();
         for (Class<?> resultType : resultTypes) {
-            resultUrls.put(resultType.getSimpleName(), locationAwarePathGenerator.generatePathFor(resultType));
+            resultUrls.put(getDisplayName(resultType), locationAwarePathGenerator.generatePathFor(resultType));
         }
 
         Map<String, Object> model = new HashMap<String, Object>();
@@ -102,7 +106,7 @@ final class StandardHtmlResultTypeRenderer implements HtmlResultTypeRenderer {
 
     private void renderByResultTypeHeader(Class<?> resultType, Writer writer) {
         Map<String, Object> model = new HashMap<String, Object>();
-        model.put("resultType", resultType.getSimpleName());
+        model.put("resultType", getDisplayName(resultType));
         model.put("pathToRoot", this.outputPathGenerator.generatePathRelativeToRootFor(resultType));
 
         this.viewRenderer.renderViewWithModel(VIEW_NAME_BY_RESULT_HEADER, model, writer);
@@ -110,5 +114,9 @@ final class StandardHtmlResultTypeRenderer implements HtmlResultTypeRenderer {
 
     private void renderByResultTypeFooter(Writer writer) {
         this.viewRenderer.renderViewWithEmptyModel(VIEW_NAME_BY_RESULT_FOOTER, writer);
+    }
+
+    private String getDisplayName(Class<?> resultType) {
+        return this.resultTypeDisplayNameResolver.getDisplayName(resultType);
     }
 }

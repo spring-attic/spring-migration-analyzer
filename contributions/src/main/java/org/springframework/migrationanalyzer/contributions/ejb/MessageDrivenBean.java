@@ -60,4 +60,13 @@ final class MessageDrivenBean extends Ejb implements TransactionalEjb {
     public void addTransactionPropagationTypes(Set<TransactionPropagationType> transactionPropagationTypes) {
         this.transactionPropagationTypes.addAll(transactionPropagationTypes);
     }
+
+    /**
+     * Returns a name for this type, suitable for display in a report
+     * 
+     * @return The type's display name
+     */
+    public static String getDisplayName() {
+        return "Message-Driven Beans";
+    }
 }

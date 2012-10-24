@@ -148,4 +148,14 @@ public final class SessionBean extends NonMessageDrivenEjb implements Transactio
     public void addTransactionPropagationTypes(Set<TransactionPropagationType> transactionPropagationTypes) {
         this.transactionPropagationTypes.addAll(transactionPropagationTypes);
     }
+
+    /**
+     * Returns a name for this type, suitable for display in a report
+     * 
+     * @return The type's display name
+     */
+    public static String getDisplayName() {
+        return "Session Beans";
+    }
+
 }

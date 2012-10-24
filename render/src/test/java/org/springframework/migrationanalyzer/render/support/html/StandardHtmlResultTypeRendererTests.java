@@ -33,6 +33,7 @@ import org.mockito.Mockito;
 import org.springframework.migrationanalyzer.analyze.AnalysisResult;
 import org.springframework.migrationanalyzer.analyze.fs.FileSystemEntry;
 import org.springframework.migrationanalyzer.render.ByResultTypeController;
+import org.springframework.migrationanalyzer.render.support.ResultTypeDisplayNameResolver;
 
 @SuppressWarnings("rawtypes")
 public class StandardHtmlResultTypeRendererTests {
@@ -42,7 +43,7 @@ public class StandardHtmlResultTypeRendererTests {
     private final ViewRenderer viewRenderer = mock(ViewRenderer.class);
 
     private final StandardHtmlResultTypeRenderer renderer = new StandardHtmlResultTypeRenderer(this.resultTypeControllers, this.viewRenderer,
-        mock(RootAwareOutputPathGenerator.class), mock(WriterFactory.class));
+        mock(RootAwareOutputPathGenerator.class), mock(WriterFactory.class), mock(ResultTypeDisplayNameResolver.class));
 
     @SuppressWarnings("unchecked")
     @Test

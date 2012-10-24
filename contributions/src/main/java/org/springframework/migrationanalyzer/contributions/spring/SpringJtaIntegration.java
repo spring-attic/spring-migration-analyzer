@@ -24,4 +24,13 @@ class SpringJtaIntegration extends AbstractSpringIntegration {
     SpringJtaIntegration(String name, FileSystemEntry location) {
         super("JTA", "spring-jta-integration-guidance", MigrationCost.MEDIUM, name, location);
     }
+
+    /**
+     * Returns a name for this type, suitable for display in a report
+     * 
+     * @return The type's display name
+     */
+    public static String getDisplayName() {
+        return "Spring JTA Integration";
+    }
 }

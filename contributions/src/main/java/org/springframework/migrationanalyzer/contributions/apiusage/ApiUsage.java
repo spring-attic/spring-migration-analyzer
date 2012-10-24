@@ -117,4 +117,13 @@ public final class ApiUsage {
     public String toString() {
         return String.format("'%s' uses the '%s' API (%s)", this.user, this.apiName, this.type);
     }
+
+    /**
+     * Returns a name for this type, suitable for display in a report
+     * 
+     * @return The type's display name
+     */
+    public static String getDisplayName() {
+        return "API Usage";
+    }
 }
