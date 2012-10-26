@@ -85,49 +85,49 @@ configure(rootProject) {
 	repositories {
 		mavenCentral()
 	}
-	
-	task distZip(type: Zip) { zipTask ->
-		gradle.taskGraph.whenReady { taskGraph ->
-			if (taskGraph.hasTask(":${zipTask.name}")) {
-				def projectNames = rootProject.subprojects*.name
-				def artifacts = new HashSet()
-				subprojects.each { subproject ->
-					if (subproject.name != 'user-guide') {
-						subproject.configurations.runtime.resolvedConfiguration.resolvedArtifacts.each { artifact ->
-							def dependency = artifact.moduleVersion.id
-							if (!projectNames.contains(dependency.name)) {
-								artifacts << artifact.file
-							}
+}
+
+task distZip(type: Zip) { zipTask ->
+	gradle.taskGraph.whenReady { taskGraph ->
+		if (taskGraph.hasTask(":${zipTask.name}")) {
+			def projectNames = rootProject.subprojects*.name
+			def artifacts = new HashSet()
+			subprojects.each { subproject ->
+				if (subproject.name != 'user-guide') {
+					subproject.configurations.runtime.resolvedConfiguration.resolvedArtifacts.each { artifact ->
+						def dependency = artifact.moduleVersion.id
+						if (!projectNames.contains(dependency.name)) {
+							artifacts << artifact.file
 						}
 					}
 				}
-				configurations.lib.each { artifact ->
-					artifacts << artifact
-				}
-				zipTask.from(artifacts) {
-					into "${distRoot}/lib"
-				}
+			}
+			configurations.lib.each { artifact ->
+				artifacts << artifact
+			}
+			zipTask.from(artifacts) {
+				into "${distRoot}/lib"
 			}
 		}
-		subprojects.each { subproject ->
-			if (subproject.name != 'user-guide') {
-				into ("${distRoot}/dist") {
-					from subproject.jar
-				}
+	}
+	subprojects.each { subproject ->
+		if (subproject.name != 'user-guide') {
+			into ("${distRoot}/dist") {
+				from subproject.jar
 			}
 		}
-		from('src/main/resources') {
-			into "${distRoot}"
-		}
 	}
+	from('src/main/resources') {
+		into "${distRoot}"
+	}
+}
 
-	task dist(dependsOn: distZip)
+task dist(dependsOn: distZip)
 
-	artifacts {
-		distZip
-	}
-	
-	task wrapper(type: Wrapper) {
-		gradleVersion = '1.2'
-	}
+artifacts {
+	archives distZip
+}
+
+task wrapper(type: Wrapper) {
+	gradleVersion = '1.2'
 }
