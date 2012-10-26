@@ -19,10 +19,10 @@ task htmlMulti(type: HtmlMultiDocbookReferenceTask) {
 
 task docs(dependsOn:[htmlSingle, htmlMulti])
 
-task docsZip(type:Zip, dependsOn:[docs]) {
-	classifier = 'docs'
+rootProject.docsZip {
+	dependsOn docs
 	from ("${buildDir}/reference") {
-		into (project.name)
+		into (this.project.name)
 	}
 }
 
@@ -31,12 +31,4 @@ rootProject.distZip {
 	from ("${this.project.buildDir}/reference") {
 		into ("${distRoot}/${this.project.name}")
 	}
-}
-
-rootProject.dist {
-	dependsOn docsZip
-}
-
-artifacts {
-	archives docsZip
 }

@@ -123,10 +123,15 @@ task distZip(type: Zip) { zipTask ->
 	}
 }
 
-task dist(dependsOn: distZip)
+task docsZip(type: Zip) {
+	classifier = 'docs'
+}
+
+task dist(dependsOn: [distZip, docsZip])
 
 artifacts {
 	archives distZip
+	archives docsZip
 }
 
 task wrapper(type: Wrapper) {
