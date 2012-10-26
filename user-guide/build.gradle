@@ -20,6 +20,7 @@ task htmlMulti(type: HtmlMultiDocbookReferenceTask) {
 task docs(dependsOn:[htmlSingle, htmlMulti])
 
 task docsZip(type:Zip, dependsOn:[docs]) {
+	classifier = 'docs'
 	from ("${buildDir}/reference") {
 		into (project.name)
 	}
