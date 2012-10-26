@@ -1,0 +1,8 @@
+apply plugin: 'java'
+
+sourceSets.main.output.classesDir = "../../analyze/src/test/resources/$project.name/classes"
+sourceSets.main.output.resourcesDir = "../../analyze/src/test/resources/$project.name/classes"
+
+jar {
+	destinationDir = new File(project.projectDir, "../../analyze/src/test/resources/$project.name")
+}

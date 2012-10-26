@@ -20,7 +20,6 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.Arrays;
@@ -63,9 +62,8 @@ public class ProgrammaticDataSourceTransactionDemarcationDetectorTests {
         List<String> usageDescriptionsList = Arrays.asList(usageDescriptions);
 
         String user = clazz.getName();
-        String fileName = "target/test-classes/" + user.replace(".", "/") + ".class";
 
-        ClassReader reader = new ClassReader(new FileInputStream(fileName));
+        ClassReader reader = new ClassReader(getClass().getResourceAsStream("/" + clazz.getName().replace(".", "/") + ".class"));
         reader.accept(this.detector, 0);
 
         Set<ProgrammaticTransactionDemarcation> results = this.detector.getResults();
