@@ -88,6 +88,7 @@ configure(rootProject) {
 }
 
 task distZip(type: Zip) { zipTask ->
+	classifier = 'dist'
 	gradle.taskGraph.whenReady { taskGraph ->
 		if (taskGraph.hasTask(":${zipTask.name}")) {
 			def projectNames = rootProject.subprojects*.name
