@@ -54,15 +54,15 @@ final class StandardHtmlFileSystemEntryRenderer implements HtmlFileSystemEntryRe
 
     private final ViewRenderer viewRenderer;
 
-    private final WriterFactory writerFactory;
+    private final OutputFactory outputFactory;
 
     @Autowired
     StandardHtmlFileSystemEntryRenderer(Set<ByFileSystemEntryController> fileSystemEntryControllers, ViewRenderer viewRenderer,
-        RootAwareOutputPathGenerator outputPathGenerator, WriterFactory writerFactory, SourceAccessor sourceAccessor) {
+        RootAwareOutputPathGenerator outputPathGenerator, OutputFactory outputFactory, SourceAccessor sourceAccessor) {
         this.fileSystemEntryControllers = fileSystemEntryControllers;
         this.viewRenderer = viewRenderer;
         this.outputPathGenerator = outputPathGenerator;
-        this.writerFactory = writerFactory;
+        this.outputFactory = outputFactory;
         this.sourceAccessor = sourceAccessor;
     }
 
@@ -75,7 +75,7 @@ final class StandardHtmlFileSystemEntryRenderer implements HtmlFileSystemEntryRe
         for (FileSystemEntry fileSystemEntry : fileSystemEntries) {
             Writer writer = null;
             try {
-                writer = this.writerFactory.createWriter(this.outputPathGenerator.generatePathFor(fileSystemEntry), analysisResult.getArchiveName());
+                writer = this.outputFactory.createWriter(this.outputPathGenerator.generatePathFor(fileSystemEntry), analysisResult.getArchiveName());
                 AnalysisResult entryResult = analysisResult.getResultForEntry(fileSystemEntry);
                 renderByFileHeader(fileSystemEntry, writer);
                 for (Class<?> resultType : entryResult.getResultTypes()) {
@@ -99,7 +99,7 @@ final class StandardHtmlFileSystemEntryRenderer implements HtmlFileSystemEntryRe
         Writer writer = null;
 
         try {
-            writer = this.writerFactory.createWriter(contentsPath, archiveName);
+            writer = this.outputFactory.createWriter(contentsPath, archiveName);
             this.viewRenderer.renderViewWithModel(VIEW_NAME_FILE_CONTENTS, model, writer);
         } finally {
             IoUtils.closeQuietly(writer);

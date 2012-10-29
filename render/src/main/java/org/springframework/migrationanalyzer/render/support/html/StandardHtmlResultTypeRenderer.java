@@ -46,7 +46,7 @@ final class StandardHtmlResultTypeRenderer implements HtmlResultTypeRenderer {
 
     private final Set<ByResultTypeController> resultTypeControllers;
 
-    private final WriterFactory writerFactory;
+    private final OutputFactory outputFactory;
 
     private final ViewRenderer viewRenderer;
 
@@ -54,11 +54,11 @@ final class StandardHtmlResultTypeRenderer implements HtmlResultTypeRenderer {
 
     @Autowired
     StandardHtmlResultTypeRenderer(Set<ByResultTypeController> resultTypeControllers, ViewRenderer viewRenderer,
-        RootAwareOutputPathGenerator outputPathGenerator, WriterFactory writerFactory, ResultTypeDisplayNameResolver resultTypeDisplayNameResolver) {
+        RootAwareOutputPathGenerator outputPathGenerator, OutputFactory outputFactory, ResultTypeDisplayNameResolver resultTypeDisplayNameResolver) {
         this.resultTypeControllers = resultTypeControllers;
         this.viewRenderer = viewRenderer;
         this.outputPathGenerator = outputPathGenerator;
-        this.writerFactory = writerFactory;
+        this.outputFactory = outputFactory;
         this.resultTypeDisplayNameResolver = resultTypeDisplayNameResolver;
     }
 
@@ -69,7 +69,7 @@ final class StandardHtmlResultTypeRenderer implements HtmlResultTypeRenderer {
         for (Class<?> resultType : resultTypes) {
             Writer writer = null;
             try {
-                writer = this.writerFactory.createWriter(this.outputPathGenerator.generatePathFor(resultType), analysisResult.getArchiveName());
+                writer = this.outputFactory.createWriter(this.outputPathGenerator.generatePathFor(resultType), analysisResult.getArchiveName());
                 renderByResultTypeHeader(resultType, writer);
                 this.viewRenderer.render(resultType, analysisResult.getResultEntries(resultType), this.resultTypeControllers, writer,
                     new LocationAwareOutputPathGenerator(this.outputPathGenerator, resultType), REPORT_TYPE);
@@ -85,7 +85,7 @@ final class StandardHtmlResultTypeRenderer implements HtmlResultTypeRenderer {
         try {
             String contentsPath = this.outputPathGenerator.generatePathForResultTypeContents();
             OutputPathGenerator locationAwarePathGenerator = new LocationAwareOutputPathGenerator(this.outputPathGenerator, contentsPath);
-            writer = this.writerFactory.createWriter(contentsPath, archiveName);
+            writer = this.outputFactory.createWriter(contentsPath, archiveName);
             Map<String, Object> model = createContentsModel(resultTypes, locationAwarePathGenerator);
             this.viewRenderer.renderViewWithModel(VIEW_NAME_RESULT_CONTENTS, model, writer);
         } finally {

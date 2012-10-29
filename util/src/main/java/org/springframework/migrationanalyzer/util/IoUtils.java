@@ -112,12 +112,8 @@ public final class IoUtils {
 
         int read;
 
-        try {
-            while ((read = source.read(buffer)) > 0) {
-                destination.write(buffer, 0, read);
-            }
-        } finally {
-            IoUtils.closeQuietly(source, destination);
+        while ((read = source.read(buffer)) > 0) {
+            destination.write(buffer, 0, read);
         }
     }
 

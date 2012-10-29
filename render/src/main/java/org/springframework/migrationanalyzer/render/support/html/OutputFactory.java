@@ -16,9 +16,10 @@
 
 package org.springframework.migrationanalyzer.render.support.html;
 
+import java.io.OutputStream;
 import java.io.Writer;
 
-interface WriterFactory {
+interface OutputFactory {
 
     /**
      * Creates a writer that outputs to a file at a specified path
@@ -27,4 +28,12 @@ interface WriterFactory {
      * @return The writer
      */
     Writer createWriter(String path, String pathPrefix);
+
+    /**
+     * Creates an OutputStream that outputs to a file at a specified path
+     * 
+     * @param path The path to the file to be written
+     * @return The output stream
+     */
+    OutputStream createOutputStream(String path, String pathPrefix);
 }

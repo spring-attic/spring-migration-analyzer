@@ -42,12 +42,12 @@ public class StandardHtmlFileSystemEntryRendererTests {
 
     private final ViewRenderer viewRenderer = mock(ViewRenderer.class);
 
-    private final WriterFactory writerFactory = mock(WriterFactory.class);
+    private final OutputFactory outputFactory = mock(OutputFactory.class);
 
     private final SourceAccessor sourceAccessor = mock(SourceAccessor.class);
 
     private final StandardHtmlFileSystemEntryRenderer renderer = new StandardHtmlFileSystemEntryRenderer(this.fileSystemEntryControllers,
-        this.viewRenderer, mock(RootAwareOutputPathGenerator.class), this.writerFactory, this.sourceAccessor);
+        this.viewRenderer, mock(RootAwareOutputPathGenerator.class), this.outputFactory, this.sourceAccessor);
 
     @SuppressWarnings("unchecked")
     @Test
