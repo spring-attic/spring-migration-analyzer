@@ -17,7 +17,9 @@
 package org.springframework.migrationanalyzer.render.support.html;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.OutputStream;
 import java.io.Reader;
 import java.io.Writer;
 
@@ -47,17 +49,17 @@ final class HtmlRenderEngine implements RenderEngine {
 
     private final OutputPathGenerator outputPathGenerator;
 
-    private final WriterFactory writerFactory;
+    private final OutputFactory outputFactory;
 
     @Autowired
     HtmlRenderEngine(HtmlIndexRenderer indexRenderer, HtmlFileSystemEntryRenderer fileSystemEntryRenderer, HtmlSummaryRenderer summaryRenderer,
-        HtmlResultTypeRenderer resultTypeRenderer, OutputPathGenerator outputPathGenerator, WriterFactory writerFactory) {
+        HtmlResultTypeRenderer resultTypeRenderer, OutputPathGenerator outputPathGenerator, OutputFactory outputFactory) {
         this.indexRenderer = indexRenderer;
         this.fileSystemEntryRenderer = fileSystemEntryRenderer;
         this.summaryRenderer = summaryRenderer;
         this.resultTypeRenderer = resultTypeRenderer;
         this.outputPathGenerator = outputPathGenerator;
-        this.writerFactory = writerFactory;
+        this.outputFactory = outputFactory;
     }
 
     @Override
@@ -81,24 +83,36 @@ final class HtmlRenderEngine implements RenderEngine {
 
     private void copyStaticResources(String archiveName) {
         copyResource("css/style.css", archiveName);
-        copyResource("img/ModHdr_BG.png", archiveName);
-        copyResource("img/hdr-background.png", archiveName);
-        copyResource("img/hdr-glow.png", archiveName);
-        copyResource("img/springsource-logo.png", archiveName);
-        copyResource("img/title-background.png", archiveName);
+        copyBinaryResource("img/ModHdr_BG.png", archiveName);
+        copyBinaryResource("img/hdr-background.png", archiveName);
+        copyBinaryResource("img/hdr-glow.png", archiveName);
+        copyBinaryResource("img/springsource-logo.png", archiveName);
+        copyBinaryResource("img/title-background.png", archiveName);
         copyResource("js/script.js", archiveName);
         copyResource("banner.html", archiveName);
     }
 
-    private void copyResource(String resource, String archiveName) {
-        Reader reader = new InputStreamReader(getClass().getResourceAsStream(resource));
-        Writer writer = this.writerFactory.createWriter(this.outputPathGenerator.generatePathFor(resource), archiveName);
+    private void copyBinaryResource(String resource, String archiveName) {
+        InputStream input = getClass().getResourceAsStream(resource);
+        OutputStream output = this.outputFactory.createOutputStream(this.outputPathGenerator.generatePathFor(resource), archiveName);
         try {
-            IoUtils.copy(reader, writer);
+            IoUtils.copy(input, output);
         } catch (IOException ioe) {
             throw new ResourceCopyFailedException(ioe);
         } finally {
-            IoUtils.closeQuietly(reader, writer);
+            IoUtils.closeQuietly(input, output);
+        }
+    }
+
+    private void copyResource(String resource, String archiveName) {
+        Reader input = new InputStreamReader(getClass().getResourceAsStream(resource));
+        Writer output = this.outputFactory.createWriter(this.outputPathGenerator.generatePathFor(resource), archiveName);
+        try {
+            IoUtils.copy(input, output);
+        } catch (IOException ioe) {
+            throw new ResourceCopyFailedException(ioe);
+        } finally {
+            IoUtils.closeQuietly(input, output);
         }
     }
 

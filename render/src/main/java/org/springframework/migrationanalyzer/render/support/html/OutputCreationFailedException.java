@@ -16,11 +16,11 @@
 
 package org.springframework.migrationanalyzer.render.support.html;
 
-final class WriterCreationFailedException extends RuntimeException {
+final class OutputCreationFailedException extends RuntimeException {
 
     private static final long serialVersionUID = 8267925121266569818L;
 
-    WriterCreationFailedException(String message, Throwable cause) {
+    OutputCreationFailedException(String message, Throwable cause) {
         super(message, cause);
     }
 

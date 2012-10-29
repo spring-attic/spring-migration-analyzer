@@ -22,6 +22,7 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import java.io.ByteArrayOutputStream;
 import java.io.StringWriter;
 
 import org.junit.Test;
@@ -41,14 +42,15 @@ public class HtmlRenderEngineTests {
 
     private final RootAwareOutputPathGenerator outputPathGenerator = mock(RootAwareOutputPathGenerator.class);
 
-    private final WriterFactory writerFactory = mock(WriterFactory.class);
+    private final OutputFactory outputFactory = mock(OutputFactory.class);
 
     private final HtmlRenderEngine renderEngine = new HtmlRenderEngine(this.indexRenderer, this.fileSystemEntryRenderer, this.summaryRenderer,
-        this.resultTypeRenderer, this.outputPathGenerator, this.writerFactory);
+        this.resultTypeRenderer, this.outputPathGenerator, this.outputFactory);
 
     @Test
     public void render() {
-        when(this.writerFactory.createWriter(anyString(), anyString())).thenReturn(new StringWriter());
+        when(this.outputFactory.createWriter(anyString(), anyString())).thenReturn(new StringWriter());
+        when(this.outputFactory.createOutputStream(anyString(), anyString())).thenReturn(new ByteArrayOutputStream());
 
         this.renderEngine.render(this.result, "output/path");
 
@@ -56,6 +58,7 @@ public class HtmlRenderEngineTests {
         verify(this.fileSystemEntryRenderer).renderFileSystemEntries(this.result);
         verify(this.resultTypeRenderer).renderResultTypes(this.result);
         verify(this.summaryRenderer).renderSummary(this.result);
-        verify(this.writerFactory, times(8)).createWriter(anyString(), anyString());
+        verify(this.outputFactory, times(3)).createWriter(anyString(), anyString());
+        verify(this.outputFactory, times(5)).createOutputStream(anyString(), anyString());
     }
 }

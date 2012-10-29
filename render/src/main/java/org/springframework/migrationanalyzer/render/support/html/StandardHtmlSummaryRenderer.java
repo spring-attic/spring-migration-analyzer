@@ -58,7 +58,7 @@ final class StandardHtmlSummaryRenderer implements HtmlSummaryRenderer {
 
     private final RootAwareOutputPathGenerator outputPathGenerator;
 
-    private final WriterFactory writerFactory;
+    private final OutputFactory outputFactory;
 
     private final Set<SummaryController> summaryControllers;
 
@@ -66,11 +66,11 @@ final class StandardHtmlSummaryRenderer implements HtmlSummaryRenderer {
 
     @Autowired
     StandardHtmlSummaryRenderer(Set<SummaryController> summaryControllers, ViewRenderer viewRenderer,
-        RootAwareOutputPathGenerator outputPathGenerator, WriterFactory writerFactory) {
+        RootAwareOutputPathGenerator outputPathGenerator, OutputFactory outputFactory) {
         this.summaryControllers = summaryControllers;
         this.viewRenderer = viewRenderer;
         this.outputPathGenerator = outputPathGenerator;
-        this.writerFactory = writerFactory;
+        this.outputFactory = outputFactory;
     }
 
     @Override
@@ -78,7 +78,7 @@ final class StandardHtmlSummaryRenderer implements HtmlSummaryRenderer {
         Writer writer = null;
         try {
             String summaryPath = this.outputPathGenerator.generatePathForSummary();
-            writer = this.writerFactory.createWriter(summaryPath, analysisResult.getArchiveName());
+            writer = this.outputFactory.createWriter(summaryPath, analysisResult.getArchiveName());
 
             this.viewRenderer.renderViewWithEmptyModel(VIEW_NAME_SUMMARY_HEADER, writer);
 

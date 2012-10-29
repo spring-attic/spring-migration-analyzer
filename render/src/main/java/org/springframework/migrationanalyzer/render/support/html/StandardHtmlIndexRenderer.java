@@ -33,20 +33,20 @@ final class StandardHtmlIndexRenderer implements HtmlIndexRenderer {
 
     private final ViewRenderer viewRenderer;
 
-    private final WriterFactory writerFactory;
+    private final OutputFactory outputFactory;
 
     @Autowired
-    StandardHtmlIndexRenderer(ViewRenderer viewRenderer, OutputPathGenerator outputPathGenerator, WriterFactory writerFactory) {
+    StandardHtmlIndexRenderer(ViewRenderer viewRenderer, OutputPathGenerator outputPathGenerator, OutputFactory outputFactory) {
         this.viewRenderer = viewRenderer;
         this.outputPathGenerator = outputPathGenerator;
-        this.writerFactory = writerFactory;
+        this.outputFactory = outputFactory;
     }
 
     @Override
     public void renderIndex(AnalysisResult analysisResult) {
         Writer writer = null;
         try {
-            writer = this.writerFactory.createWriter(this.outputPathGenerator.generatePathForIndex(), analysisResult.getArchiveName());
+            writer = this.outputFactory.createWriter(this.outputPathGenerator.generatePathForIndex(), analysisResult.getArchiveName());
             this.viewRenderer.renderViewWithEmptyModel(VIEW_NAME_INDEX, writer);
         } finally {
             IoUtils.closeQuietly(writer);

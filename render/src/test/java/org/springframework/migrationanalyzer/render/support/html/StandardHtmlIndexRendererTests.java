@@ -30,10 +30,10 @@ public class StandardHtmlIndexRendererTests {
 
     private final ViewRenderer viewRenderer = mock(ViewRenderer.class);
 
-    private final WriterFactory writerFactory = mock(WriterFactory.class);
+    private final OutputFactory outputFactory = mock(OutputFactory.class);
 
     private final StandardHtmlIndexRenderer renderer = new StandardHtmlIndexRenderer(this.viewRenderer, mock(RootAwareOutputPathGenerator.class),
-        this.writerFactory);
+        this.outputFactory);
 
     @Test
     public void renderIndex() {

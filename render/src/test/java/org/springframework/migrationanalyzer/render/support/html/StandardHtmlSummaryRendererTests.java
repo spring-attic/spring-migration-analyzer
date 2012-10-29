@@ -47,10 +47,10 @@ public class StandardHtmlSummaryRendererTests {
 
     private final ViewRenderer viewRenderer = mock(ViewRenderer.class);
 
-    private final WriterFactory writerFactory = mock(WriterFactory.class);
+    private final OutputFactory outputFactory = mock(OutputFactory.class);
 
     private final StandardHtmlSummaryRenderer renderer = new StandardHtmlSummaryRenderer(this.summaryControllers, this.viewRenderer,
-        mock(RootAwareOutputPathGenerator.class), this.writerFactory);
+        mock(RootAwareOutputPathGenerator.class), this.outputFactory);
 
     @SuppressWarnings("unchecked")
     @Test

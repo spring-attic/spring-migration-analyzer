@@ -43,7 +43,7 @@ public class StandardHtmlResultTypeRendererTests {
     private final ViewRenderer viewRenderer = mock(ViewRenderer.class);
 
     private final StandardHtmlResultTypeRenderer renderer = new StandardHtmlResultTypeRenderer(this.resultTypeControllers, this.viewRenderer,
-        mock(RootAwareOutputPathGenerator.class), mock(WriterFactory.class), mock(ResultTypeDisplayNameResolver.class));
+        mock(RootAwareOutputPathGenerator.class), mock(OutputFactory.class), mock(ResultTypeDisplayNameResolver.class));
 
     @SuppressWarnings("unchecked")
     @Test
