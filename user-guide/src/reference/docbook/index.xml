@@ -236,7 +236,7 @@
 				<para>
 					For detailed information about everything that Spring Migration Analyzer can
 					detect, please refer to the chapter entitled
-					<link linkend="resources-downloads">"What is detected"</link>.
+					<link linkend="what-is-detected">"What is detected"</link>.
 				</para>
 			</section>
 		</section>
@@ -479,11 +479,11 @@
 			<section id="resources-downloads">
 				<title>Downloads</title>
 				<para>
-					<ulink type="http" url="https://s3browse.springsource.com/browse/maven.springframework.org/snapshot/org/springframework/migrationanalyzer/spring-migration-analyzer/1.0.0.BUILD-SNAPSHOT/"/>
+					<ulink type="http" url="http://www.springsource.org/download/community?project=Spring%20Migration%20Analyzer"/>
 				</para>
 				<para>
-					Pre-built snapshots of Spring Migration Analyzer are available for
-					<ulink type="http" url="https://s3browse.springsource.com/browse/maven.springframework.org/snapshot/org/springframework/migrationanalyzer/spring-migration-analyzer/1.0.0.BUILD-SNAPSHOT/">download</ulink>.
+					The latest release of Spring Migration Analyzer, and all previous releases, are available for 
+					<ulink type="http" url="http://www.springsource.org/download/community?project=Spring%20Migration%20Analyzer">download</ulink>.
 				</para>
 			</section>
 			<section id="resources-source-code">
