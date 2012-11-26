@@ -16,6 +16,9 @@
 
 package org.springframework.migrationanalyzer.contributions.transactions;
 
+/**
+ * An enumeration of the different transaction propagation types supported by EJBs
+ */
 public enum TransactionPropagationType {
     MANDATORY, SUPPORTS, NOT_SUPPORTED, NEVER, REQUIRED, REQUIRES_NEW;
 }
