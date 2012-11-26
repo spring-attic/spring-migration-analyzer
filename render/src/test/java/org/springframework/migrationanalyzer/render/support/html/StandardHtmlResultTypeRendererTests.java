@@ -30,6 +30,8 @@ import java.util.Set;
 import org.junit.Test;
 import org.mockito.InOrder;
 import org.mockito.Mockito;
+import org.mockito.invocation.InvocationOnMock;
+import org.mockito.stubbing.Answer;
 import org.springframework.migrationanalyzer.analyze.AnalysisResult;
 import org.springframework.migrationanalyzer.analyze.fs.FileSystemEntry;
 import org.springframework.migrationanalyzer.render.ByResultTypeController;
@@ -40,14 +42,25 @@ public class StandardHtmlResultTypeRendererTests {
 
     private final Set<ByResultTypeController> resultTypeControllers = new HashSet<ByResultTypeController>();
 
+    private final ResultTypeDisplayNameResolver resultTypeDisplayNameResolver = mock(ResultTypeDisplayNameResolver.class);
+
     private final ViewRenderer viewRenderer = mock(ViewRenderer.class);
 
     private final StandardHtmlResultTypeRenderer renderer = new StandardHtmlResultTypeRenderer(this.resultTypeControllers, this.viewRenderer,
-        mock(RootAwareOutputPathGenerator.class), mock(OutputFactory.class), mock(ResultTypeDisplayNameResolver.class));
+        mock(RootAwareOutputPathGenerator.class), mock(OutputFactory.class), this.resultTypeDisplayNameResolver);
 
     @SuppressWarnings("unchecked")
     @Test
     public void render() {
+        when(this.resultTypeDisplayNameResolver.getDisplayName(any(Class.class))).thenAnswer(new Answer<String>() {
+
+            @Override
+            public String answer(InvocationOnMock invocation) throws Throwable {
+                return invocation.getArguments()[0].toString();
+            }
+
+        });
+
         AnalysisResult analysisResult = mock(AnalysisResult.class);
         FileSystemEntry entry = mock(FileSystemEntry.class);
         when(analysisResult.getFileSystemEntries()).thenReturn(new HashSet<FileSystemEntry>(Arrays.asList(entry)));
