@@ -16,6 +16,9 @@
 
 package org.springframework.migrationanalyzer.contributions.transactions;
 
+/**
+ * An enumeration of the different type of programmatic JTA transaction demarcation
+ */
 public enum ProgrammaticJtaTransactionDemarcationType implements ProgrammaticTransactionDemarcationType {
 
     BEGIN("Begin"), COMMIT("Commit"), ROLLBACK("Rollback"), SUSPEND("Suspend"), RESUME("Resume");

@@ -16,6 +16,9 @@
 
 package org.springframework.migrationanalyzer.contributions.apiusage;
 
+/**
+ * An enumeration of the different types of API usage
+ */
 public enum ApiUsageType {
 
     IMPLEMENTS_INTERFACE, //
