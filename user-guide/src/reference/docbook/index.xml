@@ -1,9 +1,11 @@
-<book xmlns="http://docbook.org/ns/docbook" version="5.0"
-    xml:id="spring-framework-reference"
-    xmlns:xi="http://www.w3.org/2001/XInclude"
-    xmlns:xlink="http://www.w3.org/1999/xlink">
-	<bookinfo>
+<book xml:id="spring-migration-analyzer-user-guide"
+	xmlns="http://docbook.org/ns/docbook" version="5.0"
+	xmlns:xi="http://www.w3.org/2001/XInclude"
+	xmlns:xl="http://www.w3.org/1999/xlink">
+
+	<info>
 		<title>Spring Migration Analyzer - User Guide</title>
+		<productname>Spring Migration Analyzer</productname>
 		<releaseinfo>${version}</releaseinfo>
 		<authorgroup>
 			<author>
@@ -23,7 +25,7 @@
 			<year>2012</year>
 			<holder>VMware, Inc. All Rights Reserved.</holder>
 		</copyright>
-	</bookinfo>
+	</info>
 
 	<toc/>
 
@@ -60,7 +62,7 @@
 				Analyzer's <code>bin</code> directory to your <envar>PATH</envar>.
 			</para>
 			<para>
-				Next, verify that Spring Migration Analyzer has been installed correctly. To do so on Windows, run the 
+				Next, verify that Spring Migration Analyzer has been installed correctly. To do so on Windows, run the
 				following command:
 <programlisting><prompt> &gt; </prompt><userinput>migration-analysis.bat</userinput></programlisting>
 				To do so on OS X and Linux, run the following command:
@@ -68,7 +70,7 @@
 				In both cases, you should be presented with a description of Spring Migration Analyzer and its usage
 				information:
 <programlisting> Usage: migration-analysis.sh &lt;inputPath&gt; [OPTION]...
- 
+
  Description:
 
    Produces a migration analysis report for each archive found at the specified
@@ -202,7 +204,7 @@
 						<imagedata fileref="images/report.png"></imagedata>
 					</imageobject>
 				</mediaobject>
-			
+
 				As shown in the image above, the report is divided into three main sections.
 				Sections one and two are used for navigation and the third section is used to
 				show the report's content. Section one lists the different categories that the
@@ -228,7 +230,7 @@
 				<title>The report's details</title>
 				<para>
 					If you're interested in more details about the information in the report,
-					you can use the links in the summary text or on the left-hand side. For 
+					you can use the links in the summary text or on the left-hand side. For
 					example, you may want to look at a particular class to see how extensive
 					its use of a Java EE API is, or you may want to find out more about the
 					application's use of programmatic transaction management.
@@ -388,7 +390,7 @@
 							<listitem><code>ibm-web-ext-pme.xml</code></listitem>
 							<listitem><code>j2c_plugin.xml</code></listitem>
 						</itemizedlist>
-					</listitem>	
+					</listitem>
 				</itemizedlist>
 			</para>
 		</section>
@@ -482,7 +484,7 @@
 					<ulink type="http" url="http://www.springsource.org/download/community?project=Spring%20Migration%20Analyzer"/>
 				</para>
 				<para>
-					The latest release of Spring Migration Analyzer, and all previous releases, are available for 
+					The latest release of Spring Migration Analyzer, and all previous releases, are available for
 					<ulink type="http" url="http://www.springsource.org/download/community?project=Spring%20Migration%20Analyzer">download</ulink>.
 				</para>
 			</section>
@@ -492,7 +494,7 @@
 					<ulink type="http" url="http://github.com/SpringSource/spring-migration-analyzer"/>
 				</para>
 				<para>
-					Spring Migration Analyzer's source code is available on 
+					Spring Migration Analyzer's source code is available on
 					<ulink type="http" url="http://github.com/SpringSource/spring-migration-analyzer">GitHub</ulink>
 				</para>
 			</section>
