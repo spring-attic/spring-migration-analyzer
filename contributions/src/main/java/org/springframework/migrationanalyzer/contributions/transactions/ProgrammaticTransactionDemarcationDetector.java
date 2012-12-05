@@ -52,6 +52,11 @@ abstract class ProgrammaticTransactionDemarcationDetector extends EmptyVisitor i
         return this.programmaticDemarcation;
     }
 
+    @Override
+    public void clear() {
+        this.programmaticDemarcation.clear();
+    }
+
     private final class StandardMethodVisitor extends EmptyVisitor {
 
         private final String methodDescription;

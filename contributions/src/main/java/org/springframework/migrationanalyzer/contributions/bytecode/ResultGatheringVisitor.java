@@ -26,4 +26,9 @@ interface ResultGatheringVisitor<T> {
      * @return The analysis results
      */
     Set<T> getResults();
+
+    /**
+     * Clears the visitor's state, if it has any, such that it's ready for reuse
+     */
+    void clear();
 }

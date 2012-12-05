@@ -101,8 +101,10 @@ public class ApiUsageDetectingAsmVisitorTests {
         reader.accept(visitor, 0);
 
         Set<ApiUsage> results = visitor.getResults();
-
         assertApiUsage(results, clazz.getName(), expectedUsage);
+
+        visitor.clear();
+        assertEquals(0, visitor.getResults().size());
     }
 
     private void assertApiUsage(Set<ApiUsage> actualUsage, String user, ApiUsageType... expectedUsage) {

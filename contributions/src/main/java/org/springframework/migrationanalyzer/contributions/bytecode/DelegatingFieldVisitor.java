@@ -51,6 +51,15 @@ final class DelegatingFieldVisitor implements ResultGatheringFieldVisitor<Object
     }
 
     @Override
+    public void clear() {
+        for (FieldVisitor delegate : this.delegates) {
+            if (delegate instanceof ResultGatheringFieldVisitor<?>) {
+                ((ResultGatheringFieldVisitor<?>) delegate).clear();
+            }
+        }
+    }
+
+    @Override
     public AnnotationVisitor visitAnnotation(String desc, boolean visible) {
         Set<AnnotationVisitor> delegateVisitors = new HashSet<AnnotationVisitor>();
 

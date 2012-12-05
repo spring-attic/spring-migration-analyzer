@@ -45,6 +45,12 @@ public class DelegatingFieldVisitorTests {
     }
 
     @Test
+    public void clear() {
+        this.visitor.clear();
+        verify(this.delegate).clear();
+    }
+
+    @Test
     public void visitAnnotation() {
         this.visitor.visitAnnotation(null, false);
         verify(this.delegate).visitAnnotation(null, false);

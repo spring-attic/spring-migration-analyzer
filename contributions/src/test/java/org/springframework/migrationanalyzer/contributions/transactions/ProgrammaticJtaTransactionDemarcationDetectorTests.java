@@ -99,5 +99,8 @@ public class ProgrammaticJtaTransactionDemarcationDetectorTests {
             assertTrue(usageDescriptionsList + " does not contain " + result.getUsageDescription(),
                 usageDescriptionsList.contains(result.getUsageDescription()));
         }
+
+        this.detector.clear();
+        assertEquals(0, this.detector.getResults().size());
     }
 }

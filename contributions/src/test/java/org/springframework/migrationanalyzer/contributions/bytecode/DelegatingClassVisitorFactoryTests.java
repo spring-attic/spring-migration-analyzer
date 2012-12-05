@@ -46,6 +46,11 @@ public class DelegatingClassVisitorFactoryTests {
         assertNotNull(visitor);
         assertTrue(visitor instanceof DelegatingClassVisitor);
 
+        verify(this.annotationVisitor).clear();
+        verify(this.classVisitor).clear();
+        verify(this.fieldVisitor).clear();
+        verify(this.methodVisitor).clear();
+
         visitor.visitAnnotation(null, true).visitEnd();
         verify(this.annotationVisitor).visitEnd();
 
