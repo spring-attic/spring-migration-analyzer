@@ -51,6 +51,15 @@ public class DelegatingClassVisitorTests {
     }
 
     @Test
+    public void clear() {
+        this.visitor.clear();
+        verify(this.delegate).clear();
+        verify(this.annotationVisitor).clear();
+        verify(this.fieldVisitor).clear();
+        verify(this.methodVisitor).clear();
+    }
+
+    @Test
     public void visit() {
         this.visitor.visit(0, 0, "java/lang/Object", null, null, null);
         verify(this.delegate).visit(0, 0, "java/lang/Object", null, null, null);

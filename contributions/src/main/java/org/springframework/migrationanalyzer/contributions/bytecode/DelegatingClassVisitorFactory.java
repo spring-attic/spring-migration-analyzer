@@ -44,6 +44,7 @@ final class DelegatingClassVisitorFactory implements ResultGatheringClassVisitor
         Set<ResultGatheringClassVisitor> classVisitorInstances = new HashSet<ResultGatheringClassVisitor>();
 
         for (ResultGatheringVisitor visitor : this.resultGatheringVisitors) {
+            visitor.clear();
 
             if (visitor instanceof ResultGatheringAnnotationVisitor) {
                 annotationVisitorInstances.add((ResultGatheringAnnotationVisitor) visitor);

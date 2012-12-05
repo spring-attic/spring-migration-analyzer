@@ -46,6 +46,15 @@ final class DelegatingAnnotationVisitor implements ResultGatheringAnnotationVisi
     }
 
     @Override
+    public void clear() {
+        for (AnnotationVisitor delegate : this.delegates) {
+            if (delegate instanceof ResultGatheringAnnotationVisitor<?>) {
+                ((ResultGatheringAnnotationVisitor<?>) delegate).clear();
+            }
+        }
+    }
+
+    @Override
     public void visit(String name, Object value) {
         for (AnnotationVisitor delegate : this.delegates) {
             delegate.visit(name, value);

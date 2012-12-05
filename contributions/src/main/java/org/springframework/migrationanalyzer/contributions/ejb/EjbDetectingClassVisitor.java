@@ -95,11 +95,14 @@ final class EjbDetectingClassVisitor extends EmptyVisitor implements ResultGathe
             ejbs.add(this.currentEjb);
         }
 
+        return ejbs;
+    }
+
+    @Override
+    public void clear() {
         this.currentEjb = null;
         this.currentTransactionManagementType = null;
         this.currentPropagationTypes.clear();
-
-        return ejbs;
     }
 
     private SessionBean getSessionBean() {

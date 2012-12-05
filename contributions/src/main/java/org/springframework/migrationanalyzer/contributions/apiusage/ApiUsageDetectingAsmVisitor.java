@@ -76,6 +76,11 @@ final class ApiUsageDetectingAsmVisitor extends EmptyVisitor implements ResultGa
     }
 
     @Override
+    public void clear() {
+        this.results.clear();
+    }
+
+    @Override
     public void visit(int version, int access, String name, String signature, String superName, String[] interfaces) {
         Type type = Type.getObjectType(name);
 

@@ -64,6 +64,16 @@ final class DelegatingClassVisitor implements ResultGatheringClassVisitor<Object
     }
 
     @Override
+    public void clear() {
+        for (ResultGatheringClassVisitor<?> delegate : this.delegates) {
+            delegate.clear();
+        }
+        this.annotationVisitor.clear();
+        this.fieldVisitor.clear();
+        this.methodVisitor.clear();
+    }
+
+    @Override
     public void visit(int version, int access, String name, String signature, String superName, String[] interfaces) {
         for (ResultGatheringClassVisitor<?> delegate : this.delegates) {
             delegate.visit(version, access, name, signature, superName, interfaces);

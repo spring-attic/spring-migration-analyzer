@@ -52,6 +52,15 @@ final class DelegatingMethodVisitor implements ResultGatheringMethodVisitor<Obje
     }
 
     @Override
+    public void clear() {
+        for (MethodVisitor delegate : this.delegates) {
+            if (delegate instanceof ResultGatheringMethodVisitor<?>) {
+                ((ResultGatheringMethodVisitor<?>) delegate).clear();
+            }
+        }
+    }
+
+    @Override
     public AnnotationVisitor visitAnnotation(String desc, boolean visible) {
         Set<AnnotationVisitor> delegateVisitors = new HashSet<AnnotationVisitor>();
 

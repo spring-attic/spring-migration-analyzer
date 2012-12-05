@@ -96,4 +96,16 @@ public class EjbDetectingClassVisitorTests {
         ClassReader reader = new ClassReader(getClass().getResourceAsStream("MessageDrivenStatefulEjb.class"));
         reader.accept(this.classVisitor, 0);
     }
+
+    @Test
+    public void clear() throws IOException {
+        ClassReader reader = new ClassReader(getClass().getResourceAsStream("DeclarativeTransactionEjbWithAnnotatedMethods.class"));
+        reader.accept(this.classVisitor, 0);
+
+        Set<Ejb> ejbs = this.classVisitor.getResults();
+        assertEquals(1, ejbs.size());
+
+        this.classVisitor.clear();
+        assertEquals(0, this.classVisitor.getResults().size());
+    }
 }
