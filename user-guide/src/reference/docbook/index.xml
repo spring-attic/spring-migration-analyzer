@@ -49,7 +49,7 @@
 						A Windows, OS X or Linux operating system
 					</listitem>
 					<listitem>
-						A Java 5 or later installation, with the <envar>JAVA_HOME</envar>
+						A Java 6 or later installation, with the <envar>JAVA_HOME</envar>
 						environment variable configured to point to it
 					</listitem>
 				</itemizedlist>
