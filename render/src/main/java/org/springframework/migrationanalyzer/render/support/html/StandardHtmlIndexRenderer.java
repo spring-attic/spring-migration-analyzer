@@ -19,7 +19,6 @@ package org.springframework.migrationanalyzer.render.support.html;
 import java.io.Writer;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.migrationanalyzer.analyze.AnalysisResult;
 import org.springframework.migrationanalyzer.render.OutputPathGenerator;
 import org.springframework.migrationanalyzer.util.IoUtils;
 import org.springframework.stereotype.Component;
@@ -43,10 +42,10 @@ final class StandardHtmlIndexRenderer implements HtmlIndexRenderer {
     }
 
     @Override
-    public void renderIndex(AnalysisResult analysisResult) {
+    public void renderIndex(String outputPathPrefix) {
         Writer writer = null;
         try {
-            writer = this.outputFactory.createWriter(this.outputPathGenerator.generatePathForIndex(), analysisResult.getArchiveName());
+            writer = this.outputFactory.createWriter(this.outputPathGenerator.generatePathForIndex(), outputPathPrefix);
             this.viewRenderer.renderViewWithEmptyModel(VIEW_NAME_INDEX, writer);
         } finally {
             IoUtils.closeQuietly(writer);

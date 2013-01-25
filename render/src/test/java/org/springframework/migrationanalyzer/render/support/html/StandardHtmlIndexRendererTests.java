@@ -24,7 +24,6 @@ import static org.mockito.Mockito.verify;
 import java.io.Writer;
 
 import org.junit.Test;
-import org.springframework.migrationanalyzer.analyze.AnalysisResult;
 
 public class StandardHtmlIndexRendererTests {
 
@@ -37,7 +36,7 @@ public class StandardHtmlIndexRendererTests {
 
     @Test
     public void renderIndex() {
-        this.renderer.renderIndex(mock(AnalysisResult.class));
+        this.renderer.renderIndex("path/prefix");
         verify(this.viewRenderer).renderViewWithEmptyModel(eq("html-index"), any(Writer.class));
     }
 }

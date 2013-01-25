@@ -54,10 +54,10 @@ public class HtmlRenderEngineTests {
 
         this.renderEngine.render(this.result, "output/path");
 
-        verify(this.indexRenderer).renderIndex(this.result);
-        verify(this.fileSystemEntryRenderer).renderFileSystemEntries(this.result);
-        verify(this.resultTypeRenderer).renderResultTypes(this.result);
-        verify(this.summaryRenderer).renderSummary(this.result);
+        verify(this.indexRenderer).renderIndex("output/path");
+        verify(this.fileSystemEntryRenderer).renderFileSystemEntries(this.result, "output/path");
+        verify(this.resultTypeRenderer).renderResultTypes(this.result, "output/path");
+        verify(this.summaryRenderer).renderSummary(this.result, "output/path");
         verify(this.outputFactory, times(3)).createWriter(anyString(), anyString());
         verify(this.outputFactory, times(5)).createOutputStream(anyString(), anyString());
     }

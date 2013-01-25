@@ -120,10 +120,14 @@ public final class CommandLineMigrationAnalysisExecutorTests {
     }
 
     private String getOutputPath(File inputLocation, File outputLocation, File archive) {
+        String outputPath;
         if (inputLocation.equals(archive)) {
-            return new File(outputLocation, inputLocation.getName()).getAbsolutePath();
+            outputPath = new File(new File(outputLocation, archive.getName() + ".migration-analysis"), "html").getAbsolutePath();
+
         } else {
-            return new File(outputLocation, archive.getPath().substring(inputLocation.getPath().length())).getAbsolutePath();
+            outputPath = new File(new File(new File(outputLocation, archive.getParentFile().getPath().substring(inputLocation.getPath().length())),
+                archive.getName() + ".migration-analysis"), "html").getAbsolutePath();
         }
+        return outputPath;
     }
 }

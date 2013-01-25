@@ -67,15 +67,15 @@ final class StandardHtmlFileSystemEntryRenderer implements HtmlFileSystemEntryRe
     }
 
     @Override
-    public void renderFileSystemEntries(AnalysisResult analysisResult) {
+    public void renderFileSystemEntries(AnalysisResult analysisResult, String outputPathPrefix) {
         Set<FileSystemEntry> fileSystemEntries = analysisResult.getFileSystemEntries();
 
-        renderFileSystemEntryContents(fileSystemEntries, analysisResult.getArchiveName());
+        renderFileSystemEntryContents(fileSystemEntries, outputPathPrefix);
 
         for (FileSystemEntry fileSystemEntry : fileSystemEntries) {
             Writer writer = null;
             try {
-                writer = this.outputFactory.createWriter(this.outputPathGenerator.generatePathFor(fileSystemEntry), analysisResult.getArchiveName());
+                writer = this.outputFactory.createWriter(this.outputPathGenerator.generatePathFor(fileSystemEntry), outputPathPrefix);
                 AnalysisResult entryResult = analysisResult.getResultForEntry(fileSystemEntry);
                 renderByFileHeader(fileSystemEntry, writer);
                 for (Class<?> resultType : entryResult.getResultTypes()) {

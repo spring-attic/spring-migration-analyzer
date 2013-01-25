@@ -29,7 +29,7 @@ import org.springframework.migrationanalyzer.util.IoUtils;
 
 public final class FileOutputFactoryTests {
 
-    private final FileOutputFactory outputFactory = new FileOutputFactory("build");
+    private final FileOutputFactory outputFactory = new FileOutputFactory();
 
     @Test
     public void createWriter() throws IOException {
@@ -42,7 +42,7 @@ public final class FileOutputFactoryTests {
 
         assertFalse(expectedOutput.exists());
 
-        Writer writer = this.outputFactory.createWriter("alpha/bravo.txt", "prefix");
+        Writer writer = this.outputFactory.createWriter("alpha/bravo.txt", "build/prefix");
 
         try {
             assertTrue(dir.isDirectory());
@@ -65,7 +65,7 @@ public final class FileOutputFactoryTests {
 
         assertFalse(expectedOutput.exists());
 
-        OutputStream output = this.outputFactory.createOutputStream("charlie/delta.txt", "prefix");
+        OutputStream output = this.outputFactory.createOutputStream("charlie/delta.txt", "build/prefix");
 
         try {
             assertTrue(dir.isDirectory());

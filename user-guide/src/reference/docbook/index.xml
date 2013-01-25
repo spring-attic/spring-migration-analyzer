@@ -63,7 +63,7 @@
 		<section id="introduction-installation">
 			<title>Installation</title>
 			<para>
-				Before installaing Spring Migration Analyzer, please ensure your system meets
+				Before installing Spring Migration Analyzer, please ensure your system meets
 				the following requirements:
 				<itemizedlist>
 					<listitem>
@@ -98,9 +98,10 @@
    input path. The input path may be either a single archive or a directory. In
    the case of a directory, the entire directory structure is examined and all
    archives that are found are analyzed. The reports are written to the output
-   path with each report being written into a sub-directory with the same name as
-   its input archive. For example, if my-app.ear is analyzed its report will be
-   written to &lt;outputPath&gt;/my-app.ear.
+   path with each report being written into a separate sub-directory. The
+   sub-directory's name is of the form &lt;archive-name&gt;.migration-analysis. For
+   example, if my-app.ear is analyzed its report will be written to
+   &lt;outputPath&gt;/my-app.ear.migration-analysis.
 
  Options:
 
@@ -128,10 +129,10 @@
 			<para>
 				This will perform an analysis of <code>my-app.ear</code>, producing
 				a migration report in the current working directory. The report will be
-				in HTML. The report is written into a directory with the same name as the
-				archive that we analyzed. For example if you analyzed
+				in HTML. The report is written into a directory with a name in the form
+				&lt;input-archive&gt;.migration-analysis. For example, if you analyzed
 				<code>my-app.ear</code>, the report will be written into a directory
-				named <code>my-app.ear</code>.
+				named <code>my-app.ear.migration-analysis</code>.
 			</para>
 			<section id="using-analyzing-customizing">
 				<title>Customizing the analysis</title>
@@ -189,8 +190,8 @@
 				<para>
 					When Spring Migration Analyzer analyzes multiple archives it produces a
 					separate report for each archive that it analyzes. Each report is written into
-					a directory with the same name as its corresponding archive. For example, with
-					three applications in a directory named <code>apps</code>:
+					a directory with a name in the form &lt;input-archive&gt;.migration-analysis.
+					For example, with three applications in a directory named <code>apps</code>:
 <programlisting>apps/
     one.ear
     two.ear
@@ -200,15 +201,18 @@
 <programlisting><prompt> &gt; </prompt><userinput>migration-analysis apps -o reports</userinput></programlisting>
 						Will produce the following set of reports, each in its own directory:
 <programlisting>reports/
-    one.ear/
-        index.html
-        ...
-    two.ear/
-        index.html
-        ...
-    three.ear/
-        index.html
-        ...
+    one.ear.migration-analysis/
+        html/
+            index.html
+            ...
+    two.ear.migration-analysis/
+        html/
+            index.html
+            ...
+    three.ear.migration-analysis/
+        html/
+            index.html
+            ...
 </programlisting>
 				</para>
 			</section>

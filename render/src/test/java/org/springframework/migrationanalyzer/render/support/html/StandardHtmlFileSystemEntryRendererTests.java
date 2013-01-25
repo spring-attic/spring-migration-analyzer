@@ -60,7 +60,7 @@ public class StandardHtmlFileSystemEntryRendererTests {
         when(analysisResult.getResultForEntry(entry)).thenReturn(analysisResult);
         when(analysisResult.getResultTypes()).thenReturn(new HashSet<Class<?>>(Arrays.asList(Object.class)));
 
-        this.renderer.renderFileSystemEntries(analysisResult);
+        this.renderer.renderFileSystemEntries(analysisResult, "path/prefix");
 
         InOrder inOrder = Mockito.inOrder(this.viewRenderer);
         inOrder.verify(this.viewRenderer).renderViewWithModel(eq("html-file-contents"), any(Map.class), any(Writer.class));

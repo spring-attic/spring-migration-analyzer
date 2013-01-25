@@ -24,6 +24,7 @@ interface HtmlSummaryRenderer {
      * Render the summary result of the analysis
      * 
      * @param analysisResult The result of the analysis to be rendered
+     * @param outputPathPrefix The prefix to be applied to the path of any files output by the rendering
      */
-    void renderSummary(AnalysisResult analysisResult);
+    void renderSummary(AnalysisResult analysisResult, String outputPathPrefix);
 }

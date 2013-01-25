@@ -32,6 +32,7 @@ interface HtmlResultTypeRenderer {
      * Render an analysis result
      * 
      * @param analysisResult The result to render
+     * @param outputPathPrefix The prefix to be applied to the path of any files output by the rendering
      */
-    void renderResultTypes(AnalysisResult analysisResult);
+    void renderResultTypes(AnalysisResult analysisResult, String outputPathPrefix);
 }

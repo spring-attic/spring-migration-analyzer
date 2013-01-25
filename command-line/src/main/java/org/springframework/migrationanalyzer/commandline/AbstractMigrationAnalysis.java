@@ -35,8 +35,8 @@ abstract class AbstractMigrationAnalysis {
     private static final String DESCRIPTION = "  Produces a migration analysis report for each archive found at the specified input path. "
         + "The input path may be either a single archive or a directory. In the case of a directory, the entire directory "
         + "structure is examined and all archives that are found are analyzed. The reports are written to the output path with each "
-        + "report being written into a sub-directory with the same name as its input archive. For example, if my-app.ear is analyzed "
-        + "its report will be written to <outputPath>/my-app.ear.";
+        + "report being written into a separate sub-directory. The sub-directory's name is of the form <archive-name>.migration-analysis. "
+        + "For example, if my-app.ear is analyzed its report will be written to <outputPath>/my-app.ear.migration-analysis.";
 
     private static final int OPTIONS_WIDTH = 80;
 
