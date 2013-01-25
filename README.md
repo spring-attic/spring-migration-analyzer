@@ -18,7 +18,7 @@ To begin using the Migration Analyzer, perform the following for usage informati
 
 	./migration-analysis.sh ~/dev/resources/migration-apps/my-app.ear
 
-This will analyze `my-app.ear`, producing a report in the current working directory. The report's directory will be named `my-app.ear`.
+This will analyze `my-app.ear`, producing a report in the current working directory. The report's directory will be named `migration-analysis.my-app.ear`.
 
 # Building from source
 

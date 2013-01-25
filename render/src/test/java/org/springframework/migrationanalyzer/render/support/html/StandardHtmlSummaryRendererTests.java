@@ -64,7 +64,7 @@ public class StandardHtmlSummaryRendererTests {
             Arrays.asList(new ModelAndView(Collections.<String, Object> emptyMap(), "stub-guidance")));
         when(this.summaryController.canHandle(Object.class)).thenReturn(true);
 
-        this.renderer.renderSummary(analysisResult);
+        this.renderer.renderSummary(analysisResult, "path/prefix");
 
         InOrder inOrder = Mockito.inOrder(this.viewRenderer);
 

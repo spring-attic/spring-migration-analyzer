@@ -16,12 +16,13 @@
 
 package org.springframework.migrationanalyzer.render.support.html;
 
-import org.springframework.migrationanalyzer.analyze.AnalysisResult;
 
 interface HtmlIndexRenderer {
 
     /**
      * Render the index page into HTML
+     * 
+     * @param outputPathPrefix The prefix to be applied to the path of any files output by the rendering
      */
-    void renderIndex(AnalysisResult analysisResult);
+    void renderIndex(String outputPathPrefix);
 }

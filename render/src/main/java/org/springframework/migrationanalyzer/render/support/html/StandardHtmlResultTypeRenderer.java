@@ -63,13 +63,13 @@ final class StandardHtmlResultTypeRenderer implements HtmlResultTypeRenderer {
     }
 
     @Override
-    public void renderResultTypes(AnalysisResult analysisResult) {
+    public void renderResultTypes(AnalysisResult analysisResult, String outputPathPrefix) {
         Set<Class<?>> resultTypes = analysisResult.getResultTypes();
-        renderResultTypeContents(resultTypes, analysisResult.getArchiveName());
+        renderResultTypeContents(resultTypes, outputPathPrefix);
         for (Class<?> resultType : resultTypes) {
             Writer writer = null;
             try {
-                writer = this.outputFactory.createWriter(this.outputPathGenerator.generatePathFor(resultType), analysisResult.getArchiveName());
+                writer = this.outputFactory.createWriter(this.outputPathGenerator.generatePathFor(resultType), outputPathPrefix);
                 renderByResultTypeHeader(resultType, writer);
                 this.viewRenderer.render(resultType, analysisResult.getResultEntries(resultType), this.resultTypeControllers, writer,
                     new LocationAwareOutputPathGenerator(this.outputPathGenerator, resultType), REPORT_TYPE);

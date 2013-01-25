@@ -24,6 +24,7 @@ interface HtmlFileSystemEntryRenderer {
      * Render the file system entry result of the analysis
      * 
      * @param result The result of the analysis to be rendered
+     * @param outputPathPrefix The prefix to be applied to the path of any files output by the rendering
      */
-    void renderFileSystemEntries(AnalysisResult result);
+    void renderFileSystemEntries(AnalysisResult result, String outputPathPrefix);
 }

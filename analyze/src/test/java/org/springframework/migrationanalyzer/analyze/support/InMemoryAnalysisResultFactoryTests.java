@@ -29,6 +29,6 @@ public class InMemoryAnalysisResultFactoryTests {
     public void create() {
         MutableAnalysisResult analysisResult = this.factory.create("archive.war");
         assertTrue(analysisResult instanceof InMemoryAnalysisResult);
-        assertEquals("archive.war", analysisResult.getArchiveName());
+        assertEquals("migration-analysis-archive.war", analysisResult.getName());
     }
 }

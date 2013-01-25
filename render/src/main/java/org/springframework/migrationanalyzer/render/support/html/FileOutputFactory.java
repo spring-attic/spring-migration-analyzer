@@ -25,22 +25,13 @@ import java.io.Writer;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.migrationanalyzer.util.IoUtils;
 import org.springframework.stereotype.Component;
 
 @Component
 final class FileOutputFactory implements OutputFactory {
 
-    private final String rootPath;
-
     private final Logger logger = LoggerFactory.getLogger(FileOutputFactory.class);
-
-    @Autowired
-    FileOutputFactory(@Value("#{@configuration.outputPath}") String rootPath) {
-        this.rootPath = rootPath;
-    }
 
     @Override
     public Writer createWriter(String path, String pathPrefix) {
@@ -61,7 +52,7 @@ final class FileOutputFactory implements OutputFactory {
     }
 
     private File createAndPrepareFile(String path, String pathPrefix) {
-        File file = new File(this.rootPath, new File(pathPrefix, path).getPath());
+        File file = new File(pathPrefix, path);
         try {
             IoUtils.createDirectoryIfNecessary(file.getParentFile());
         } catch (IOException ioe) {

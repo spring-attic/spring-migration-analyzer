@@ -74,8 +74,8 @@ final class CommandLineMigrationAnalysisExecutor implements MigrationAnalysisExe
 
     private void analyzeArchive(File archive, File inputFile) {
         FileSystem fileSystem = createFileSystem(archive);
-        RenderEngine renderEngine = getRenderEngine();
         AnalysisResult analysis = this.analysisEngine.analyze(fileSystem, this.configuration.getExcludes(), archive.getName());
+        RenderEngine renderEngine = getRenderEngine();
         renderEngine.render(analysis, getOutputPath(inputFile, archive));
         fileSystem.cleanup();
     }
@@ -91,11 +91,16 @@ final class CommandLineMigrationAnalysisExecutor implements MigrationAnalysisExe
     }
 
     private String getOutputPath(File inputFile, File archive) {
+        File root;
+
         if (inputFile.equals(archive)) {
-            return new File(this.configuration.getOutputPath(), archive.getName()).getAbsolutePath();
+            root = new File(this.configuration.getOutputPath());
         } else {
-            return new File(this.configuration.getOutputPath(), inputFile.toURI().relativize(archive.toURI()).getPath()).getAbsolutePath();
+            root = new File(this.configuration.getOutputPath(), archive.getParentFile().getPath().substring(inputFile.getPath().length()));
         }
+
+        String directoryName = archive.getName() + ".migration-analysis";
+        return new File(new File(root, directoryName), this.configuration.getOutputType()).getAbsolutePath();
     }
 
     private FileSystem createFileSystem(File archive) {

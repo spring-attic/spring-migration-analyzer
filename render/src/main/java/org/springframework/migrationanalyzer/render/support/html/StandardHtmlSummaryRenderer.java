@@ -74,11 +74,11 @@ final class StandardHtmlSummaryRenderer implements HtmlSummaryRenderer {
     }
 
     @Override
-    public void renderSummary(AnalysisResult analysisResult) {
+    public void renderSummary(AnalysisResult analysisResult, String outputPathPrefix) {
         Writer writer = null;
         try {
             String summaryPath = this.outputPathGenerator.generatePathForSummary();
-            writer = this.outputFactory.createWriter(summaryPath, analysisResult.getArchiveName());
+            writer = this.outputFactory.createWriter(summaryPath, outputPathPrefix);
 
             this.viewRenderer.renderViewWithEmptyModel(VIEW_NAME_SUMMARY_HEADER, writer);
 

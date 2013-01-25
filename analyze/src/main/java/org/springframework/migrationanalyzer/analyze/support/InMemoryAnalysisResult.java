@@ -29,16 +29,18 @@ import org.springframework.migrationanalyzer.analyze.fs.FileSystemEntry;
 
 final class InMemoryAnalysisResult implements MutableAnalysisResult {
 
+    private static final String FORMAT_NAME = "migration-analysis-%s";
+
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     private final Map<Class<?>, Set<AnalysisResultEntry<?>>> resultsByType = new HashMap<Class<?>, Set<AnalysisResultEntry<?>>>();
 
     private final Map<FileSystemEntry, Set<AnalysisResultEntry<?>>> resultsByFileSystemEntry = new HashMap<FileSystemEntry, Set<AnalysisResultEntry<?>>>();
 
-    private final String archiveName;
+    private final String name;
 
     InMemoryAnalysisResult(String archiveName) {
-        this.archiveName = archiveName;
+        this.name = String.format(FORMAT_NAME, archiveName);
     }
 
     @Override
@@ -89,7 +91,7 @@ final class InMemoryAnalysisResult implements MutableAnalysisResult {
     @Override
     public AnalysisResult getResultForEntry(FileSystemEntry fileSystemEntry) {
         Set<AnalysisResultEntry<?>> resultsForFileSystemEntry = getResultsForFileSystemEntry(fileSystemEntry, false);
-        InMemoryAnalysisResult result = new InMemoryAnalysisResult(this.archiveName);
+        InMemoryAnalysisResult result = new InMemoryAnalysisResult(this.name);
 
         if (resultsForFileSystemEntry != null) {
             for (AnalysisResultEntry<?> analysisResultEntry : resultsForFileSystemEntry) {
@@ -111,8 +113,8 @@ final class InMemoryAnalysisResult implements MutableAnalysisResult {
     }
 
     @Override
-    public String getArchiveName() {
-        return this.archiveName;
+    public String getName() {
+        return this.name;
     }
 
 }

@@ -66,7 +66,7 @@ public class StandardHtmlResultTypeRendererTests {
         when(analysisResult.getFileSystemEntries()).thenReturn(new HashSet<FileSystemEntry>(Arrays.asList(entry)));
         when(analysisResult.getResultTypes()).thenReturn(new HashSet<Class<?>>(Arrays.asList(Object.class)));
 
-        this.renderer.renderResultTypes(analysisResult);
+        this.renderer.renderResultTypes(analysisResult, "path/prefix");
 
         InOrder inOrder = Mockito.inOrder(this.viewRenderer);
 

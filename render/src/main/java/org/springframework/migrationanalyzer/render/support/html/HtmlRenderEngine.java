@@ -69,27 +69,27 @@ final class HtmlRenderEngine implements RenderEngine {
 
     @Override
     public void render(AnalysisResult analysisResult, String outputPath) {
-        this.logger.info("Starting HTML rendering");
+        this.logger.info("Starting HTML rendering. Writing output to '{}'", outputPath);
 
-        copyStaticResources(analysisResult.getArchiveName());
+        copyStaticResources(outputPath);
 
-        this.indexRenderer.renderIndex(analysisResult);
-        this.summaryRenderer.renderSummary(analysisResult);
-        this.resultTypeRenderer.renderResultTypes(analysisResult);
-        this.fileSystemEntryRenderer.renderFileSystemEntries(analysisResult);
+        this.indexRenderer.renderIndex(outputPath);
+        this.summaryRenderer.renderSummary(analysisResult, outputPath);
+        this.resultTypeRenderer.renderResultTypes(analysisResult, outputPath);
+        this.fileSystemEntryRenderer.renderFileSystemEntries(analysisResult, outputPath);
 
         this.logger.info("Finished HTML rendering");
     }
 
-    private void copyStaticResources(String archiveName) {
-        copyResource("css/style.css", archiveName);
-        copyBinaryResource("img/ModHdr_BG.png", archiveName);
-        copyBinaryResource("img/hdr-background.png", archiveName);
-        copyBinaryResource("img/hdr-glow.png", archiveName);
-        copyBinaryResource("img/springsource-logo.png", archiveName);
-        copyBinaryResource("img/title-background.png", archiveName);
-        copyResource("js/script.js", archiveName);
-        copyResource("banner.html", archiveName);
+    private void copyStaticResources(String outputPath) {
+        copyResource("css/style.css", outputPath);
+        copyBinaryResource("img/ModHdr_BG.png", outputPath);
+        copyBinaryResource("img/hdr-background.png", outputPath);
+        copyBinaryResource("img/hdr-glow.png", outputPath);
+        copyBinaryResource("img/springsource-logo.png", outputPath);
+        copyBinaryResource("img/title-background.png", outputPath);
+        copyResource("js/script.js", outputPath);
+        copyResource("banner.html", outputPath);
     }
 
     private void copyBinaryResource(String resource, String archiveName) {
@@ -104,9 +104,9 @@ final class HtmlRenderEngine implements RenderEngine {
         }
     }
 
-    private void copyResource(String resource, String archiveName) {
+    private void copyResource(String resource, String outputPath) {
         Reader input = new InputStreamReader(getClass().getResourceAsStream(resource));
-        Writer output = this.outputFactory.createWriter(this.outputPathGenerator.generatePathFor(resource), archiveName);
+        Writer output = this.outputFactory.createWriter(this.outputPathGenerator.generatePathFor(resource), outputPath);
         try {
             IoUtils.copy(input, output);
         } catch (IOException ioe) {
