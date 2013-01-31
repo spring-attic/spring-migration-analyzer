@@ -16,6 +16,7 @@
 
 package org.springframework.migrationanalyzer.contributions.bytecode;
 
+import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
@@ -24,7 +25,10 @@ import static org.mockito.Mockito.when;
 import java.io.InputStream;
 
 import org.junit.Test;
+import org.mockito.invocation.InvocationOnMock;
+import org.mockito.stubbing.Answer;
 import org.springframework.migrationanalyzer.analyze.fs.FileSystemEntry;
+import org.springframework.migrationanalyzer.analyze.fs.FileSystemEntry.ExceptionCallback;
 import org.springframework.migrationanalyzer.analyze.support.AnalysisFailedException;
 import org.springframework.migrationanalyzer.util.IoUtils;
 
@@ -44,16 +48,23 @@ public class DelegatingByteCodeEntryAnalyzerTests {
     private final DelegatingByteCodeEntryAnalyzer analyzer = new DelegatingByteCodeEntryAnalyzer(this.factory);
 
     @Test
-    public void analyze() throws AnalysisFailedException {
+    @SuppressWarnings({ "rawtypes", "unchecked" })
+    public void analyze() throws Exception {
         when(this.fileSystemEntry.getName()).thenReturn("Test.class");
-        InputStream input = getClass().getResourceAsStream(getClass().getSimpleName() + ".class");
-        try {
-            when(this.fileSystemEntry.getInputStream()).thenReturn(input);
-            this.analyzer.analyze(this.fileSystemEntry);
-            verify(this.visitor).getResults();
-        } finally {
-            IoUtils.closeQuietly(input);
-        }
+        when(this.fileSystemEntry.doWithInputStream(any(ExceptionCallback.class))).thenAnswer(new Answer() {
+
+            @Override
+            public Object answer(InvocationOnMock invocation) throws Throwable {
+                InputStream input = getClass().getResourceAsStream(DelegatingByteCodeEntryAnalyzerTests.class.getSimpleName() + ".class");
+                try {
+                    return ((ExceptionCallback) invocation.getArguments()[0]).perform(input);
+                } finally {
+                    IoUtils.closeQuietly(input);
+                }
+            }
+        });
+        this.analyzer.analyze(this.fileSystemEntry);
+        verify(this.visitor).getResults();
     }
 
     @Test

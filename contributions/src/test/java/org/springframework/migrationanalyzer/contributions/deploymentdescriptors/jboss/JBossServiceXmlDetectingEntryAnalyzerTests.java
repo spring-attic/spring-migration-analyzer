@@ -18,53 +18,72 @@ package org.springframework.migrationanalyzer.contributions.deploymentdescriptor
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
+import java.io.InputStream;
 import java.util.Set;
 
 import org.junit.Test;
+import org.mockito.invocation.InvocationOnMock;
+import org.mockito.stubbing.Answer;
 import org.springframework.migrationanalyzer.analyze.fs.FileSystemEntry;
-import org.springframework.migrationanalyzer.analyze.support.AnalysisFailedException;
+import org.springframework.migrationanalyzer.analyze.fs.FileSystemEntry.Callback;
 import org.springframework.migrationanalyzer.analyze.support.EntryAnalyzer;
 import org.springframework.migrationanalyzer.contributions.deploymentdescriptors.DeploymentDescriptor;
+import org.springframework.migrationanalyzer.util.IoUtils;
 
 public class JBossServiceXmlDetectingEntryAnalyzerTests {
 
     private final EntryAnalyzer<DeploymentDescriptor> entryAnalyzer = new JBossServiceXmlDetectingEntryAnalyzer();
 
     @Test
-    public void jBossServiceXmlIsDetected() throws AnalysisFailedException {
+    public void jBossServiceXmlIsDetected() throws Exception {
         Set<DeploymentDescriptor> analyze = this.entryAnalyzer.analyze(createFileSystemEntry("jboss-service.xml"));
         assertNotNull(analyze);
         assertEquals(1, analyze.size());
     }
 
     @Test
-    public void otherServiceXmlWithCorrectContentAreDetected() throws AnalysisFailedException {
+    public void otherServiceXmlWithCorrectContentAreDetected() throws Exception {
         Set<DeploymentDescriptor> analyze = this.entryAnalyzer.analyze(createFileSystemEntry("another-service.xml"));
         assertNotNull(analyze);
         assertEquals(1, analyze.size());
     }
 
     @Test
-    public void filesWithMatchingNameButIncorrectContentAreNotDetected() throws AnalysisFailedException {
+    public void filesWithMatchingNameButIncorrectContentAreNotDetected() throws Exception {
         Set<DeploymentDescriptor> analyze = this.entryAnalyzer.analyze(createFileSystemEntry("something-else-service.xml"));
         assertNotNull(analyze);
         assertEquals(0, analyze.size());
     }
 
     @Test
-    public void nonServiceXmlProducesEmptySet() throws AnalysisFailedException {
+    public void nonServiceXmlProducesEmptySet() throws Exception {
         Set<DeploymentDescriptor> analyze = this.entryAnalyzer.analyze(createFileSystemEntry("/something-else.xml"));
         assertNotNull(analyze);
         assertEquals(0, analyze.size());
     }
 
-    private FileSystemEntry createFileSystemEntry(String name) {
+    @SuppressWarnings({ "unchecked", "rawtypes" })
+    private FileSystemEntry createFileSystemEntry(final String name) {
         FileSystemEntry fileSystemEntry = mock(FileSystemEntry.class);
         when(fileSystemEntry.getName()).thenReturn(name);
-        when(fileSystemEntry.getInputStream()).thenReturn(getClass().getResourceAsStream(name));
+
+        when(fileSystemEntry.doWithInputStream(any(Callback.class))).thenAnswer(new Answer() {
+
+            @Override
+            public Object answer(InvocationOnMock invocation) throws Throwable {
+                InputStream in = getClass().getResourceAsStream(name);
+                try {
+                    return ((Callback) invocation.getArguments()[0]).perform(in);
+                } finally {
+                    IoUtils.closeQuietly(in);
+                }
+            }
+        });
+
         return fileSystemEntry;
     }
 }

@@ -23,6 +23,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.springframework.migrationanalyzer.analyze.fs.FileSystemEntry;
+import org.springframework.migrationanalyzer.analyze.fs.FileSystemEntry.Callback;
 import org.springframework.migrationanalyzer.util.IoUtils;
 import org.springframework.stereotype.Component;
 
@@ -44,17 +45,21 @@ final class RawFileSourceAccessor implements SourceAccessor {
     }
 
     private String readSource(FileSystemEntry fileSystemEntry) {
-        StringWriter writer = new StringWriter();
-        Reader reader = fileSystemEntry.getReader();
 
-        try {
-            IoUtils.copy(reader, writer);
-        } catch (IOException ioe) {
-            // Continue
-        } finally {
-            IoUtils.closeQuietly(reader, writer);
-        }
+        return fileSystemEntry.doWithReader(new Callback<Reader, String>() {
 
-        return writer.toString();
+            @Override
+            public String perform(Reader reader) {
+                StringWriter writer = new StringWriter();
+                try {
+                    IoUtils.copy(reader, writer);
+                } catch (IOException ioe) {
+                    // Continue
+                } finally {
+                    IoUtils.closeQuietly(writer);
+                }
+                return writer.toString();
+            }
+        });
     }
 }

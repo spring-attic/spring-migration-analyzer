@@ -55,17 +55,73 @@ public interface FileSystemEntry {
     boolean isDirectory();
 
     /**
-     * Returns an {@link InputStream} providing access to the entry's contents
+     * Calls the given {@code callback} with the {@code InputStream} for the entry.
      * 
-     * @return an <code>InputStream</code> for the entry
-     * 
+     * @param callback The callback to be called with the {@code InputStream}
+     * @return The value returned by the callback
      */
-    InputStream getInputStream();
+    <T> T doWithInputStream(Callback<InputStream, T> callback);
 
     /**
-     * Returns a {@link Reader} providing access to the entry's contents
+     * Calls the given {@code callback} with the {@code InputStream} for the entry.
      * 
-     * @return a <code>Reader</code> for the entry.
+     * @param callback The callback to be called with the {@code InputStream}
+     * @return The value returned by the callback
+     * @throws U The exception thrown by the callback
      */
-    Reader getReader();
+    <T, U extends Exception> T doWithInputStream(ExceptionCallback<InputStream, T, U> callback) throws U;
+
+    /**
+     * Calls the given {@code callback} with the {@code Reader} for the entry.
+     * 
+     * @param callback The callback to be called with the {@code Reader}
+     * @return The value returned by the callback
+     */
+    <T> T doWithReader(Callback<Reader, T> callback);
+
+    /**
+     * A callback for working with a {@code FileSystemEntry}'s {@code InputStream} or {@code Reader}. The callback may
+     * throw an exception from {@code perform}.
+     * 
+     * <p />
+     * 
+     * <strong>Concurrent Semantics</strong><br />
+     * 
+     * {@code FileSystemEntry} does not require callbacks to be thread-safe
+     * 
+     */
+    interface ExceptionCallback<T, U, V extends Exception> {
+
+        /**
+         * Called by {@code FileSystemEntry}, passing in the {@code InputStream} or {@code Reader} as required.
+         * 
+         * @param t The entry's {@code InputStream} or {@code Reader}
+         * @return The value to be returned to the caller of the callback method
+         * @throws V The exception to be thrown to the caller of the callback method
+         */
+        // CHECKSTYLE:OFF
+        U perform(T t) throws V;
+        // CHECKSTYLE:ON
+    }
+
+    /**
+     * A callback for working with a {@code FileSystemEntry}'s {@code InputStream} or {@code Reader}.
+     * 
+     * <p />
+     * 
+     * <strong>Concurrent Semantics</strong><br />
+     * 
+     * {@code FileSystemEntry} does not require callbacks to be thread-safe
+     * 
+     */
+    interface Callback<T, U> {
+
+        /**
+         * Called by {@code FileSystemEntry}, passing in the {@code InputStream} or {@code Reader} as required.
+         * 
+         * @param t The entry's {@code InputStream} or {@code Reader}
+         * @return The value to be returned to the caller of the callback method
+         */
+        U perform(T t);
+    }
 }

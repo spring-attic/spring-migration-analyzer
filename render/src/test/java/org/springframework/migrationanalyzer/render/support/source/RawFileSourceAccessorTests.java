@@ -18,13 +18,17 @@ package org.springframework.migrationanalyzer.render.support.source;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
+import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 import java.io.StringReader;
 
 import org.junit.Test;
+import org.mockito.invocation.InvocationOnMock;
+import org.mockito.stubbing.Answer;
 import org.springframework.migrationanalyzer.analyze.fs.FileSystemEntry;
+import org.springframework.migrationanalyzer.analyze.fs.FileSystemEntry.Callback;
 
 public class RawFileSourceAccessorTests {
 
@@ -45,11 +49,18 @@ public class RawFileSourceAccessorTests {
         assertNull(this.sourceAccessor.getSource(createFileSystemEntry("foo.class")));
     }
 
-    private FileSystemEntry createFileSystemEntry(String name) {
+    @SuppressWarnings({ "unchecked", "rawtypes" })
+    private FileSystemEntry createFileSystemEntry(final String name) {
         FileSystemEntry fileSystemEntry = mock(FileSystemEntry.class);
         when(fileSystemEntry.getName()).thenReturn(name);
-        when(fileSystemEntry.getReader()).thenReturn(new StringReader("the source for the file " + name));
+        when(fileSystemEntry.doWithReader(any(Callback.class))).thenAnswer(new Answer() {
+
+            @Override
+            public Object answer(InvocationOnMock invocation) throws Throwable {
+                return ((Callback) invocation.getArguments()[0]).perform(new StringReader("the source for the file " + name));
+            }
+
+        });
         return fileSystemEntry;
     }
-
 }

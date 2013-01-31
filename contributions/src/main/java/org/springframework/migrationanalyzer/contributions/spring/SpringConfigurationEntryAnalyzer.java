@@ -18,6 +18,7 @@ package org.springframework.migrationanalyzer.contributions.spring;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.StringReader;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -30,6 +31,8 @@ import javax.xml.parsers.ParserConfigurationException;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.migrationanalyzer.analyze.fs.FileSystemEntry;
+import org.springframework.migrationanalyzer.analyze.fs.FileSystemEntry.Callback;
+import org.springframework.migrationanalyzer.analyze.fs.FileSystemEntry.ExceptionCallback;
 import org.springframework.migrationanalyzer.analyze.support.AnalysisFailedException;
 import org.springframework.migrationanalyzer.analyze.support.EntryAnalyzer;
 import org.springframework.migrationanalyzer.contributions.xml.NodeAnalyzer;
@@ -114,12 +117,22 @@ final class SpringConfigurationEntryAnalyzer implements EntryAnalyzer<Object> {
         if (isSpringConfiguration(fileSystemEntry)) {
             results.add(new SpringConfiguration(fileSystemEntry, new File(fileSystemEntry.getName()).getName()));
 
-            XmlArtifactAnalyzer xmlAnalyzer = new StandardXmlArtifactAnalyzer(fileSystemEntry.getInputStream(), NAMESPACE_MAPPING);
-            xmlAnalyzer.analyzeValues(CLASS_EXPRESSION, new SpringConfigurationClassValueAnalyzerDelegatingValueAnalyzer(results, fileSystemEntry));
+            fileSystemEntry.doWithInputStream(new ExceptionCallback<InputStream, Void, AnalysisFailedException>() {
 
-            xmlAnalyzer.analyzeNodes("//jee:local-slsb | //jee:remote-slsb", new EjbIntegrationRecordingNodeAnalyzer(results, fileSystemEntry));
+                @Override
+                public Void perform(InputStream in) throws AnalysisFailedException {
+                    XmlArtifactAnalyzer xmlAnalyzer = new StandardXmlArtifactAnalyzer(in, NAMESPACE_MAPPING);
+                    xmlAnalyzer.analyzeValues(CLASS_EXPRESSION, new SpringConfigurationClassValueAnalyzerDelegatingValueAnalyzer(results,
+                        fileSystemEntry));
 
-            xmlAnalyzer.analyzeNodes("//tx:jta-transaction-manager", new JtaIntegrationRecordingNodeAnalyzer(fileSystemEntry, results));
+                    xmlAnalyzer.analyzeNodes("//jee:local-slsb | //jee:remote-slsb",
+                        new EjbIntegrationRecordingNodeAnalyzer(results, fileSystemEntry));
+
+                    xmlAnalyzer.analyzeNodes("//tx:jta-transaction-manager", new JtaIntegrationRecordingNodeAnalyzer(fileSystemEntry, results));
+
+                    return null;
+                }
+            });
         }
 
         return results;
@@ -127,23 +140,31 @@ final class SpringConfigurationEntryAnalyzer implements EntryAnalyzer<Object> {
 
     private boolean isSpringConfiguration(FileSystemEntry fileSystemEntry) {
         if (fileSystemEntry.getName().endsWith(FILE_NAME_SUFFIX)) {
-            try {
-                DocumentBuilderFactory xmlFact = DocumentBuilderFactory.newInstance();
-                xmlFact.setNamespaceAware(true);
+            DocumentBuilderFactory xmlFact = DocumentBuilderFactory.newInstance();
+            xmlFact.setNamespaceAware(true);
 
-                DocumentBuilder builder = xmlFact.newDocumentBuilder();
+            try {
+                final DocumentBuilder builder = xmlFact.newDocumentBuilder();
                 builder.setEntityResolver(new EmptyInputSourceEntityResolver());
                 builder.setErrorHandler(new NoOpErrorHandler());
-                Document document = builder.parse(new InputSource(fileSystemEntry.getInputStream()));
 
-                Node firstChild = document.getFirstChild();
+                return fileSystemEntry.doWithInputStream(new Callback<InputStream, Boolean>() {
 
-                return (BEANS_NAMESPACE_URI.equals(firstChild.getNamespaceURI()) && (BEANS_NODE_NAME.equals(firstChild.getNodeName())));
-            } catch (IOException e) {
-                return false;
-            } catch (SAXException e) {
-                return false;
-            } catch (ParserConfigurationException e) {
+                    @Override
+                    public Boolean perform(InputStream in) {
+                        try {
+                            Document document = builder.parse(new InputSource(in));
+                            Node firstChild = document.getFirstChild();
+                            return (BEANS_NAMESPACE_URI.equals(firstChild.getNamespaceURI()) && (BEANS_NODE_NAME.equals(firstChild.getNodeName())));
+                        } catch (SAXException e) {
+                            return false;
+                        } catch (IOException e) {
+                            return false;
+                        }
+                    }
+                });
+
+            } catch (ParserConfigurationException e1) {
                 return false;
             }
         }

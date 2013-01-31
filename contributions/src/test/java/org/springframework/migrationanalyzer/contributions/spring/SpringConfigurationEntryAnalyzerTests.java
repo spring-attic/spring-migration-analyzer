@@ -19,6 +19,7 @@ package org.springframework.migrationanalyzer.contributions.spring;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
+import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -32,7 +33,9 @@ import org.junit.Test;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 import org.springframework.migrationanalyzer.analyze.fs.FileSystemEntry;
-import org.springframework.migrationanalyzer.analyze.support.AnalysisFailedException;
+import org.springframework.migrationanalyzer.analyze.fs.FileSystemEntry.Callback;
+import org.springframework.migrationanalyzer.analyze.fs.FileSystemEntry.ExceptionCallback;
+import org.springframework.migrationanalyzer.util.IoUtils;
 
 public class SpringConfigurationEntryAnalyzerTests {
 
@@ -43,7 +46,7 @@ public class SpringConfigurationEntryAnalyzerTests {
         new HashSet<SpringConfigurationClassValueAnalyzer>(Arrays.asList(this.classValueAnalyzer)));
 
     @Test
-    public void springConfigurationFile() throws AnalysisFailedException {
+    public void springConfigurationFile() throws Exception {
         Set<Object> results = this.analyzer.analyze(createFileSystemEntry("spring-jndi.xml"));
         assertNotNull(results);
         assertEquals(4, results.size());
@@ -53,22 +56,37 @@ public class SpringConfigurationEntryAnalyzerTests {
     }
 
     @Test
-    public void nonSpringConfigurationXmlFile() throws AnalysisFailedException {
+    public void nonSpringConfigurationXmlFile() throws Exception {
         Set<Object> results = this.analyzer.analyze(createFileSystemEntry("web.xml"));
         assertNotNull(results);
         assertEquals(0, results.size());
     }
 
-    private FileSystemEntry createFileSystemEntry(final String name) {
+    @SuppressWarnings({ "rawtypes", "unchecked" })
+    private FileSystemEntry createFileSystemEntry(final String name) throws Exception {
         FileSystemEntry fileSystemEntry = mock(FileSystemEntry.class);
         when(fileSystemEntry.getName()).thenReturn(name);
-        when(fileSystemEntry.getInputStream()).thenAnswer(new Answer<InputStream>() {
+        Answer answer = new Answer() {
 
             @Override
-            public InputStream answer(InvocationOnMock invocation) throws Throwable {
-                return new FileInputStream("src/test/resources/org/springframework/migrationanalyzer/contributions/spring/" + name);
+            public Object answer(InvocationOnMock invocation) throws Throwable {
+                InputStream input = new FileInputStream("src/test/resources/org/springframework/migrationanalyzer/contributions/spring/" + name);
+                try {
+                    Object callback = invocation.getArguments()[0];
+                    if (callback instanceof Callback) {
+                        return ((Callback) callback).perform(input);
+                    } else {
+                        return ((ExceptionCallback) callback).perform(input);
+                    }
+                } finally {
+                    IoUtils.closeQuietly(input);
+                }
             }
-        });
+        };
+
+        when(fileSystemEntry.doWithInputStream(any(ExceptionCallback.class))).thenAnswer(answer);
+        when(fileSystemEntry.doWithInputStream(any(Callback.class))).thenAnswer(answer);
+
         return fileSystemEntry;
     }
 

@@ -18,14 +18,17 @@ package org.springframework.migrationanalyzer.contributions.apiusage.jboss;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 import java.util.Set;
 
 import org.junit.Test;
+import org.mockito.invocation.InvocationOnMock;
+import org.mockito.stubbing.Answer;
 import org.springframework.migrationanalyzer.analyze.fs.FileSystemEntry;
-import org.springframework.migrationanalyzer.analyze.support.AnalysisFailedException;
+import org.springframework.migrationanalyzer.analyze.fs.FileSystemEntry.ExceptionCallback;
 import org.springframework.migrationanalyzer.analyze.support.EntryAnalyzer;
 import org.springframework.migrationanalyzer.contributions.apiusage.ApiUsage;
 import org.springframework.migrationanalyzer.contributions.apiusage.ApiUsageDetector;
@@ -37,10 +40,18 @@ public class JBossServiceXmlEntryAnalyzerTests {
     private final EntryAnalyzer<ApiUsage> entryAnalyzer = new JBossServiceXmlEntryAnalyzer(new StubApiUsageDetector());
 
     @Test
-    public void mBeanCodeClassDetection() throws AnalysisFailedException {
+    @SuppressWarnings({ "rawtypes", "unchecked" })
+    public void mBeanCodeClassDetection() throws Exception {
         FileSystemEntry fileSystemEntry = mock(FileSystemEntry.class);
         when(fileSystemEntry.getName()).thenReturn("jboss-service.xml");
-        when(fileSystemEntry.getInputStream()).thenReturn(getClass().getResourceAsStream("jboss-service.xml"));
+
+        when(fileSystemEntry.doWithInputStream(any(ExceptionCallback.class))).thenAnswer(new Answer() {
+
+            @Override
+            public Object answer(InvocationOnMock invocation) throws Throwable {
+                return ((ExceptionCallback) invocation.getArguments()[0]).perform(getClass().getResourceAsStream("jboss-service.xml"));
+            }
+        });
 
         Set<ApiUsage> analysis = this.entryAnalyzer.analyze(fileSystemEntry);
 
