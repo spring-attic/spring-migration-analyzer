@@ -30,6 +30,9 @@ import java.io.InputStreamReader;
 import java.io.Reader;
 
 import org.junit.Test;
+import org.springframework.migrationanalyzer.analyze.fs.FileSystemEntry;
+import org.springframework.migrationanalyzer.analyze.fs.FileSystemEntry.Callback;
+import org.springframework.migrationanalyzer.analyze.fs.FileSystemEntry.ExceptionCallback;
 
 public class FileFileSystemEntryTests {
 
@@ -60,60 +63,137 @@ public class FileFileSystemEntryTests {
     }
 
     @Test
-    public void getReaderFromDirectoryEntry() {
+    public void doWithReaderThrowsExceptionWithDirectoryEntry() {
         File root = new File("src/test/resources");
         File file = new File(root, "file-file-system-entry");
 
         FileFileSystemEntry entry = new FileFileSystemEntry(root, file);
 
         try {
-            entry.getReader();
-            fail("getReader should fail for a directory entry");
+            entry.doWithReader(null);
+            fail("doWithReader should fail for a directory entry");
         } catch (RuntimeException re) {
             assertEquals("Cannot create Reader for directory entry 'file-file-system-entry'", re.getMessage());
         }
     }
 
+    @SuppressWarnings({ "rawtypes", "unchecked" })
     @Test
-    public void getInputStreamFromDirectoryEntry() {
+    public void doWithInputStreamAndExceptionCallbackThrowsExceptionWithDirectoryEntry() throws Exception {
         File root = new File("src/test/resources");
         File file = new File(root, "file-file-system-entry");
 
         FileFileSystemEntry entry = new FileFileSystemEntry(root, file);
 
         try {
-            entry.getInputStream();
-            fail("getInputStream should fail for a directory entry");
+            entry.doWithInputStream((ExceptionCallback) null);
+            fail("doWithInputStream should fail for a directory entry");
+        } catch (RuntimeException re) {
+            assertEquals("Cannot create InputStream for directory entry 'file-file-system-entry'", re.getMessage());
+        }
+    }
+
+    @SuppressWarnings({ "rawtypes", "unchecked" })
+    @Test
+    public void doWithInputStreamAndCallbackThrowsExceptionWithDirectoryEntry() {
+        File root = new File("src/test/resources");
+        File file = new File(root, "file-file-system-entry");
+
+        FileFileSystemEntry entry = new FileFileSystemEntry(root, file);
+
+        try {
+            entry.doWithInputStream((FileSystemEntry.Callback) null);
+            fail("doWithInputStream should fail for a directory entry");
         } catch (RuntimeException re) {
             assertEquals("Cannot create InputStream for directory entry 'file-file-system-entry'", re.getMessage());
         }
     }
 
     @Test
-    public void getReader() throws IOException {
+    public void doWithReader() {
         File root = new File("src/test/resources");
         File file = new File(root, "file-file-system-entry/file.txt");
 
         FileFileSystemEntry entry = new FileFileSystemEntry(root, file);
 
-        Reader reader = entry.getReader();
-        BufferedReader bufferedReader = new BufferedReader(reader);
-        assertEquals("Some content", bufferedReader.readLine());
-        assertNull(bufferedReader.readLine());
+        String result = entry.doWithReader(new FileSystemEntry.Callback<Reader, String>() {
 
+            @Override
+            public String perform(Reader reader) {
+                BufferedReader bufferedReader = new BufferedReader(reader);
+                try {
+                    String result = bufferedReader.readLine();
+                    assertNull(bufferedReader.readLine());
+                    return result;
+                } catch (Exception e) {
+                    throw new RuntimeException(e);
+                }
+            }
+        });
+        assertEquals("Some content", result);
     }
 
     @Test
-    public void getInputStream() throws IOException {
+    public void doWithInputStreamWithCallback() {
         File root = new File("src/test/resources");
         File file = new File(root, "file-file-system-entry/file.txt");
 
         FileFileSystemEntry entry = new FileFileSystemEntry(root, file);
 
-        InputStream inputStream = entry.getInputStream();
-        BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream));
-        assertEquals("Some content", bufferedReader.readLine());
-        assertNull(bufferedReader.readLine());
+        String result = entry.doWithInputStream(new Callback<InputStream, String>() {
 
+            @Override
+            public String perform(InputStream inputStream) {
+                BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream));
+                try {
+                    String result = bufferedReader.readLine();
+                    assertNull(bufferedReader.readLine());
+                    return result;
+                } catch (Exception e) {
+                    throw new RuntimeException(e);
+                }
+            }
+        });
+        assertEquals("Some content", result);
+    }
+
+    @Test
+    public void doWithInputStreamWithExceptionCallback() throws IOException {
+        File root = new File("src/test/resources");
+        File file = new File(root, "file-file-system-entry/file.txt");
+
+        FileFileSystemEntry entry = new FileFileSystemEntry(root, file);
+
+        String result = entry.doWithInputStream(new ExceptionCallback<InputStream, String, IOException>() {
+
+            @Override
+            public String perform(InputStream inputStream) throws IOException {
+                BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream));
+                try {
+                    String result = bufferedReader.readLine();
+                    assertNull(bufferedReader.readLine());
+                    return result;
+                } catch (Exception e) {
+                    throw new RuntimeException(e);
+                }
+            }
+        });
+        assertEquals("Some content", result);
+    }
+
+    @Test(expected = Exception.class)
+    public void exceptionThrownByExceptionCallbackIsPropagatedToCaller() throws Exception {
+        File root = new File("src/test/resources");
+        File file = new File(root, "file-file-system-entry/file.txt");
+
+        FileFileSystemEntry entry = new FileFileSystemEntry(root, file);
+
+        entry.doWithInputStream(new ExceptionCallback<InputStream, Void, Exception>() {
+
+            @Override
+            public Void perform(InputStream t) throws Exception {
+                throw new Exception();
+            }
+        });
     }
 }

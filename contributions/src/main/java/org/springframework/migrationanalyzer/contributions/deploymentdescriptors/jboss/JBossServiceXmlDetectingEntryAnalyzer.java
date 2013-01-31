@@ -17,6 +17,7 @@
 package org.springframework.migrationanalyzer.contributions.deploymentdescriptors.jboss;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -26,6 +27,7 @@ import javax.xml.parsers.ParserConfigurationException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.migrationanalyzer.analyze.fs.FileSystemEntry;
+import org.springframework.migrationanalyzer.analyze.fs.FileSystemEntry.Callback;
 import org.springframework.migrationanalyzer.analyze.support.EntryAnalyzer;
 import org.springframework.migrationanalyzer.contributions.deploymentdescriptors.DeploymentDescriptor;
 import org.springframework.stereotype.Component;
@@ -50,24 +52,28 @@ final class JBossServiceXmlDetectingEntryAnalyzer implements EntryAnalyzer<Deplo
         return result;
     }
 
-    private boolean isJBossServiceXml(FileSystemEntry fileSystemEntry) {
+    private boolean isJBossServiceXml(final FileSystemEntry fileSystemEntry) {
         if ((!fileSystemEntry.getName().endsWith("/jboss-service.xml")) && fileSystemEntry.getName().endsWith("-service.xml")) {
-            DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-            try {
-                Document document = factory.newDocumentBuilder().parse(fileSystemEntry.getInputStream());
-                if (document.getFirstChild() != null) {
-                    return NODE_NAME_SERVER.equals(document.getFirstChild().getNodeName());
+            return fileSystemEntry.doWithInputStream(new Callback<InputStream, Boolean>() {
+
+                @Override
+                public Boolean perform(InputStream in) {
+                    try {
+                        DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+                        Document document = factory.newDocumentBuilder().parse(in);
+                        return (document.getFirstChild() != null) && NODE_NAME_SERVER.equals(document.getFirstChild().getNodeName());
+                    } catch (SAXException e) {
+                        JBossServiceXmlDetectingEntryAnalyzer.this.logger.debug("Failed to parse file system entry '{}'", fileSystemEntry, e);
+                    } catch (IOException e) {
+                        JBossServiceXmlDetectingEntryAnalyzer.this.logger.debug("Failed to parse file system entry '{}'", fileSystemEntry, e);
+                    } catch (ParserConfigurationException e) {
+                        JBossServiceXmlDetectingEntryAnalyzer.this.logger.debug("Failed to parse file system entry '{}'", fileSystemEntry, e);
+                    }
+                    return false;
                 }
-            } catch (IOException e) {
-                this.logger.debug("Failed to parse file system entry '{}'", fileSystemEntry, e);
-            } catch (SAXException e) {
-                this.logger.debug("Failed to parse file system entry '{}'", fileSystemEntry, e);
-            } catch (ParserConfigurationException e) {
-                this.logger.debug("Failed to parse file system entry '{}'", fileSystemEntry, e);
-            }
+            });
         }
 
         return false;
     }
-
 }

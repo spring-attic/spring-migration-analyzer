@@ -25,6 +25,7 @@ import java.io.Reader;
 
 import org.springframework.migrationanalyzer.analyze.fs.FileSystemEntry;
 import org.springframework.migrationanalyzer.analyze.fs.FileSystemException;
+import org.springframework.migrationanalyzer.util.IoUtils;
 
 final class FileFileSystemEntry implements FileSystemEntry {
 
@@ -38,15 +39,41 @@ final class FileFileSystemEntry implements FileSystemEntry {
     }
 
     @Override
-    public InputStream getInputStream() {
-        if (isDirectory()) {
-            throw new FileSystemException(String.format("Cannot create InputStream for directory entry '%s'", getName()));
-        }
-
+    public <T, U extends Exception> T doWithInputStream(ExceptionCallback<InputStream, T, U> callback) throws U {
+        InputStream in = null;
         try {
-            return new FileInputStream(this.file);
-        } catch (FileNotFoundException e) {
-            throw new FileSystemException(e);
+            in = getInputStream();
+            return callback.perform(in);
+        } finally {
+            IoUtils.closeQuietly(in);
+        }
+    }
+
+    @Override
+    public <T> T doWithInputStream(Callback<InputStream, T> callback) {
+        InputStream in = null;
+        try {
+            in = getInputStream();
+            return callback.perform(in);
+        } finally {
+            IoUtils.closeQuietly(in);
+        }
+    }
+
+    @Override
+    public <T> T doWithReader(Callback<Reader, T> callback) {
+        if (isDirectory()) {
+            throw new FileSystemException(String.format("Cannot create Reader for directory entry '%s'", getName()));
+        } else {
+            Reader reader = null;
+            try {
+                reader = new FileReader(this.file);
+                return callback.perform(reader);
+            } catch (FileNotFoundException e) {
+                throw new FileSystemException(e);
+            } finally {
+                IoUtils.closeQuietly(reader);
+            }
         }
     }
 
@@ -58,29 +85,28 @@ final class FileFileSystemEntry implements FileSystemEntry {
     }
 
     @Override
-    public Reader getReader() {
-        if (isDirectory()) {
-            throw new FileSystemException(String.format("Cannot create Reader for directory entry '%s'", getName()));
-        }
-
-        try {
-            return new FileReader(this.file);
-        } catch (FileNotFoundException e) {
-            throw new FileSystemException(e);
-        }
+    public boolean isDirectory() {
+        return this.file.isDirectory();
     }
 
     @Override
-    public boolean isDirectory() {
-        return this.file.isDirectory();
+    public String toString() {
+        return getName();
     }
 
     private String normalizeWindowsPaths(String name) {
         return name.replace('\\', '/');
     }
 
-    @Override
-    public String toString() {
-        return getName();
+    private InputStream getInputStream() {
+        if (isDirectory()) {
+            throw new FileSystemException(String.format("Cannot create InputStream for directory entry '%s'", getName()));
+        } else {
+            try {
+                return new FileInputStream(this.file);
+            } catch (FileNotFoundException e) {
+                throw new FileSystemException(e);
+            }
+        }
     }
 }

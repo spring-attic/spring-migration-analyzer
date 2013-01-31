@@ -16,12 +16,14 @@
 
 package org.springframework.migrationanalyzer.contributions.apiusage.jboss;
 
+import java.io.InputStream;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.migrationanalyzer.analyze.fs.FileSystemEntry;
+import org.springframework.migrationanalyzer.analyze.fs.FileSystemEntry.ExceptionCallback;
 import org.springframework.migrationanalyzer.analyze.support.AnalysisFailedException;
 import org.springframework.migrationanalyzer.analyze.support.EntryAnalyzer;
 import org.springframework.migrationanalyzer.contributions.apiusage.ApiUsage;
@@ -45,32 +47,37 @@ final class JBossServiceXmlEntryAnalyzer implements EntryAnalyzer<ApiUsage> {
     }
 
     @Override
-    public Set<ApiUsage> analyze(FileSystemEntry fileSystemEntry) throws AnalysisFailedException {
+    public Set<ApiUsage> analyze(final FileSystemEntry fileSystemEntry) throws AnalysisFailedException {
         if (fileSystemEntry.getName().endsWith("-service.xml")) {
-            return analyzeJBossServiceXml(fileSystemEntry);
+            return fileSystemEntry.doWithInputStream(new ExceptionCallback<InputStream, Set<ApiUsage>, AnalysisFailedException>() {
+
+                @Override
+                public Set<ApiUsage> perform(InputStream in) throws AnalysisFailedException {
+                    return analyzeJBossServiceXml(in, fileSystemEntry.getName());
+
+                }
+            });
         }
 
         return Collections.<ApiUsage> emptySet();
     }
 
-    private Set<ApiUsage> analyzeJBossServiceXml(final FileSystemEntry fileSystemEntry) throws AnalysisFailedException {
-
+    private Set<ApiUsage> analyzeJBossServiceXml(InputStream in, final String name) throws AnalysisFailedException {
         final Set<ApiUsage> results = new HashSet<ApiUsage>();
 
-        XmlArtifactAnalyzer analyzer = new StandardXmlArtifactAnalyzer(fileSystemEntry.getInputStream());
-
+        XmlArtifactAnalyzer analyzer = new StandardXmlArtifactAnalyzer(in);
         analyzer.analyzeValues(XPATH_EXPRESSION_SERVER_MBEAN_CODE, new ValueAnalyzer() {
 
             @Override
             public void analyse(String value) {
-                ApiUsage usage = JBossServiceXmlEntryAnalyzer.this.apiUsageDetector.detectApiUsage(value, ApiUsageType.DEPLOYMENT_DESCRIPTOR,
-                    fileSystemEntry.getName(), value);
+                ApiUsage usage = JBossServiceXmlEntryAnalyzer.this.apiUsageDetector.detectApiUsage(value, ApiUsageType.DEPLOYMENT_DESCRIPTOR, name,
+                    value);
                 if (usage != null) {
                     results.add(usage);
                 }
             }
         });
-
         return results;
+
     }
 }

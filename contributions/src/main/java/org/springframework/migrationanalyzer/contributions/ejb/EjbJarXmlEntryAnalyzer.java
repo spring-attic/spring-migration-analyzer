@@ -17,6 +17,7 @@
 package org.springframework.migrationanalyzer.contributions.ejb;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
@@ -27,6 +28,7 @@ import java.util.Locale;
 import java.util.Set;
 
 import org.springframework.migrationanalyzer.analyze.fs.FileSystemEntry;
+import org.springframework.migrationanalyzer.analyze.fs.FileSystemEntry.ExceptionCallback;
 import org.springframework.migrationanalyzer.analyze.support.AnalysisFailedException;
 import org.springframework.migrationanalyzer.analyze.support.EntryAnalyzer;
 import org.springframework.migrationanalyzer.contributions.transactions.TransactionPropagationType;
@@ -46,28 +48,49 @@ final class EjbJarXmlEntryAnalyzer implements EntryAnalyzer<Ejb> {
     @Override
     public Set<Ejb> analyze(FileSystemEntry fileSystemEntry) throws AnalysisFailedException {
         if (fileSystemEntry.getName().endsWith("ejb-jar.xml")) {
-            Set<Ejb> ejbs = new HashSet<Ejb>();
 
-            XmlArtifactAnalyzer xmlAnalyzer = new StandardXmlArtifactAnalyzer(fileSystemEntry.getInputStream(), new EjbJarEntityResolver());
+            return fileSystemEntry.doWithInputStream(new ExceptionCallback<InputStream, Set<Ejb>, AnalysisFailedException>() {
 
-            SessionBeanNodeAnalyzer sessionBeanAnalyzer = new SessionBeanNodeAnalyzer(xmlAnalyzer);
-            xmlAnalyzer.analyzeNodes("/ejb-jar/enterprise-beans/session", sessionBeanAnalyzer);
-            ejbs.addAll(sessionBeanAnalyzer.sessionBeans);
+                @Override
+                public Set<Ejb> perform(InputStream in) throws AnalysisFailedException {
+                    Set<Ejb> ejbs = new HashSet<Ejb>();
+                    XmlArtifactAnalyzer xmlAnalyzer = new StandardXmlArtifactAnalyzer(in, new EjbJarEntityResolver());
 
-            EntityBeanNodeAnalyzer entityBeanAnalyzer = new EntityBeanNodeAnalyzer(xmlAnalyzer);
-            xmlAnalyzer.analyzeNodes("/ejb-jar/enterprise-beans/entity", entityBeanAnalyzer);
-            ejbs.addAll(entityBeanAnalyzer.entityBeans);
+                    ejbs.addAll(analyzeSessionBeans(xmlAnalyzer));
+                    ejbs.addAll(analyzeEntityBeans(xmlAnalyzer));
+                    ejbs.addAll(analyzeMessageDrivenBeans(xmlAnalyzer));
 
-            MessageDrivenBeanNodeAnalyzer mdbNodeAnalyzer = new MessageDrivenBeanNodeAnalyzer(xmlAnalyzer);
-            xmlAnalyzer.analyzeNodes("/ejb-jar/enterprise-beans/message-driven", mdbNodeAnalyzer);
-            ejbs.addAll(mdbNodeAnalyzer.messageDriveBeans);
+                    analyzeContainerTransactions(xmlAnalyzer, ejbs);
 
-            ContainerTransactionNodeAnalyzer containerTransactionNodeAnalyzer = new ContainerTransactionNodeAnalyzer(xmlAnalyzer, ejbs);
-            xmlAnalyzer.analyzeNodes("/ejb-jar/assembly-descriptor/container-transaction", containerTransactionNodeAnalyzer);
-
-            return ejbs;
+                    return ejbs;
+                }
+            });
+        } else {
+            return Collections.<Ejb> emptySet();
         }
-        return Collections.<Ejb> emptySet();
+    }
+
+    private Set<Ejb> analyzeSessionBeans(XmlArtifactAnalyzer xmlAnalyzer) throws AnalysisFailedException {
+        SessionBeanNodeAnalyzer sessionBeanAnalyzer = new SessionBeanNodeAnalyzer(xmlAnalyzer);
+        xmlAnalyzer.analyzeNodes("/ejb-jar/enterprise-beans/session", sessionBeanAnalyzer);
+        return sessionBeanAnalyzer.sessionBeans;
+    }
+
+    private Set<Ejb> analyzeEntityBeans(XmlArtifactAnalyzer xmlAnalyzer) throws AnalysisFailedException {
+        EntityBeanNodeAnalyzer entityBeanAnalyzer = new EntityBeanNodeAnalyzer(xmlAnalyzer);
+        xmlAnalyzer.analyzeNodes("/ejb-jar/enterprise-beans/entity", entityBeanAnalyzer);
+        return entityBeanAnalyzer.entityBeans;
+    }
+
+    private Set<Ejb> analyzeMessageDrivenBeans(XmlArtifactAnalyzer xmlAnalyzer) throws AnalysisFailedException {
+        MessageDrivenBeanNodeAnalyzer mdbNodeAnalyzer = new MessageDrivenBeanNodeAnalyzer(xmlAnalyzer);
+        xmlAnalyzer.analyzeNodes("/ejb-jar/enterprise-beans/message-driven", mdbNodeAnalyzer);
+        return mdbNodeAnalyzer.messageDriveBeans;
+    }
+
+    private void analyzeContainerTransactions(XmlArtifactAnalyzer xmlAnalyzer, Set<Ejb> ejbs) throws AnalysisFailedException {
+        ContainerTransactionNodeAnalyzer containerTransactionNodeAnalyzer = new ContainerTransactionNodeAnalyzer(xmlAnalyzer, ejbs);
+        xmlAnalyzer.analyzeNodes("/ejb-jar/assembly-descriptor/container-transaction", containerTransactionNodeAnalyzer);
     }
 
     private abstract static class EjbNodeAnalyzer implements NodeAnalyzer {
