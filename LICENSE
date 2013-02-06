@@ -1,9 +1,9 @@
-Apache License 
+Apache License
 
-Version 2.0, January 2004 
-http://www.apache.org/licenses/ 
+Version 2.0, January 2004
+http://www.apache.org/licenses/
 
-TERMS AND CONDITIONS FOR USE, REPRODUCTION, AND DISTRIBUTION 
+TERMS AND CONDITIONS FOR USE, REPRODUCTION, AND DISTRIBUTION
 
 1. Definitions.
 
@@ -11,7 +11,7 @@ TERMS AND CONDITIONS FOR USE, REPRODUCTION, AND DISTRIBUTION
 and distribution as defined by Sections 1 through 9 of this document.
 
 "Licensor" shall mean the copyright owner or entity authorized by the
-copyright owner that is granting the License.  
+copyright owner that is granting the License.
 
 "Legal Entity" shall mean the union of the acting entity and all other
 entities that control, are controlled by, or are under common control
@@ -22,7 +22,7 @@ of fifty percent (50%) or more of the outstanding shares, or (iii)
 beneficial ownership of such entity.
 
 "You" (or "Your") shall mean an individual or Legal Entity exercising
-permissions granted by this License.  
+permissions granted by this License.
 
 "Source" form shall mean the preferred form for making modifications,
 including but not limited to software source code, documentation source,
@@ -31,12 +31,12 @@ and configuration files.
 "Object" form shall mean any form resulting from mechanical transformation
 or translation of a Source form, including but not limited to compiled
 object code, generated documentation, and conversions to other media
-types.  
+types.
 
 "Work" shall mean the work of authorship, whether in Source or
 Object form, made available under the License, as indicated by a copyright
 notice that is included in or attached to the work (an example is provided
-in the Appendix below).  
+in the Appendix below).
 
 "Derivative Works" shall mean any work, whether in Source or Object form,
 that is based on (or derived from) the Work and for which the editorial
@@ -171,17 +171,17 @@ hold each Contributor harmless for any liability incurred by, or claims
 asserted against, such Contributor by reason of your accepting any such
 warranty or additional liability.
 
-END OF TERMS AND CONDITIONS 
+END OF TERMS AND CONDITIONS
 
-=======================================================================   
+=======================================================================
 
-SPRINGSOURCE MIGRATION ANALYZER 1.0 SUBCOMPONENTS: 
+SPRINGSOURCE MIGRATION ANALYZER 1.0 SUBCOMPONENTS:
 
 SpringSource Migration Analyzer 1.0 includes a number of subcomponents with
-separate copyright notices and license terms.  The product that 
-includes this file does not necessarily use all the open source 
-subcomponents referred to below. Your use of these subcomponents 
-is subject to the terms and conditions of the following licenses. 
+separate copyright notices and license terms.  The product that
+includes this file does not necessarily use all the open source
+subcomponents referred to below. Your use of these subcomponents
+is subject to the terms and conditions of the following licenses.
 
 =============== TABLE OF CONTENTS =============================
 
@@ -194,19 +194,19 @@ associated with each component.
 
 SECTION 1: BSD-STYLE, MIT-STYLE, OR SIMILAR STYLE LICENSES
 
->>>   ASM 3.1 - http://asm.ow2.org/license.html
->>>   Freemarker 2.3.18 - http://freemarker.sourceforge.net/docs/app_license.html
+>>>   ASM 3.3.1 - http://asm.ow2.org/license.html
+>>>   Freemarker 2.3.19 - http://freemarker.sourceforge.net/docs/app_license.html
 (BSD style)
->>>   SLF4J 1.6.4 - http://www.slf4j.org/license.html (MIT)
+>>>   SLF4J 1.7.2 - http://www.slf4j.org/license.html (MIT)
 
 SECTION 2: APACHE LICENSE 2.0
 
 >>>   Apache Commons CLI 1.2 - http://commons.apache.org/cli/license.html (ASL v2)
->>>   Spring 3.1.2 - ASL v2
+>>>   Spring 3.2.1 - ASL v2
 
 SECTION 3:  ECLIPSE PUBLIC LICENSE 1.0
 
->>>   Logback 1.0.0 - http://logback.qos.ch/license.html (EPL 1.0 or LGPL 2.1)
+>>>   Logback 1.0.9 - http://logback.qos.ch/license.html (EPL 1.0 or LGPL 2.1)
 
 
 APPENDIX. Standard License Files
@@ -217,7 +217,7 @@ APPENDIX. Standard License Files
 
 BSD-STYLE, MIT-STYLE, OR SIMILAR STYLE LICENSES are applicable to the following component(s).
 
->>>   ASM 3.1 
+>>>   ASM 3.3.1
 
 Copyright (c) 2000-2011 INRIA, France Telecom
 All rights reserved.
@@ -249,7 +249,7 @@ CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
 ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF
 THE POSSIBILITY OF SUCH DAMAGE.
 
->>>   Freemarker 2.3.18 
+>>>   Freemarker 2.3.19
 
 FreeMarker 1.x was released under the LGPL license. Later, by community
 consensus, we have switched over to a BSD-style license. As of FreeMarker
@@ -268,7 +268,7 @@ modification, are permitted provided that the following conditions are met:
 
 2.  The end-user documentation included with the redistribution, if any, must
     include the following acknowlegement:
-      "This product includes software developed by the 
+      "This product includes software developed by the
       Visigoth Software Society (http://www.visigoths.org/)."
     Alternately, this acknowlegement may appear in the software itself, if and
     wherever such third-party acknowlegements normally appear.
@@ -293,7 +293,7 @@ OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
 NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE,
 EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
->>>   SLF4J 1.6.4
+>>>   SLF4J 1.7.2
 
  Copyright (c) 2004-2011 QOS.ch
  All rights reserved.
@@ -305,10 +305,10 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  distribute,  sublicense, and/or sell  copies of  the Software,  and to
  permit persons to whom the Software  is furnished to do so, subject to
  the following conditions:
- 
+
  The  above  copyright  notice  and  this permission  notice  shall  be
  included in all copies or substantial portions of the Software.
- 
+
  THE  SOFTWARE IS  PROVIDED  "AS  IS", WITHOUT  WARRANTY  OF ANY  KIND,
  EXPRESS OR  IMPLIED, INCLUDING  BUT NOT LIMITED  TO THE  WARRANTIES OF
  MERCHANTABILITY,    FITNESS    FOR    A   PARTICULAR    PURPOSE    AND
@@ -330,16 +330,16 @@ Copyright 2001-2009 The Apache Software Foundation
 This product includes software developed by
 The Apache Software Foundation (http://www.apache.org/).
 
->>>   Spring 3.1.2
+>>>   Spring 3.2.1
 
   Copyright 2002-2010 the original author or authors.
- 
+
   Licensed under the Apache License, Version 2.0 (the "License");
   you may not use this file except in compliance with the License.
   You may obtain a copy of the License at
- 
+
        http://www.apache.org/licenses/LICENSE-2.0
- 
+
   Unless required by applicable law or agreed to in writing, software
   distributed under the License is distributed on an "AS IS" BASIS,
   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -350,21 +350,21 @@ The Apache Software Foundation (http://www.apache.org/).
 
 The ECLIPSE PUBLIC LICENSE 1.0 is applicable to the following component(s).
 
->>>   Logback 1.0.0
+>>>   Logback 1.0.9
 
 Logback: the reliable, generic, fast and flexible logging framework.
-Copyright (C) 1999-2009, QOS.ch. All rights reserved. 
+Copyright (C) 1999-2009, QOS.ch. All rights reserved.
 
 This program and the accompanying materials are dual-licensed under
 either the terms of the Eclipse Public License v1.0 as published by
 the Eclipse Foundation
- 
+
   or (per the licensee's choosing)
- 
+
 under the terms of the GNU Lesser General Public License version 2.1
 as published by the Free Software Foundation.
 
-=============== APPENDIX. Standard License Files ============== 
+=============== APPENDIX. Standard License Files ==============
 
 ------------- SECTION 1: Eclipse Public License 1.0 ---------
 
@@ -599,14 +599,14 @@ source code and/or modifications to source code to be made
 available (as would be noted above), you may obtain a copy of
 the source code corresponding to the binaries for such open
 source components and modifications thereto, if any, (the
-"Source Files"), by downloading the Source Files from VMware's website or by 
+"Source Files"), by downloading the Source Files from VMware's website or by
 sending a request, with your name and address to: VMware, Inc., 3401 Hillview Avenue,
 Palo Alto, CA 94304,United States of America or email info@vmware.com.  All such
 requests should clearly specify:  OPEN SOURCE FILES REQUEST,
 Attention General Counsel. VMware shall mail a copy of the
 Source Files to you on a CD or equivalent physical medium.  This
 offer to obtain a copy of the Source Files is valid for three
-years from the date you acquired this Software product. Alternatively, 
+years from the date you acquired this Software product. Alternatively,
 the Source Files may accompany the VMware product.
 
 [SPRINGMIGRATIONANALYZER10KP111411]

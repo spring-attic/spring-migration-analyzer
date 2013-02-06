@@ -2,17 +2,17 @@ configure(allprojects) {
 	group = 'org.springframework.migrationanalyzer'
 
 	ext {
-		asmVersion='3.1'
+		asmVersion='3.3.1'
 		commonsCliVersion='1.2'
 		ejb3Version='1.0.1'
-		freemarkerVersion='2.3.18'
-		jacocoVersion='0.6.0.201210061924'
+		freemarkerVersion='2.3.19'
+		jacocoVersion='0.6.2.201302030002'
 		jtaVersion='1.1.1'
-		junitVersion='4.8.2'
-		logbackVersion='1.0.0'
-		mockitoVersion='1.8.5'
-		slf4jVersion='1.6.4'
-		springVersion='3.1.2.RELEASE'
+		junitVersion='4.11'
+		logbackVersion='1.0.9'
+		mockitoVersion='1.9.5'
+		slf4jVersion='1.7.2'
+		springVersion='3.2.1.RELEASE'
 	}
 }
 
