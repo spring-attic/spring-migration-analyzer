@@ -62,7 +62,7 @@ final class InMemoryAnalysisResult implements MutableAnalysisResult {
     public void add(AnalysisResultEntry<?> entry) {
         getResultsForType(entry.getResultType(), true).add(entry);
         getResultsForFileSystemEntry(entry.getFileSystemEntry(), true).add(entry);
-        this.logger.debug("Result of type '{}' added for '{}'", new Object[] { entry.getResultType(), entry.getFileSystemEntry() });
+        this.logger.debug("Result of type '{}' added for '{}'", entry.getResultType(), entry.getFileSystemEntry());
     }
 
     private <T> Set<AnalysisResultEntry<?>> getResultsForType(Class<?> type, boolean createIfAbsent) {

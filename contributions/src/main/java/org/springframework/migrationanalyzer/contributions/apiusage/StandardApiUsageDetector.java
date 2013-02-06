@@ -42,7 +42,7 @@ final class StandardApiUsageDetector implements ApiUsageDetector {
     }
 
     private ApiUsage recordApiUsage(ApiUsageType usageType, DetectedApiConfiguration configuration, String user, String usageDescription) {
-        this.logger.debug("'{}' uses the '{}' API ({})", new Object[] { user, configuration.getApiName(), usageType });
+        this.logger.debug("'{}' uses the '{}' API ({})", user, configuration.getApiName(), usageType);
         return new ApiUsage(usageType, configuration.getApiName(), user, usageDescription, configuration.getGuidanceView(),
             configuration.getMigrationCost());
     }

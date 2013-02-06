@@ -59,8 +59,8 @@ final class StandardAnalysisEngine implements AnalysisEngine {
                     try {
                         recordAnalysis(analyzer.analyze(fileSystemEntry), analysisResult, fileSystemEntry);
                     } catch (Exception e) {
-                        this.logger.error("Problem encountered analyzing '{}' with analyzer '{}': {}", new Object[] { fileSystemEntry.getName(),
-                            analyzer, e.getMessage() });
+                        this.logger.error("Problem encountered analyzing '{}' with analyzer '{}': {}", fileSystemEntry.getName(), analyzer,
+                            e.getMessage());
                     }
                 }
             }
