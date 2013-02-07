@@ -47,11 +47,21 @@ public final class DeploymentDescriptor {
         this.name = name;
     }
 
-    String getCategory() {
+    /**
+     * Returns the category of the deployment descriptor
+     * 
+     * @return the deployment descriptor's category
+     */
+    public String getCategory() {
         return this.category;
     }
 
-    String getName() {
+    /**
+     * Returns the name of the deployment descriptor
+     * 
+     * @return the deployment descriptor's name
+     */
+    public String getName() {
         return this.name;
     }
 

@@ -63,6 +63,7 @@ abstract class AbstractMigrationAnalysis {
                 applicationContext.refresh();
                 applicationContext.getBean(MigrationAnalysisExecutor.class).execute();
             } catch (RuntimeException re) {
+                re.printStackTrace();
                 this.logger.error("A failure occurred. Please see earlier output for details.");
                 exit(-1);
             }

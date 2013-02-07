@@ -36,6 +36,7 @@ import org.springframework.migrationanalyzer.analyze.AnalysisResult;
 import org.springframework.migrationanalyzer.analyze.fs.FileSystemEntry;
 import org.springframework.migrationanalyzer.render.ByResultTypeController;
 import org.springframework.migrationanalyzer.render.support.ResultTypeDisplayNameResolver;
+import org.springframework.migrationanalyzer.render.support.ViewRenderer;
 
 @SuppressWarnings("rawtypes")
 public class StandardHtmlResultTypeRendererTests {

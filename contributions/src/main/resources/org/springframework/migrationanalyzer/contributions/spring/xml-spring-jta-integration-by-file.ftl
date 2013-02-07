@@ -1,0 +1,1 @@
+<spring-jta-integration/>

@@ -20,6 +20,7 @@ import java.io.Writer;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.migrationanalyzer.render.OutputPathGenerator;
+import org.springframework.migrationanalyzer.render.support.ViewRenderer;
 import org.springframework.migrationanalyzer.util.IoUtils;
 import org.springframework.stereotype.Component;
 
