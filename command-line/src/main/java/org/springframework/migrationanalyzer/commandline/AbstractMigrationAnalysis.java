@@ -50,7 +50,7 @@ abstract class AbstractMigrationAnalysis {
         CommandLine commandLine = null;
         try {
             commandLine = new PosixParser().parse(OPTIONS, args);
-            String outputType = commandLine.getOptionValue(OptionsFactory.OPTION_KEY_OUTPUT_TYPE);
+            String[] outputTypes = commandLine.getOptionValues(OptionsFactory.OPTION_KEY_OUTPUT_TYPE);
             String outputPath = commandLine.getOptionValue(OptionsFactory.OPTION_KEY_OUTPUT_PATH);
             String[] excludes = commandLine.getOptionValues(OptionsFactory.OPTION_KEY_EXCLUDE);
 
@@ -59,10 +59,11 @@ abstract class AbstractMigrationAnalysis {
             try {
                 ConfigurableApplicationContext applicationContext = getApplicationContext();
                 applicationContext.addBeanFactoryPostProcessor(new ConfigurationRegisteringBeanFactoryPostProcessor(new Configuration(inputPath,
-                    outputPath, outputType, excludes)));
+                    outputPath, outputTypes, excludes)));
                 applicationContext.refresh();
                 applicationContext.getBean(MigrationAnalysisExecutor.class).execute();
             } catch (RuntimeException re) {
+                this.logger.debug("Analysis failed", re);
                 this.logger.error("A failure occurred. Please see earlier output for details.");
                 exit(-1);
             }

@@ -25,33 +25,33 @@ public final class ConfigurationTests {
 
     @Test
     public void fullySpecifiedConfiguration() {
-        assertConfiguration(new Configuration("input/path", "output/path", "output-type", new String[] { "excluded", "items" }), "input/path",
-            "output/path", "output-type", new String[] { "excluded", "items" });
+        assertConfiguration(new Configuration("input/path", "output/path", new String[] { "output-type" }, new String[] { "excluded", "items" }),
+            "input/path", "output/path", new String[] { "output-type" }, new String[] { "excluded", "items" });
     }
 
     @Test
     public void outputPathDefaultsToCurrentWorkingDirectory() {
-        assertConfiguration(new Configuration("input/path", null, "output-type", new String[] { "excluded", "items" }), "input/path", ".",
-            "output-type", new String[] { "excluded", "items" });
+        assertConfiguration(new Configuration("input/path", null, new String[] { "output-type" }, new String[] { "excluded", "items" }),
+            "input/path", ".", new String[] { "output-type" }, new String[] { "excluded", "items" });
     }
 
     @Test
     public void outputTypeDefaultsToHtml() {
         assertConfiguration(new Configuration("input/path", "output/path", null, new String[] { "excluded", "items" }), "input/path", "output/path",
-            "html", new String[] { "excluded", "items" });
+            new String[] { "html" }, new String[] { "excluded", "items" });
     }
 
     @Test
     public void excludesDefaultsToAnEmptyArray() {
-        assertConfiguration(new Configuration("input/path", "output/path", "output-type", null), "input/path", "output/path", "output-type",
-            new String[0]);
+        assertConfiguration(new Configuration("input/path", "output/path", new String[] { "output-type" }, null), "input/path", "output/path",
+            new String[] { "output-type" }, new String[0]);
     }
 
-    private void assertConfiguration(Configuration configuration, String expectedInputPath, String expectedOutputPath, String expectedOutputType,
+    private void assertConfiguration(Configuration configuration, String expectedInputPath, String expectedOutputPath, String[] expectedOutputTypes,
         String[] expectedExcludes) {
         assertEquals(expectedInputPath, configuration.getInputPath());
         assertEquals(expectedOutputPath, configuration.getOutputPath());
-        assertEquals(expectedOutputType, configuration.getOutputType());
+        assertArrayEquals(expectedOutputTypes, configuration.getOutputTypes());
         assertArrayEquals(expectedExcludes, configuration.getExcludes());
 
     }

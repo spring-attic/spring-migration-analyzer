@@ -16,8 +16,10 @@
 
 package org.springframework.migrationanalyzer.render;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertSame;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -28,10 +30,20 @@ public class ModelAndViewTests {
     @Test
     public void test() {
         Map<String, Object> model = new HashMap<String, Object>();
+        model.put("a", "alpha");
+        model.put("b", "alpha");
+
         String viewName = "viewName";
 
         ModelAndView modelAndView = new ModelAndView(model, viewName);
-        assertSame(model, modelAndView.getModel());
+        assertEquals(model, modelAndView.getModel());
         assertSame(viewName, modelAndView.getViewName());
+    }
+
+    @Test
+    public void modelCanBeUpdated() {
+        ModelAndView modelAndView = new ModelAndView(Collections.<String, Object> emptyMap(), "view-name");
+        modelAndView.getModel().put("a", "alpha");
+        assertEquals("alpha", modelAndView.getModel().get("a"));
     }
 }

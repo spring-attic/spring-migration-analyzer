@@ -34,7 +34,7 @@ final class OptionsFactory {
         Options options = new Options();
 
         options.addOption(OptionBuilder //
-        .withDescription("The type of the output to be created. Defaults to html.") //
+        .withDescription("The type of the output to be created. Defaults to html. Can be specified multiple times.") //
         .hasArg() //
         .withArgName("outputType") //
         .create(OPTION_KEY_OUTPUT_TYPE));

@@ -16,6 +16,7 @@
 
 package org.springframework.migrationanalyzer.render;
 
+import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -39,7 +40,7 @@ public final class ModelAndView {
      * @param viewName The view name
      */
     public ModelAndView(Map<String, Object> model, String viewName) {
-        this.model = model;
+        this.model = new HashMap<String, Object>(model);
         this.viewName = viewName;
     }
 
