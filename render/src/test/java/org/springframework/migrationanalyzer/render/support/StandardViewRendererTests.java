@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.springframework.migrationanalyzer.render.support.html;
+package org.springframework.migrationanalyzer.render.support;
 
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.same;
@@ -36,7 +36,9 @@ import org.springframework.migrationanalyzer.analyze.AnalysisResultEntry;
 import org.springframework.migrationanalyzer.render.Controller;
 import org.springframework.migrationanalyzer.render.ModelAndView;
 import org.springframework.migrationanalyzer.render.OutputPathGenerator;
+import org.springframework.migrationanalyzer.render.support.StandardViewRenderer;
 import org.springframework.migrationanalyzer.render.support.View;
+import org.springframework.migrationanalyzer.render.support.ViewRenderer;
 import org.springframework.migrationanalyzer.render.support.ViewResolver;
 
 public class StandardViewRendererTests {

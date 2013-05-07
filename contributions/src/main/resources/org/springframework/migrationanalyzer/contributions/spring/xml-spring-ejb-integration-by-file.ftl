@@ -1,0 +1,1 @@
+<spring-ejb-integration/>

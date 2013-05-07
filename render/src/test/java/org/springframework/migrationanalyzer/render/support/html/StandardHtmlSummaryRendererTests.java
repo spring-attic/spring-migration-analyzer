@@ -37,6 +37,7 @@ import org.springframework.migrationanalyzer.analyze.fs.FileSystemEntry;
 import org.springframework.migrationanalyzer.render.MigrationCost;
 import org.springframework.migrationanalyzer.render.ModelAndView;
 import org.springframework.migrationanalyzer.render.SummaryController;
+import org.springframework.migrationanalyzer.render.support.ViewRenderer;
 
 @SuppressWarnings("rawtypes")
 public class StandardHtmlSummaryRendererTests {

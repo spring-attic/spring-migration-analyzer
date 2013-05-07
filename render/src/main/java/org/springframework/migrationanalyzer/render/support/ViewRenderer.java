@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.springframework.migrationanalyzer.render.support.html;
+package org.springframework.migrationanalyzer.render.support;
 
 import java.io.Writer;
 import java.util.Map;
@@ -24,7 +24,18 @@ import org.springframework.migrationanalyzer.analyze.AnalysisResultEntry;
 import org.springframework.migrationanalyzer.render.Controller;
 import org.springframework.migrationanalyzer.render.OutputPathGenerator;
 
-interface ViewRenderer {
+/**
+ * A {@code ViewRenderer} is used to render a {@link View}. It is responsible for creating or augmenting the model that
+ * is used for rendering.
+ * 
+ * <p />
+ * 
+ * <strong>Concurrent Semantics</strong><br />
+ * 
+ * Implementations must be thread-safe
+ * 
+ */
+public interface ViewRenderer {
 
     /**
      * Render the view with an empty model

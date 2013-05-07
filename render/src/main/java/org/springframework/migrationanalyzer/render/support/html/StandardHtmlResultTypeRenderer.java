@@ -27,6 +27,7 @@ import org.springframework.migrationanalyzer.analyze.AnalysisResult;
 import org.springframework.migrationanalyzer.render.ByResultTypeController;
 import org.springframework.migrationanalyzer.render.OutputPathGenerator;
 import org.springframework.migrationanalyzer.render.support.ResultTypeDisplayNameResolver;
+import org.springframework.migrationanalyzer.render.support.ViewRenderer;
 import org.springframework.migrationanalyzer.util.IoUtils;
 import org.springframework.stereotype.Component;
 

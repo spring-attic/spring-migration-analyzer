@@ -33,6 +33,7 @@ import org.mockito.Mockito;
 import org.springframework.migrationanalyzer.analyze.AnalysisResult;
 import org.springframework.migrationanalyzer.analyze.fs.FileSystemEntry;
 import org.springframework.migrationanalyzer.render.ByFileSystemEntryController;
+import org.springframework.migrationanalyzer.render.support.ViewRenderer;
 import org.springframework.migrationanalyzer.render.support.source.SourceAccessor;
 
 @SuppressWarnings("rawtypes")

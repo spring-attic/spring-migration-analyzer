@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.springframework.migrationanalyzer.render.support.html;
+package org.springframework.migrationanalyzer.render.support;
 
 import java.io.Writer;
 import java.util.Collections;
@@ -28,8 +28,6 @@ import org.springframework.migrationanalyzer.analyze.AnalysisResultEntry;
 import org.springframework.migrationanalyzer.render.Controller;
 import org.springframework.migrationanalyzer.render.ModelAndView;
 import org.springframework.migrationanalyzer.render.OutputPathGenerator;
-import org.springframework.migrationanalyzer.render.support.View;
-import org.springframework.migrationanalyzer.render.support.ViewResolver;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -56,6 +54,8 @@ final class StandardViewRenderer implements ViewRenderer {
         if (view != null) {
             this.logger.debug("Rendering view {} from view name {}", view, viewName);
             view.render(model, writer);
+        } else {
+            this.logger.warn("View {} not found", viewName);
         }
     }
 
@@ -68,8 +68,11 @@ final class StandardViewRenderer implements ViewRenderer {
                 this.logger.debug("Generating model with {}", controller);
 
                 ModelAndView modelAndView = ((Controller<T>) controller).handle(entries);
-                modelAndView.getModel().put("link", outputPathGenerator.generatePathFor(resultType));
-                modelAndView.getModel().put("outputPathGenerator", outputPathGenerator);
+
+                if (outputPathGenerator != null) {
+                    modelAndView.getModel().put("link", outputPathGenerator.generatePathFor(resultType));
+                    modelAndView.getModel().put("outputPathGenerator", outputPathGenerator);
+                }
 
                 renderViewWithModel(reportType + "-" + modelAndView.getViewName(), modelAndView.getModel(), writer);
             }

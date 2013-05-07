@@ -24,6 +24,7 @@ import static org.mockito.Mockito.verify;
 import java.io.Writer;
 
 import org.junit.Test;
+import org.springframework.migrationanalyzer.render.support.ViewRenderer;
 
 public class StandardHtmlIndexRendererTests {
 

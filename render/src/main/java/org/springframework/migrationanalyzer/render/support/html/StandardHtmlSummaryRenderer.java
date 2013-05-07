@@ -29,6 +29,7 @@ import org.springframework.migrationanalyzer.analyze.AnalysisResultEntry;
 import org.springframework.migrationanalyzer.render.MigrationCost;
 import org.springframework.migrationanalyzer.render.ModelAndView;
 import org.springframework.migrationanalyzer.render.SummaryController;
+import org.springframework.migrationanalyzer.render.support.ViewRenderer;
 import org.springframework.migrationanalyzer.util.IoUtils;
 import org.springframework.stereotype.Component;
 
