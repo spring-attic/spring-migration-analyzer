@@ -40,7 +40,9 @@ public final class CommandLineMigrationAnalysisExecutorTests {
 
     private static final String OUTPUT_PATH = "output";
 
-    private static final String REPORT_TYPE = "html";
+    private static final String REPORT_TYPE_HTML = "html";
+
+    private static final String REPORT_TYPE_XML = "xml";
 
     private final AnalysisEngine analysisEngine = mock(AnalysisEngine.class);
 
@@ -62,14 +64,15 @@ public final class CommandLineMigrationAnalysisExecutorTests {
 
         File archive = new File(INPUT_PATH_ARCHIVE_JAR);
 
-        configureBehaviour(archive, archive);
+        configureBehaviour(archive, REPORT_TYPE_HTML, archive);
 
         CommandLineMigrationAnalysisExecutor executor = new CommandLineMigrationAnalysisExecutor(this.analysisEngine, this.renderEngines,
-            this.fileSystemFactory, this.archiveDiscoverer, new Configuration(INPUT_PATH_ARCHIVE_JAR, OUTPUT_PATH, REPORT_TYPE, new String[0]));
+            this.fileSystemFactory, this.archiveDiscoverer, new Configuration(INPUT_PATH_ARCHIVE_JAR, OUTPUT_PATH, new String[] { REPORT_TYPE_HTML },
+                new String[0]));
 
         executor.execute();
 
-        verifyBehaviour(outputLocation, archive, archive);
+        verifyBehaviour(outputLocation, archive, REPORT_TYPE_HTML, archive);
     }
 
     @Test
@@ -80,29 +83,55 @@ public final class CommandLineMigrationAnalysisExecutorTests {
         File archive1 = new File(inputLocation, "alpha.ear");
         File archive2 = new File(new File(inputLocation, "bravo"), "charlie.war");
 
-        configureBehaviour(inputLocation, archive1, archive2);
+        configureBehaviour(inputLocation, REPORT_TYPE_HTML, archive1, archive2);
 
         CommandLineMigrationAnalysisExecutor executor = new CommandLineMigrationAnalysisExecutor(this.analysisEngine, this.renderEngines,
-            this.fileSystemFactory, this.archiveDiscoverer, new Configuration(inputLocation.getPath(), OUTPUT_PATH, REPORT_TYPE, new String[0]));
+            this.fileSystemFactory, this.archiveDiscoverer, new Configuration(inputLocation.getPath(), OUTPUT_PATH,
+                new String[] { REPORT_TYPE_HTML }, new String[0]));
 
         executor.execute();
 
-        verifyBehaviour(outputLocation, inputLocation, archive1, archive2);
+        verifyBehaviour(outputLocation, inputLocation, REPORT_TYPE_HTML, archive1, archive2);
+    }
+
+    @Test
+    public void executeWithMultipleOutputTypes() throws IOException {
+        File outputLocation = new File(OUTPUT_PATH);
+        File inputLocation = new File("src/test/resources/archives");
+
+        File archive = new File(inputLocation, "alpha.ear");
+
+        configureBehaviour(inputLocation, new String[] { REPORT_TYPE_HTML, REPORT_TYPE_XML }, archive);
+
+        CommandLineMigrationAnalysisExecutor executor = new CommandLineMigrationAnalysisExecutor(this.analysisEngine, this.renderEngines,
+            this.fileSystemFactory, this.archiveDiscoverer, new Configuration(inputLocation.getPath(), OUTPUT_PATH, new String[] { REPORT_TYPE_HTML,
+                REPORT_TYPE_XML }, new String[0]));
+
+        executor.execute();
+
+        verifyBehaviour(outputLocation, inputLocation, new String[] { REPORT_TYPE_HTML, REPORT_TYPE_XML }, archive);
     }
 
     @Test
     public void executeWithNonExistentInputPath() {
         CommandLineMigrationAnalysisExecutor executor = new CommandLineMigrationAnalysisExecutor(this.analysisEngine, this.renderEngines,
-            this.fileSystemFactory, this.archiveDiscoverer, new Configuration("does/not/exist", REPORT_TYPE, OUTPUT_PATH, new String[0]));
+            this.fileSystemFactory, this.archiveDiscoverer, new Configuration("does/not/exist", OUTPUT_PATH, new String[] { REPORT_TYPE_HTML },
+                new String[0]));
         executor.execute();
 
         verifyNoMoreInteractions(this.analysisEngine, this.fileSystemFactory, this.archiveDiscoverer);
     }
 
-    private void configureBehaviour(File inputLocation, File... archives) throws IOException {
+    private void configureBehaviour(File inputLocation, String outputType, File... archives) throws IOException {
+        this.configureBehaviour(inputLocation, new String[] { outputType }, archives);
+    }
+
+    private void configureBehaviour(File inputLocation, String[] outputTypes, File... archives) throws IOException {
 
         when(this.archiveDiscoverer.discover(inputLocation)).thenReturn(Arrays.asList(archives));
-        when(this.renderEngine.canRender("html")).thenReturn(true);
+        for (String outputType : outputTypes) {
+            when(this.renderEngine.canRender(outputType)).thenReturn(true);
+        }
 
         for (File archive : archives) {
             when(this.fileSystemFactory.createFileSystem(archive)).thenReturn(this.fileSystem);
@@ -111,22 +140,27 @@ public final class CommandLineMigrationAnalysisExecutorTests {
 
     }
 
-    private void verifyBehaviour(File outputLocation, File inputLocation, File... archives) {
+    private void verifyBehaviour(File outputLocation, File inputLocation, String outputType, File... archives) {
+        this.verifyBehaviour(outputLocation, inputLocation, new String[] { outputType }, archives);
+    }
 
+    private void verifyBehaviour(File outputLocation, File inputLocation, String[] outputTypes, File... archives) {
         for (File archive : archives) {
             verify(this.analysisEngine).analyze(this.fileSystem, new String[0], archive.getName());
-            verify(this.renderEngine).render(this.analysisResult, getOutputPath(inputLocation, outputLocation, archive));
+            for (String outputType : outputTypes) {
+                verify(this.renderEngine).render(this.analysisResult, getOutputPath(inputLocation, outputLocation, archive, outputType));
+            }
         }
     }
 
-    private String getOutputPath(File inputLocation, File outputLocation, File archive) {
+    private String getOutputPath(File inputLocation, File outputLocation, File archive, String outputType) {
         String outputPath;
         if (inputLocation.equals(archive)) {
-            outputPath = new File(new File(outputLocation, archive.getName() + ".migration-analysis"), "html").getAbsolutePath();
+            outputPath = new File(new File(outputLocation, archive.getName() + ".migration-analysis"), outputType).getAbsolutePath();
 
         } else {
             outputPath = new File(new File(new File(outputLocation, archive.getParentFile().getPath().substring(inputLocation.getPath().length())),
-                archive.getName() + ".migration-analysis"), "html").getAbsolutePath();
+                archive.getName() + ".migration-analysis"), outputType).getAbsolutePath();
         }
         return outputPath;
     }

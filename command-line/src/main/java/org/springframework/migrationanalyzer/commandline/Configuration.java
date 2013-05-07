@@ -24,20 +24,20 @@ final class Configuration {
 
     private static final String DEFAULT_OUTPUT_PATH = ".";
 
-    private static final String DEFAULT_OUTPUT_TYPE = "html";
+    private static final String[] DEFAULT_OUTPUT_TYPES = new String[] { "html" };
 
     private final String inputPath;
 
     private final String outputPath;
 
-    private final String outputType;
+    private final String[] outputTypes;
 
     private final String[] excludes;
 
-    Configuration(String inputPath, String outputPath, String outputType, String[] excludes) {
+    Configuration(String inputPath, String outputPath, String[] outputTypes, String[] excludes) {
         this.inputPath = inputPath;
         this.outputPath = outputPath == null ? DEFAULT_OUTPUT_PATH : outputPath;
-        this.outputType = outputType == null ? DEFAULT_OUTPUT_TYPE : outputType;
+        this.outputTypes = outputTypes == null ? DEFAULT_OUTPUT_TYPES : outputTypes;
         this.excludes = excludes == null ? DEFAULT_EXCLUDES : excludes;
     }
 
@@ -56,10 +56,10 @@ final class Configuration {
     }
 
     /**
-     * @return The type of report to produce
+     * @return The types of report to produce
      */
-    public String getOutputType() {
-        return this.outputType;
+    public String[] getOutputTypes() {
+        return this.outputTypes;
     }
 
     /**

@@ -54,8 +54,6 @@ final class StandardViewRenderer implements ViewRenderer {
         if (view != null) {
             this.logger.debug("Rendering view {} from view name {}", view, viewName);
             view.render(model, writer);
-        } else {
-            this.logger.warn("View {} not found", viewName);
         }
     }
 

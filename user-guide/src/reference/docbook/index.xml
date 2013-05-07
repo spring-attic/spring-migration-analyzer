@@ -111,7 +111,7 @@
    -o &lt;outputPath&gt;               The path of the output directory. Defaults to
                                  the current working directory
    -t &lt;outputType&gt;               The type of the output to be created. Defaults
-                                 to html.
+                                 to html. Can be specified multiple times.
 </programlisting>
 			</para>
 		</section>
@@ -216,6 +216,25 @@
 </programlisting>
 				</para>
 			</section>
+			<section id="using-analyizing-multiple-report-types">
+				<title>Producing multiple reports</title>
+				<para>
+					Spring Migration Analyzer can produce multiple reports from the same
+					analysis. To do so,
+					specify the <code>-t</code> option multiple times. Supported report types
+					are <code>html</code> and <code>xml</code>. For example, if you want both
+					HTML and XML reports, run Spring Migration Analyzer as follows:
+<programlisting><prompt> &gt; </prompt><userinput>migration-analysis my-app.ear -t html -t xml</userinput></programlisting>
+					And the resulting reports will be:
+<programlisting>my-app.ear.migration-analysis/
+    html/
+        index.html
+        ...
+    xml/
+        migration-analysis.xml
+</programlisting>
+				</para>
+			</section>
 		</section>
 		<section id="using-html">
 			<title>Viewing an HTML report</title>
@@ -290,18 +309,18 @@
 				<para>
 					The structure of an XML report is:
 <programlisting>&lt;migration-analysis&gt;
-	&lt;file-system-entries&gt;
-		&lt;file-system-entry name="Alpha.java"&gt;
-			Detected items
-		&lt;/file-system-entry&gt;
-		...
-		&lt;file-system-entry name="Hotel.xml"&gt;
-			Detected items
-			&lt;source&gt;
-				...
-			&lt;/source&gt;
-		&lt;/file-system-entry&gt;
-	&lt;/file-system-entries&gt;
+    &lt;file-system-entries&gt;
+        &lt;file-system-entry name="Alpha.java"&gt;
+            Detected items
+        &lt;/file-system-entry&gt;
+        ...
+        &lt;file-system-entry name="Hotel.xml"&gt;
+            Detected items
+            &lt;source&gt;
+                ...
+            &lt;/source&gt;
+        &lt;/file-system-entry&gt;
+    &lt;/file-system-entries&gt;
 &lt;/migration-analysis&gt;
 </programlisting>
 				</para>

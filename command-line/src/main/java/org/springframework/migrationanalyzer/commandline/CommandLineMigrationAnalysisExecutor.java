@@ -75,22 +75,25 @@ final class CommandLineMigrationAnalysisExecutor implements MigrationAnalysisExe
     private void analyzeArchive(File archive, File inputFile) {
         FileSystem fileSystem = createFileSystem(archive);
         AnalysisResult analysis = this.analysisEngine.analyze(fileSystem, this.configuration.getExcludes(), archive.getName());
-        RenderEngine renderEngine = getRenderEngine();
-        renderEngine.render(analysis, getOutputPath(inputFile, archive));
+
+        for (String outputType : this.configuration.getOutputTypes()) {
+            RenderEngine renderEngine = getRenderEngine(outputType);
+            renderEngine.render(analysis, getOutputPath(inputFile, archive, outputType));
+        }
         fileSystem.cleanup();
     }
 
-    private RenderEngine getRenderEngine() {
+    private RenderEngine getRenderEngine(String outputType) {
         for (RenderEngine renderEngine : this.renderEngines) {
-            if (renderEngine.canRender(this.configuration.getOutputType())) {
+            if (renderEngine.canRender(outputType)) {
                 return renderEngine;
             }
         }
 
-        throw new IllegalArgumentException(String.format("No rendering engine for report type '%s' is available", this.configuration.getOutputType()));
+        throw new IllegalArgumentException(String.format("No rendering engine for report type '%s' is available", outputType));
     }
 
-    private String getOutputPath(File inputFile, File archive) {
+    private String getOutputPath(File inputFile, File archive, String outputType) {
         File root;
 
         if (inputFile.equals(archive)) {
@@ -100,7 +103,7 @@ final class CommandLineMigrationAnalysisExecutor implements MigrationAnalysisExe
         }
 
         String directoryName = archive.getName() + ".migration-analysis";
-        return new File(new File(root, directoryName), this.configuration.getOutputType()).getAbsolutePath();
+        return new File(new File(root, directoryName), outputType).getAbsolutePath();
     }
 
     private FileSystem createFileSystem(File archive) {
