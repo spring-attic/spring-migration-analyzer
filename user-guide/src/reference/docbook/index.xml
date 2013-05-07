@@ -130,9 +130,9 @@
 				This will perform an analysis of <code>my-app.ear</code>, producing
 				a migration report in the current working directory. The report will be
 				in HTML. The report is written into a directory with a name in the form
-				&lt;input-archive&gt;.migration-analysis. For example, if you analyzed
+				&lt;input-archive&gt;.migration-analysis/html. For example, if you analyzed
 				<code>my-app.ear</code>, the report will be written into a directory
-				named <code>my-app.ear.migration-analysis</code>.
+				named <code>my-app.ear.migration-analysis/html</code>.
 			</para>
 			<section id="using-analyzing-customizing">
 				<title>Customizing the analysis</title>
@@ -170,9 +170,9 @@
 								<row>
 									<entry>-t</entry>
 									<entry>
-										Allows you to specify the the type of report to create.
-										Defaults to html which is currently the only supported report
-										type.
+										Allows you to specify the type of report to create. Defaults
+										to <code>html</code>. Supported values are <code>html</code> and
+										<code>xml</code>.
 									</entry>
 								</row>
 							</tbody>
@@ -217,7 +217,7 @@
 				</para>
 			</section>
 		</section>
-		<section id="using-viewing-report-html">
+		<section id="using-html">
 			<title>Viewing an HTML report</title>
 			<para>
 				An HTML migration analysis report can be viewed by opening its
@@ -238,7 +238,7 @@
 				that the report contains information for. Clicking on a file will show all of
 				the analysis for that file.
 			</para>
-			<section id="using-viewing-report-html-summary">
+			<section id="using-html-summary">
 				<title>The report's summary</title>
 				<para>
 					When the report is first viewed, or by clicking on
@@ -251,7 +251,7 @@
 					started.
 				</para>
 			</section>
-			<section id="using-viewing-report-html-details">
+			<section id="using-html-details">
 				<title>The report's details</title>
 				<para>
 					If you're interested in more details about the information in the report,
@@ -264,6 +264,52 @@
 					For detailed information about everything that Spring Migration Analyzer can
 					detect, please refer to the chapter entitled
 					<link linkend="what-is-detected">"What is detected"</link>.
+				</para>
+			</section>
+		</section>
+		<section id="using-xml">
+			<title>Viewing an XML report</title>
+			<para>
+				An XML migration analysis report can be produced by using the <code>-t xml</code>
+				option. This will produce a file named <code>migration-analysis.xml</code>.
+			</para>
+			<para>
+				The XML report is intended as an input for further, automated processing. For
+				example, you may wish to analyze multiple applications and then post-process their
+				reports using XPath or XSLT to produce some aggregated data.
+			</para>
+			<section id="using-xml-structure">
+				<title>XML structure</title>
+				<caution>
+					<para>
+					The structure of the XML report is not final. It may change prior to the release
+					of 1.0.0. It is included in its current form to
+					<link linkend="resources-issue-tracking">solicit feedback</link>.
+					</para>
+				</caution>
+				<para>
+					The structure of an XML report is:
+<programlisting>&lt;migration-analysis&gt;
+	&lt;file-system-entries&gt;
+		&lt;file-system-entry name="Alpha.java"&gt;
+			Detected items
+		&lt;/file-system-entry&gt;
+		...
+		&lt;file-system-entry name="Hotel.xml"&gt;
+			Detected items
+			&lt;source&gt;
+				...
+			&lt;/source&gt;
+		&lt;/file-system-entry&gt;
+	&lt;/file-system-entries&gt;
+&lt;/migration-analysis&gt;
+</programlisting>
+				</para>
+				<para>
+					<code>&lt;source&gt;</code> is only present for entries where the source was
+					available in the archive that was analyzed. See
+					<link linkend="what-is-detected">"What is detected"</link> for more details on
+					what may be detected for each <code>&lt;file-system-entry&gt;</code>.
 				</para>
 			</section>
 		</section>
