@@ -59,7 +59,7 @@ final class Configuration {
      * @return The types of report to produce
      */
     public String[] getOutputTypes() {
-        return this.outputTypes;
+        return Arrays.copyOf(this.outputTypes, this.outputTypes.length);
     }
 
     /**
