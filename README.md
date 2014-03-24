@@ -3,8 +3,8 @@
 Spring Migration Anaylzer is a command-line tool for analyzing Java EE applications. It produces a report describing the application and how to migrate it to Spring.
 
 # Downloads
-- [Releases](http://www.springsource.org/download/community?project=Spring%20Migration%20Analyzer)
-- [Snapshots](http://repo.springsource.org/simple/libs-snapshot-local/org/springframework/migrationanalyzer/spring-migration-analyzer/1.0.0.BUILD-SNAPSHOT/)
+- [Milestones](http://repo.spring.io/simple/libs-milestone-local/org/springframework/migrationanalyzer/spring-migration-analyzer/)
+- [Snapshots](http://repo.spring.io/simple/libs-snapshot-local/org/springframework/migrationanalyzer/spring-migration-analyzer/1.0.0.BUILD-SNAPSHOT/)
 
 # Usage
 
@@ -30,6 +30,6 @@ Once the build's completed, a .zip package will be available in `build/distribut
 
 # Infrastructure
 
-- Issues - [https://jira.springsource.org/browse/SMA](https://jira.springsource.org/browse/SMA)
-- CI - [https://build.springsource.org/browse/SMA](https://build.springsource.org/browse/SMA)
-- Quality - [https://sonar.springsource.org/dashboard/index/2770](https://sonar.springsource.org/dashboard/index/2770)
+- Issues - https://jira.spring.io/browse/SMA
+- CI - https://build.spring.io/browse/SMA
+- Quality - https://sonar.springsource.org/dashboard/index/2770
