@@ -1,5 +1,5 @@
 /*
- * Copyright 2010 the original author or authors.
+ * Copyright 2010-2014 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -138,7 +138,7 @@ abstract class AbstractModelCreatingEntityBeanController extends AbstractEntityB
         if (!cmpFields.isEmpty()) {
             StringBuilder sb = new StringBuilder();
             for (String cmpField : cmpFields) {
-                sb.append(" ").append(cmpField);
+                sb.append(' ').append(cmpField);
             }
             sb.deleteCharAt(0);
             metadata.put("CMP Fields", sb.toString());
