@@ -11,10 +11,12 @@ apply plugin: 'docbook-reference'
 
 task htmlSingle(type: HtmlSingleDocbookReferenceTask) {
 	sourceDir = file('src/reference/docbook')
+	sourceFileName = 'index.xml'
 }
 
 task htmlMulti(type: HtmlMultiDocbookReferenceTask) {
 	sourceDir = file('src/reference/docbook')
+	sourceFileName = 'index.xml'
 }
 
 task docs(dependsOn:[htmlSingle, htmlMulti])
